@@ -52,6 +52,139 @@ interface TestCase {
   expectedArgs?: Record<string, unknown>;
   forbiddenTools?: string[];
   passCriteria: string;
+  expectedResponseContains?: { needle: string; caseSensitive?: boolean };
+  expectedResponseSchema?: { schema: JsonSchema; advisory?: boolean };
+}
+
+// ─── Minimal JSON Schema subset validator ────────────────────────────────────
+// Supports exactly the keywords used by this suite's authored schemas:
+// type, required, properties, items, minItems, contains, pattern, const,
+// minLength, minimum, exclusiveMinimum.
+interface JsonSchema {
+  type?: 'object' | 'array' | 'string' | 'number';
+  required?: string[];
+  properties?: Record<string, JsonSchema>;
+  items?: JsonSchema;
+  minItems?: number;
+  contains?: JsonSchema;
+  pattern?: string;
+  const?: unknown;
+  minLength?: number;
+  minimum?: number;
+  exclusiveMinimum?: number;
+}
+
+function validateSchema(value: unknown, schema: JsonSchema, path = '$'): string[] {
+  const errors: string[] = [];
+
+  if (schema.const !== undefined) {
+    if (value !== schema.const) errors.push(`${path}: expected const ${JSON.stringify(schema.const)}, got ${JSON.stringify(value)}`);
+    return errors;
+  }
+
+  if (schema.type === 'object') {
+    if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+      errors.push(`${path}: expected object, got ${value === null ? 'null' : typeof value}`);
+      return errors;
+    }
+    const obj = value as Record<string, unknown>;
+    for (const key of schema.required ?? []) {
+      if (!(key in obj)) errors.push(`${path}: missing required property "${key}"`);
+    }
+    for (const [key, subSchema] of Object.entries(schema.properties ?? {})) {
+      if (key in obj) errors.push(...validateSchema(obj[key], subSchema, `${path}.${key}`));
+    }
+  } else if (schema.type === 'array') {
+    if (!Array.isArray(value)) {
+      errors.push(`${path}: expected array, got ${typeof value}`);
+      return errors;
+    }
+    if (schema.minItems !== undefined && value.length < schema.minItems) {
+      errors.push(`${path}: expected at least ${schema.minItems} item(s), got ${value.length}`);
+    }
+    if (schema.items) {
+      value.forEach((item, i) => errors.push(...validateSchema(item, schema.items!, `${path}[${i}]`)));
+    }
+    if (schema.contains) {
+      const anyMatch = value.some((item) => validateSchema(item, schema.contains!, `${path}[]`).length === 0);
+      if (!anyMatch) errors.push(`${path}: no item matches the required "contains" schema`);
+    }
+  } else if (schema.type === 'string') {
+    if (typeof value !== 'string') {
+      errors.push(`${path}: expected string, got ${typeof value}`);
+      return errors;
+    }
+    if (schema.minLength !== undefined && value.length < schema.minLength) {
+      errors.push(`${path}: expected length >= ${schema.minLength}`);
+    }
+    if (schema.pattern !== undefined && !new RegExp(schema.pattern).test(value)) {
+      errors.push(`${path}: does not match pattern /${schema.pattern}/`);
+    }
+  } else if (schema.type === 'number') {
+    if (typeof value !== 'number') {
+      errors.push(`${path}: expected number, got ${typeof value}`);
+      return errors;
+    }
+    if (schema.minimum !== undefined && value < schema.minimum) errors.push(`${path}: expected >= ${schema.minimum}`);
+    if (schema.exclusiveMinimum !== undefined && value <= schema.exclusiveMinimum) {
+      errors.push(`${path}: expected > ${schema.exclusiveMinimum}`);
+    }
+  }
+  return errors;
+}
+
+// ─── Partial argument matching (mirrors MCPJam's "toolCalledWith" partial mode) ──
+// At every level of nesting, every key/element present in `expected` must
+// partial-match the corresponding key/element in `actual`; extra object keys
+// in `actual` are ignored at every depth (arrays still compare positionally).
+function argsMatchPartial(expected: Record<string, unknown>, actual: Record<string, unknown> | undefined): string | null {
+  if (!actual) return 'tool was not called, so no arguments were observed';
+  for (const [key, expectedVal] of Object.entries(expected)) {
+    if (!matchesPartial(actual[key], expectedVal)) {
+      return `arg "${key}": expected ${JSON.stringify(expectedVal)}, got ${JSON.stringify(actual[key])}`;
+    }
+  }
+  return null;
+}
+
+function matchesPartial(actual: unknown, expected: unknown): boolean {
+  if (actual === expected) return true;
+  if (typeof actual === 'number' && typeof expected === 'number') return Math.abs(actual - expected) < 1e-9;
+  if (Array.isArray(expected)) {
+    return Array.isArray(actual) && actual.length === expected.length && expected.every((v, i) => matchesPartial(actual[i], v));
+  }
+  if (expected !== null && typeof expected === 'object') {
+    if (actual === null || typeof actual !== 'object' || Array.isArray(actual)) return false;
+    return Object.entries(expected as Record<string, unknown>).every(([k, v]) =>
+      matchesPartial((actual as Record<string, unknown>)[k], v),
+    );
+  }
+  return false;
+}
+
+// ─── Extract the actual tool-result payload for response-correctness checks ────
+function findToolResultOutput(
+  toolMessages: Array<{ content: Array<{ type: string; toolName: string; output?: { type: string; value: unknown } }> }>,
+  toolName: string,
+): { value: unknown } | undefined {
+  for (let i = toolMessages.length - 1; i >= 0; i--) {
+    const parts = toolMessages[i]!.content;
+    for (const part of parts) {
+      if (part.type === 'tool-result' && part.toolName === toolName && part.output) {
+        return part.output as { value: unknown };
+      }
+    }
+  }
+  return undefined;
+}
+
+function extractStructuredContent(output: { value: unknown } | undefined): unknown {
+  const value = output?.value as { structuredContent?: unknown } | undefined;
+  return value?.structuredContent ?? value;
+}
+
+function extractSearchableText(output: { value: unknown } | undefined): string {
+  return JSON.stringify(output?.value ?? '');
 }
 
 interface SuiteDefinition {
@@ -193,24 +326,24 @@ async function main() {
         }
       }
 
+      const failureReasons: string[] = [];
+      const warnings: string[] = [];
+
       if (runResult.hasError()) {
-        status = 'FAIL';
-        errorMessage = `API error: ${runResult.getError()}`;
+        failureReasons.push(`API error: ${runResult.getError()}`);
       } else {
         calledTools = runResult.toolsCalled();
 
-        // Evaluation assertion
+        // Evaluation assertion: correct tool was called
         if (tc.expectedTool === null) {
           // Negative test case: no tool should be called
           if (calledTools.length > 0) {
-            status = 'FAIL';
-            errorMessage = `Expected no tools, but called: ${calledTools.join(', ')}`;
+            failureReasons.push(`Expected no tools, but called: ${calledTools.join(', ')}`);
           }
         } else {
           // Positive test case: expected tool must be in calledTools
           if (!calledTools.includes(tc.expectedTool)) {
-            status = 'FAIL';
-            errorMessage = `Expected '${tc.expectedTool}', but called: ${calledTools.join(', ') || 'none'}`;
+            failureReasons.push(`Expected '${tc.expectedTool}', but called: ${calledTools.join(', ') || 'none'}`);
           }
         }
 
@@ -218,11 +351,52 @@ async function main() {
         if (tc.forbiddenTools) {
           for (const fb of tc.forbiddenTools) {
             if (calledTools.includes(fb)) {
-              status = 'FAIL';
-              errorMessage = `Forbidden tool '${fb}' was called`;
+              failureReasons.push(`Forbidden tool '${fb}' was called`);
             }
           }
         }
+
+        // Argument-correctness: the expected tool was called with the right arguments
+        if (tc.expectedTool && tc.expectedArgs && calledTools.includes(tc.expectedTool)) {
+          const actualArgs = runResult.getToolArguments(tc.expectedTool);
+          const argError = argsMatchPartial(tc.expectedArgs, actualArgs);
+          if (argError) failureReasons.push(`Args mismatch: ${argError}`);
+        }
+
+        // Response-correctness: the tool result actually contains/matches what was expected
+        if (tc.expectedTool && calledTools.includes(tc.expectedTool)) {
+          const toolMessages = runResult.getToolMessages() as unknown as Array<{
+            content: Array<{ type: string; toolName: string; output?: { type: string; value: unknown } }>;
+          }>;
+          const output = findToolResultOutput(toolMessages, tc.expectedTool);
+
+          if (tc.expectedResponseContains) {
+            const { needle, caseSensitive } = tc.expectedResponseContains;
+            const haystack = extractSearchableText(output);
+            const found = caseSensitive
+              ? haystack.includes(needle)
+              : haystack.toLowerCase().includes(needle.toLowerCase());
+            if (!found) failureReasons.push(`Response did not contain expected text "${needle}"`);
+          }
+
+          if (tc.expectedResponseSchema) {
+            const structured = extractStructuredContent(output);
+            const violations = validateSchema(structured, tc.expectedResponseSchema.schema);
+            if (violations.length > 0) {
+              const msg = `Response schema violation: ${violations[0]}${violations.length > 1 ? ` (+${violations.length - 1} more)` : ''}`;
+              if (tc.expectedResponseSchema.advisory) warnings.push(msg);
+              else failureReasons.push(msg);
+            }
+          }
+        }
+      }
+
+      if (failureReasons.length > 0) {
+        status = 'FAIL';
+        errorMessage = failureReasons.join(' | ');
+      }
+      if (warnings.length > 0) {
+        errorMessage = [errorMessage, `[advisory] ${warnings.join(' | ')}`].filter(Boolean).join(' | ');
       }
 
       const duration = ((Date.now() - startTime) / 1000).toFixed(1) + 's';

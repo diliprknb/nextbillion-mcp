@@ -1,12 +1,12 @@
 {
   "suiteName": "Nextbillion-MCPEval-Suite-Gemini",
   "description": "Comprehensive evaluation suite for NextBillion MCP tools: 2 representative test cases for each of the 16 registered tools (32 cases total).",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "metadata": {
     "totalCases": 32,
     "toolsCovered": 16,
     "casesPerTool": 2,
-    "updatedAt": "2026-09-18T10:25:15.899Z"
+    "updatedAt": "2026-09-28T00:00:00.000Z"
   },
   "cases": [
     {
@@ -20,7 +20,11 @@
       "expectedArgs": {
         "query": "1600 Amphitheatre Pkw"
       },
-      "passCriteria": "Calls autocomplete with query matching prefix"
+      "passCriteria": "Calls autocomplete with query matching prefix",
+      "expectedResponseContains": {
+        "needle": "Amphitheatre",
+        "caseSensitive": false
+      }
     },
     {
       "id": "tc_01b_autocomplete_stat_prefix",
@@ -40,7 +44,11 @@
           "USA"
         ]
       },
-      "passCriteria": "Calls autocomplete with query 'stat' and near coordinates"
+      "passCriteria": "Calls autocomplete with query 'stat' and near coordinates",
+      "expectedResponseContains": {
+        "needle": "State",
+        "caseSensitive": false
+      }
     },
     {
       "id": "tc_02a_autosuggest_misspelled_aquarium",
@@ -57,7 +65,11 @@
           "longitude": -71.0689
         }
       },
-      "passCriteria": "Calls autosuggest with typo query and near coordinates"
+      "passCriteria": "Calls autosuggest with typo query and near coordinates",
+      "expectedResponseContains": {
+        "needle": "Aquarium",
+        "caseSensitive": false
+      }
     },
     {
       "id": "tc_02b_autosuggest_london_museum",
@@ -71,7 +83,11 @@
         "query": "London muse",
         "radius_m": 10000
       },
-      "passCriteria": "Calls autosuggest with query 'London muse' and radius"
+      "passCriteria": "Calls autosuggest with query 'London muse' and radius",
+      "expectedResponseContains": {
+        "needle": "Museum",
+        "caseSensitive": false
+      }
     },
     {
       "id": "tc_03a_place_search_coffee_sf",
@@ -89,7 +105,44 @@
         },
         "radius_m": 1000
       },
-      "passCriteria": "Calls place_search with query 'coffee', near coordinates, and radius"
+      "passCriteria": "Calls place_search with query 'coffee', near coordinates, and radius",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "items"
+          ],
+          "properties": {
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "categories"
+                ],
+                "properties": {
+                  "categories": {
+                    "type": "array",
+                    "contains": {
+                      "type": "object",
+                      "required": [
+                        "name"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "pattern": "café/pub"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "tc_03b_place_search_gas_light",
@@ -106,7 +159,11 @@
           "longitude": -122.4331
         }
       },
-      "passCriteria": "Calls place_search with query 'Gas Light' and coordinates"
+      "passCriteria": "Calls place_search with query 'Gas Light' and coordinates",
+      "expectedResponseContains": {
+        "needle": "Gas Light",
+        "caseSensitive": false
+      }
     },
     {
       "id": "tc_04a_geocode_forward_downing_st",
@@ -119,7 +176,11 @@
       "expectedArgs": {
         "query": "10 Downing Street, London, UK"
       },
-      "passCriteria": "Calls geocode_forward with the target address string"
+      "passCriteria": "Calls geocode_forward with the target address string",
+      "expectedResponseContains": {
+        "needle": "Downing Street",
+        "caseSensitive": false
+      }
     },
     {
       "id": "tc_04b_geocode_forward_white_house",
@@ -135,7 +196,11 @@
           "USA"
         ]
       },
-      "passCriteria": "Calls geocode_forward with query and country_codes"
+      "passCriteria": "Calls geocode_forward with query and country_codes",
+      "expectedResponseContains": {
+        "needle": "Pennsylvania Avenue",
+        "caseSensitive": false
+      }
     },
     {
       "id": "tc_05a_geocode_reverse_paris",
@@ -151,7 +216,11 @@
           "longitude": 2.3522
         }
       },
-      "passCriteria": "Calls geocode_reverse with the exact coordinates"
+      "passCriteria": "Calls geocode_reverse with the exact coordinates",
+      "expectedResponseContains": {
+        "needle": "Paris",
+        "caseSensitive": false
+      }
     },
     {
       "id": "tc_05b_geocode_reverse_berlin",
@@ -170,7 +239,11 @@
           "DEU"
         ]
       },
-      "passCriteria": "Calls geocode_reverse with coordinates and country_codes DEU"
+      "passCriteria": "Calls geocode_reverse with coordinates and country_codes DEU",
+      "expectedResponseContains": {
+        "needle": "Berlin",
+        "caseSensitive": false
+      }
     },
     {
       "id": "tc_06a_geocode_structured_baker_st",
@@ -186,7 +259,11 @@
         "street": "Baker Street",
         "house_number": "221B"
       },
-      "passCriteria": "Calls geocode_structured with country_code GBR and structured address components"
+      "passCriteria": "Calls geocode_structured with country_code GBR and structured address components",
+      "expectedResponseContains": {
+        "needle": "Baker Street",
+        "caseSensitive": false
+      }
     },
     {
       "id": "tc_06b_geocode_structured_mullen_sf",
@@ -203,7 +280,11 @@
         "street": "Mullen Avenue",
         "postal_code": "94110"
       },
-      "passCriteria": "Calls geocode_structured with USA, California, San Francisco, and Mullen Avenue"
+      "passCriteria": "Calls geocode_structured with USA, California, San Francisco, and Mullen Avenue",
+      "expectedResponseContains": {
+        "needle": "Mullen Avenue",
+        "caseSensitive": false
+      }
     },
     {
       "id": "tc_07a_geocode_batch_landmarks",
@@ -226,7 +307,33 @@
           }
         ]
       },
-      "passCriteria": "Calls geocode_batch with 3 query objects"
+      "passCriteria": "Calls geocode_batch with 3 query objects",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "results"
+          ],
+          "properties": {
+            "results": {
+              "type": "array",
+              "minItems": 3,
+              "items": {
+                "type": "object",
+                "required": [
+                  "items"
+                ],
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "minItems": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "tc_07b_geocode_batch_whitehouse_empire",
@@ -252,7 +359,33 @@
           }
         ]
       },
-      "passCriteria": "Calls geocode_batch with 2 query objects with country_codes USA"
+      "passCriteria": "Calls geocode_batch with 2 query objects with country_codes USA",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "results"
+          ],
+          "properties": {
+            "results": {
+              "type": "array",
+              "minItems": 2,
+              "items": {
+                "type": "object",
+                "required": [
+                  "items"
+                ],
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "minItems": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "tc_08a_place_browse_restaurants",
@@ -272,7 +405,44 @@
         },
         "radius_m": 800
       },
-      "passCriteria": "Calls place_browse with categories ['restaurant'] and near coordinates"
+      "passCriteria": "Calls place_browse with categories ['restaurant'] and near coordinates",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "items"
+          ],
+          "properties": {
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "categories"
+                ],
+                "properties": {
+                  "categories": {
+                    "type": "array",
+                    "contains": {
+                      "type": "object",
+                      "required": [
+                        "name"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "pattern": "restaurant"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "tc_08b_place_browse_schools",
@@ -292,7 +462,44 @@
         },
         "radius_m": 2000
       },
-      "passCriteria": "Calls place_browse with categories ['schools'], near, and radius"
+      "passCriteria": "Calls place_browse with categories ['schools'], near, and radius",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "items"
+          ],
+          "properties": {
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "categories"
+                ],
+                "properties": {
+                  "categories": {
+                    "type": "array",
+                    "contains": {
+                      "type": "object",
+                      "required": [
+                        "name"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "pattern": "school"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "tc_09a_place_lookup_mullen_ave",
@@ -305,7 +512,11 @@
       "expectedArgs": {
         "id": "2EmBgAmFpR9dg0D89EBzNA"
       },
-      "passCriteria": "Calls place_lookup with id '2EmBgAmFpR9dg0D89EBzNA'"
+      "passCriteria": "Calls place_lookup with id '2EmBgAmFpR9dg0D89EBzNA'",
+      "expectedResponseContains": {
+        "needle": "Mullen Avenue",
+        "caseSensitive": false
+      }
     },
     {
       "id": "tc_09b_place_lookup_empire_state",
@@ -318,7 +529,11 @@
       "expectedArgs": {
         "id": "5GjOCyXMUOsLhBw6vwpo_Q"
       },
-      "passCriteria": "Calls place_lookup with id '5GjOCyXMUOsLhBw6vwpo_Q'"
+      "passCriteria": "Calls place_lookup with id '5GjOCyXMUOsLhBw6vwpo_Q'",
+      "expectedResponseContains": {
+        "needle": "Empire State Building",
+        "caseSensitive": false
+      }
     },
     {
       "id": "tc_10a_postcode_lookup_la",
@@ -332,7 +547,11 @@
         "postal_code": "90011",
         "country": "USA"
       },
-      "passCriteria": "Calls postcode_lookup with postal_code '90011' and country 'USA'"
+      "passCriteria": "Calls postcode_lookup with postal_code '90011' and country 'USA'",
+      "expectedResponseContains": {
+        "needle": "90011",
+        "caseSensitive": false
+      }
     },
     {
       "id": "tc_10b_postcode_lookup_india",
@@ -346,7 +565,11 @@
         "postal_code": "110007",
         "country": "India"
       },
-      "passCriteria": "Calls postcode_lookup with postal_code '110007' and country 'India'"
+      "passCriteria": "Calls postcode_lookup with postal_code '110007' and country 'India'",
+      "expectedResponseContains": {
+        "needle": "110007",
+        "caseSensitive": false
+      }
     },
     {
       "id": "tc_11a_directions_sf_to_la",
@@ -369,7 +592,43 @@
           "toll"
         ]
       },
-      "passCriteria": "Calls directions with origin, destination, and avoid containing 'toll'"
+      "passCriteria": "Calls directions with origin, destination, and avoid containing 'toll'",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "routes"
+          ],
+          "properties": {
+            "routes": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "distance",
+                  "duration",
+                  "geometry"
+                ],
+                "properties": {
+                  "distance": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "duration": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "geometry": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "tc_11b_directions_truck_hazmat",
@@ -394,7 +653,43 @@
           "flammable_liquid"
         ]
       },
-      "passCriteria": "Calls directions with mode 'truck', truck_weight_kg, and hazmat_type"
+      "passCriteria": "Calls directions with mode 'truck', truck_weight_kg, and hazmat_type",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "routes"
+          ],
+          "properties": {
+            "routes": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "distance",
+                  "duration",
+                  "geometry"
+                ],
+                "properties": {
+                  "distance": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "duration": {
+                    "type": "number",
+                    "exclusiveMinimum": 0
+                  },
+                  "geometry": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "tc_12a_distance_matrix_singapore",
@@ -422,7 +717,70 @@
           }
         ]
       },
-      "passCriteria": "Calls distance_matrix with 1 origin and 2 destinations"
+      "passCriteria": "Calls distance_matrix with 1 origin and 2 destinations",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "rows",
+            "status"
+          ],
+          "properties": {
+            "status": {
+              "type": "string"
+            },
+            "rows": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "elements"
+                ],
+                "properties": {
+                  "elements": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "distance",
+                        "duration"
+                      ],
+                      "properties": {
+                        "distance": {
+                          "type": "object",
+                          "required": [
+                            "value"
+                          ],
+                          "properties": {
+                            "value": {
+                              "type": "number",
+                              "minimum": 0
+                            }
+                          }
+                        },
+                        "duration": {
+                          "type": "object",
+                          "required": [
+                            "value"
+                          ],
+                          "properties": {
+                            "value": {
+                              "type": "number",
+                              "minimum": 0
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "tc_12b_distance_matrix_barcelona",
@@ -450,7 +808,70 @@
           }
         ]
       },
-      "passCriteria": "Calls distance_matrix with 2 origins and 1 destination"
+      "passCriteria": "Calls distance_matrix with 2 origins and 1 destination",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "rows",
+            "status"
+          ],
+          "properties": {
+            "status": {
+              "type": "string"
+            },
+            "rows": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "elements"
+                ],
+                "properties": {
+                  "elements": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "distance",
+                        "duration"
+                      ],
+                      "properties": {
+                        "distance": {
+                          "type": "object",
+                          "required": [
+                            "value"
+                          ],
+                          "properties": {
+                            "value": {
+                              "type": "number",
+                              "minimum": 0
+                            }
+                          }
+                        },
+                        "duration": {
+                          "type": "object",
+                          "required": [
+                            "value"
+                          ],
+                          "properties": {
+                            "value": {
+                              "type": "number",
+                              "minimum": 0
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "tc_13a_isochrone_sf_contours",
@@ -470,7 +891,41 @@
           20
         ]
       },
-      "passCriteria": "Calls isochrone with origin and contours_minutes [10, 20]"
+      "passCriteria": "Calls isochrone with origin and contours_minutes [10, 20]",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "features"
+          ],
+          "properties": {
+            "features": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "geometry"
+                ],
+                "properties": {
+                  "geometry": {
+                    "type": "object",
+                    "required": [
+                      "coordinates"
+                    ],
+                    "properties": {
+                      "coordinates": {
+                        "type": "array",
+                        "minItems": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "tc_13b_isochrone_5min_polygon",
@@ -490,7 +945,41 @@
         ],
         "polygons": true
       },
-      "passCriteria": "Calls isochrone with origin, contours_minutes [5], and polygons true"
+      "passCriteria": "Calls isochrone with origin, contours_minutes [5], and polygons true",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "features"
+          ],
+          "properties": {
+            "features": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "geometry"
+                ],
+                "properties": {
+                  "geometry": {
+                    "type": "object",
+                    "required": [
+                      "coordinates"
+                    ],
+                    "properties": {
+                      "coordinates": {
+                        "type": "array",
+                        "minItems": 1
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "tc_14a_search_along_route_gas_station",
@@ -514,7 +1003,45 @@
         "query": "gas station",
         "max_detour_seconds": 600
       },
-      "passCriteria": "Calls search_along_route with 2 route points, query, and max_detour_seconds"
+      "passCriteria": "Calls search_along_route with 2 route points, query, and max_detour_seconds",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "items"
+          ],
+          "properties": {
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "categories"
+                ],
+                "properties": {
+                  "categories": {
+                    "type": "array",
+                    "contains": {
+                      "type": "object",
+                      "required": [
+                        "name"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "pattern": "Gas Station"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "advisory": true
+      }
     },
     {
       "id": "tc_14b_search_along_route_4waypoints",
@@ -546,7 +1073,45 @@
         "query": "gas station",
         "max_detour_seconds": 600
       },
-      "passCriteria": "Calls search_along_route with 4 route points and max_detour_seconds 600"
+      "passCriteria": "Calls search_along_route with 4 route points and max_detour_seconds 600",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "items"
+          ],
+          "properties": {
+            "items": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "categories"
+                ],
+                "properties": {
+                  "categories": {
+                    "type": "array",
+                    "contains": {
+                      "type": "object",
+                      "required": [
+                        "name"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "pattern": "Gas Station"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "advisory": true
+      }
     },
     {
       "id": "tc_15a_static_map_paris",
@@ -570,7 +1135,29 @@
           }
         ]
       },
-      "passCriteria": "Calls static_map_image with center, zoom 14, and red marker"
+      "passCriteria": "Calls static_map_image with center, zoom 14, and red marker",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "array",
+          "minItems": 1,
+          "contains": {
+            "type": "object",
+            "required": [
+              "data",
+              "mediaType"
+            ],
+            "properties": {
+              "data": {
+                "type": "string",
+                "minLength": 1
+              },
+              "mediaType": {
+                "const": "image/png"
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "tc_15b_static_map_hybrid_style",
@@ -590,7 +1177,29 @@
         "width": 512,
         "height": 512
       },
-      "passCriteria": "Calls static_map_image with center, zoom 9, style hybrid, width 512, height 512"
+      "passCriteria": "Calls static_map_image with center, zoom 9, style hybrid, width 512, height 512",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "array",
+          "minItems": 1,
+          "contains": {
+            "type": "object",
+            "required": [
+              "data",
+              "mediaType"
+            ],
+            "properties": {
+              "data": {
+                "type": "string",
+                "minLength": 1
+              },
+              "mediaType": {
+                "const": "image/png"
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "tc_16a_static_route_map_sf",
@@ -617,7 +1226,29 @@
         ],
         "stroke_color": "blue"
       },
-      "passCriteria": "Calls static_route_map with route_points and stroke_color"
+      "passCriteria": "Calls static_route_map with route_points and stroke_color",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "array",
+          "minItems": 1,
+          "contains": {
+            "type": "object",
+            "required": [
+              "data",
+              "mediaType"
+            ],
+            "properties": {
+              "data": {
+                "type": "string",
+                "minLength": 1
+              },
+              "mediaType": {
+                "const": "image/png"
+              }
+            }
+          }
+        }
+      }
     },
     {
       "id": "tc_16b_static_route_map_polygon_path",
@@ -656,7 +1287,29 @@
           }
         ]
       },
-      "passCriteria": "Calls static_route_map with paths and green stroke_color"
+      "passCriteria": "Calls static_route_map with paths and green stroke_color",
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "array",
+          "minItems": 1,
+          "contains": {
+            "type": "object",
+            "required": [
+              "data",
+              "mediaType"
+            ],
+            "properties": {
+              "data": {
+                "type": "string",
+                "minLength": 1
+              },
+              "mediaType": {
+                "const": "image/png"
+              }
+            }
+          }
+        }
+      }
     }
   ]
 }

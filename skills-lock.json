@@ -6,6 +6,12 @@
       "sourceType": "github",
       "skillPath": "skills/mcp-inspector/SKILL.md",
       "computedHash": "61c823d3b9ff32af243491bb29d11303b34319f5caaa0007ecd62dc8369b49bf"
+    },
+    "run-mcpjam-evals": {
+      "source": "mcpjam/inspector",
+      "sourceType": "github",
+      "skillPath": "skills/run-mcpjam-evals/SKILL.md",
+      "computedHash": "9b48c4ae40997c79cbd877cd658438c79e2e226b924bad3d8969595190804060"
     }
   }
 }
