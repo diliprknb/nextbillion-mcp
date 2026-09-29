@@ -2,7 +2,7 @@
   "mcpServers": {
     "nextbillion": {
       "command": "npx",
-      "args": ["-y", "nextbillion-mcp@0.2.1"],
+      "args": ["-y", "nextbillion-mcp@0.2.2"],
       "env": {
         "NBAI_API_KEY": "${NBAI_API_KEY}",
         "NBAI_IMAGE_DIR": "tmp",

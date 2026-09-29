@@ -2,9 +2,9 @@
   "manifest_version": "0.2",
   "name": "nextbillion-mcp",
   "display_name": "NextBillion.ai Maps",
-  "version": "0.2.1",
-  "description": "Geocoding, place search, routing, distance matrices, isochrones and static maps from NextBillion.ai.",
-  "long_description": "Gives Claude 16 read-only tools over NextBillion.ai's location APIs: forward, reverse, batch and structured geocoding, postcode lookup, place search, browse and lookup, autosuggest and autocomplete, directions (car, truck, bike, walk) with avoidance and truck options, distance matrix, isochrones, search along a route, and static map images with markers, lines and polygons.\n\nRequires a NextBillion.ai API key (create one at https://console.nextbillion.ai). Tool arguments are sent to api.nextbillion.io only; nothing is stored locally and no telemetry is collected.",
+  "version": "0.2.2",
+  "description": "Geocoding, place search, routing, isochrones and static maps from NextBillion.ai",
+  "long_description": "Gives Claude tools for NextBillion.ai's location APIs: turn addresses into coordinates and back, find places and businesses, get directions, including truck-aware routing, compare travel times across many locations, map reachable areas, and render map images with markers, routes and shapes.\n\nRequires a NextBillion.ai API key. Get one from https://console.nextbillion.ai or by emailing support@nextbillion.ai. Tool inputs are sent only to api.nextbillion.io. Nothing is stored locally and no telemetry is collected.",
   "author": {
     "name": "NextBillion.ai",
     "email": "support@nextbillion.ai",
@@ -118,7 +118,7 @@
     "nbai_api_key": {
       "type": "string",
       "title": "NextBillion.ai API key",
-      "description": "Create a key at https://console.nextbillion.ai. It is sent only to api.nextbillion.io and is never written to disk.",
+      "description": "Get one from https://console.nextbillion.ai or by emailing support@nextbillion.ai. It is sent only to api.nextbillion.io and is never written to disk.",
       "sensitive": true,
       "required": true
     }

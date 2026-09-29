@@ -9,8 +9,8 @@ SDK's built-in legacy negotiation.
 
 ## Quick start
 
-Get an API key at [console.nextbillion.ai](https://console.nextbillion.ai) and export it as
-`NBAI_API_KEY` in your shell profile.
+Get an API key from [console.nextbillion.ai](https://console.nextbillion.ai) or by emailing
+support@nextbillion.ai, and export it as `NBAI_API_KEY` in your shell profile.
 
 **Claude Desktop extension:** download `nextbillion-mcp-<version>.mcpb` from the
 [latest release](https://github.com/nextbillion-ai/nextbillion-mcp/releases/latest), open it

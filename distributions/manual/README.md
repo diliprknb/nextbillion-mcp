@@ -2,7 +2,7 @@
 
 The `nextbillion-mcp` server runs locally over stdio via `npx`. Any MCP-capable client can use
 it with the snippets below. You need a NextBillion.ai API key from
-[console.nextbillion.ai](https://console.nextbillion.ai).
+[console.nextbillion.ai](https://console.nextbillion.ai) or by emailing support@nextbillion.ai.
 
 ## Claude Code
 

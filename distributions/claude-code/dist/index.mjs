@@ -21685,7 +21685,7 @@ function extractApiMessage(bodyText) {
 }
 
 // src/index.ts
-var pkg = true ? { version: "0.2.1" } : createRequire(import.meta.url)("../package.json");
+var pkg = true ? { version: "0.2.2" } : createRequire(import.meta.url)("../package.json");
 function main() {
   const args = process.argv.slice(2);
   if (args.includes("--version") || args.includes("-v")) {

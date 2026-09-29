@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.2 — 2026-09-29
+
+- Claude Desktop extension listing text revised for the directory submission (description
+  and long description). API key instructions in the README, the manual setup guide and the
+  extension's key prompt now also offer support@nextbillion.ai as a way to get a key.
+  No server changes.
+
 ## 0.2.1 — 2026-09-23
 
 Preparation for the Claude Desktop extension directory (Anthropic's review checks that
