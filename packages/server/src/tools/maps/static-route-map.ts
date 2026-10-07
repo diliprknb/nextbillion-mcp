@@ -74,6 +74,7 @@ export const staticRouteMap: NbTool<typeof Schema> = {
     '"longitude": -122.4194, "color": "red"}]}',
   inputSchema: Schema,
   annotations: READ_ONLY,
+  docs: ['maps/static-images-api/static-images-api'],
   async run(args, nb) {
     if (args.encoded_polyline && args.route_points) {
       throw new ToolInputError('Provide either `encoded_polyline` or `route_points`, not both.');

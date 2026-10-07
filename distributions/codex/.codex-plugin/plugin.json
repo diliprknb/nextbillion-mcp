@@ -2,7 +2,7 @@
   "name": "nextbillion-mcp",
   "displayName": "NextBillion.ai",
   "description": "NextBillion.ai location APIs as MCP tools: geocoding, place search and browse, routing, distance matrix, isochrones, and static maps with overlays",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "author": {
     "name": "NextBillion.ai"
   },

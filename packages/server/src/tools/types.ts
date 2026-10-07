@@ -28,6 +28,12 @@ export interface NbTool<Schema extends z.ZodType = z.ZodType> {
   description: string;
   inputSchema: Schema;
   annotations?: ToolAnnotations;
+  /**
+   * doc_ids of the reference pages that document the API this tool calls. Feeds
+   * `related_tools` in search_documentation results; a unit test requires every API tool
+   * to declare at least one existing page.
+   */
+  docs?: readonly string[];
   run(args: z.output<Schema>, nb: NbClient): Promise<ToolResult>;
 }
 

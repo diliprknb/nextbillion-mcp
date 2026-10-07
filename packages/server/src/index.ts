@@ -33,7 +33,8 @@ function main(): void {
         '  NBAI_BASE_URL     (optional) API base URL, default https://api.nextbillion.io\n' +
         '  NBAI_TIMEOUT_MS   (optional) per-request timeout, default 30000\n' +
         '  NBAI_IMAGE_DIR    (optional) also save rendered maps to this absolute directory, or\n' +
-        '                    "tmp" for the OS temp dir; unset = nothing is written to disk\n',
+        '                    "tmp" for the OS temp dir; unset = nothing is written to disk\n' +
+        '  NBAI_DOCS_INDEX   (optional) path to an alternative documentation index file\n',
     );
     return;
   }

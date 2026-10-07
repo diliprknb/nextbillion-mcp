@@ -4,3 +4,9 @@ dist/
 dist-mcpb/
 # The committed plugin bundle is esbuild output, not hand-written source
 distributions/claude-code/dist/
+# Generated docs-KB inputs and reports (scripts/docs/validate-mapping.ts)
+packages/server/docs/reports/
+packages/server/docs/*.txt
+# Generated documentation index (scripts/docs/build-index.ts) and its plugin copy
+packages/server/data/
+distributions/claude-code/data/

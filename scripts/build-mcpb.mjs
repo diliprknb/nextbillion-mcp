@@ -75,6 +75,9 @@ rmSync(out, { recursive: true, force: true });
 mkdirSync(join(stage, 'server'), { recursive: true });
 writeFileSync(join(stage, 'manifest.json'), JSON.stringify(manifest, null, 2) + '\n');
 cpSync(bundle, join(stage, 'server/index.js'));
+// The server resolves its documentation index at ../data/docs-index.json relative to itself.
+mkdirSync(join(stage, 'data'), { recursive: true });
+cpSync(join(root, 'packages/server/data/docs-index.json'), join(stage, 'data/docs-index.json'));
 cpSync(join(source, 'icon.png'), join(stage, 'icon.png'));
 cpSync(join(root, 'README.md'), join(stage, 'README.md'));
 cpSync(join(root, 'LICENSE'), join(stage, 'LICENSE'));

@@ -2,7 +2,7 @@
   "manifest_version": "0.2",
   "name": "nextbillion-mcp",
   "display_name": "NextBillion.ai Maps",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Geocoding, place search, routing, isochrones and static maps from NextBillion.ai",
   "long_description": "Gives Claude tools for NextBillion.ai's location APIs: turn addresses into coordinates and back, find places and businesses, get directions, including truck-aware routing, compare travel times across many locations, map reachable areas, and render map images with markers, routes and shapes.\n\nRequires a NextBillion.ai API key. Get one from https://console.nextbillion.ai or by emailing support@nextbillion.ai. Tool inputs are sent only to api.nextbillion.io. Nothing is stored locally and no telemetry is collected.",
   "author": {
@@ -63,8 +63,20 @@
       "description": "Geocode an address given as separate fields such as street, city and postal code."
     },
     {
+      "name": "get_api_parameters",
+      "description": "Structured request parameters (type, required, default, allowed values, units) for a REST API endpoint."
+    },
+    {
+      "name": "get_documentation",
+      "description": "Fetch one documentation page or section by its doc_id."
+    },
+    {
       "name": "isochrone",
       "description": "Compute the area reachable from a point within given travel times or distances."
+    },
+    {
+      "name": "list_documentation_topics",
+      "description": "List the documentation categories, APIs and pages in the bundled index."
     },
     {
       "name": "place_browse",
@@ -85,6 +97,10 @@
     {
       "name": "search_along_route",
       "description": "Find places matching a query along a driving route, with the detour each stop adds."
+    },
+    {
+      "name": "search_documentation",
+      "description": "Search NextBillion's official API and SDK documentation; returns excerpts with source URLs and the tool that performs the operation."
     },
     {
       "name": "static_map_image",

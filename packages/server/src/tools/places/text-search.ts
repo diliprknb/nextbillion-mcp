@@ -24,6 +24,7 @@ function textSearchTool(options: {
   description: string;
   path: string;
   noun: string;
+  docs: readonly string[];
 }): NbTool<typeof TextSearchSchema> {
   return {
     name: options.name,
@@ -31,6 +32,7 @@ function textSearchTool(options: {
     description: options.description,
     inputSchema: TextSearchSchema,
     annotations: READ_ONLY,
+    docs: options.docs,
     async run(args, nb) {
       const response = await nb.getJson<Record<string, unknown>>(options.path, {
         q: args.query,
@@ -62,6 +64,7 @@ export const geocodeForward: NbTool<typeof ForwardGeocodeSchema> = {
     'Washington DC", "country_codes": ["USA"], "limit": 1}',
   inputSchema: ForwardGeocodeSchema,
   annotations: READ_ONLY,
+  docs: ['places/geocoding/forward-geocode/forward-geocode'],
   async run(args, nb) {
     const response = await nb.getJson<Record<string, unknown>>('/geocode', {
       q: args.query,
@@ -74,11 +77,15 @@ export const geocodeForward: NbTool<typeof ForwardGeocodeSchema> = {
 
 export const placeSearch = textSearchTool({
   name: 'place_search',
+  docs: [
+    'places/search/search-places-api/discover-api',
+    'places/search/search-places-api/search-places-apis',
+  ],
   title: 'Search Places',
   description:
     'Search for places, points of interest and businesses with a free-text query (e.g. "gas ' +
     'station", "coffee"), ranked by relevance around a location. Use geocode_forward for ' +
-    'plain address-to-coordinates conversion. Parameters: query (required); optional near ' +
+    'plain address-to-coordinates conversion. For how-to questions about this API, use search_documentation. Parameters: query (required); optional near ' +
     '{latitude, longitude} (recommended), radius_m (with near), country_codes, bounding_box ' +
     '{west, south, east, north}, limit, language, view. Example: {"query": "coffee", "near": ' +
     '{"latitude": 37.7749, "longitude": -122.4194}, "radius_m": 1000, "limit": 5}',
@@ -88,6 +95,7 @@ export const placeSearch = textSearchTool({
 
 export const autosuggest = textSearchTool({
   name: 'autosuggest',
+  docs: ['places/autosuggestions/autosuggest-api'],
   title: 'Autosuggest',
   description:
     'Suggest address and place candidates from an incomplete or misspelled query ' +
@@ -102,6 +110,7 @@ export const autosuggest = textSearchTool({
 
 export const autocomplete = textSearchTool({
   name: 'autocomplete',
+  docs: ['places/autosuggestions/autocomplete-api'],
   title: 'Autocomplete',
   description:
     'Complete a partial address or administrative-area prefix into full valid addresses (e.g. ' +

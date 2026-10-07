@@ -22,6 +22,7 @@ jobs:
       - run: npm run format:check
       - run: node scripts/check-dist-versions.mjs
       - run: npm run typecheck
+      - run: npm run docs:validate --workspace packages/server
       - run: npm run build
       - run: node scripts/sync-plugin-bundle.mjs --check
       - run: npm test

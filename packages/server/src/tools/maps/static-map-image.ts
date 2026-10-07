@@ -45,6 +45,7 @@ export const staticMapImage: NbTool<typeof Schema> = {
     '48.86, "longitude": 2.30}], "stroke_color": "green"}]}',
   inputSchema: Schema,
   annotations: READ_ONLY,
+  docs: ['maps/static-images-api/static-images-api'],
   async run(args, nb) {
     const position = `${args.center.latitude},${args.center.longitude},${args.zoom}`;
     const path = staticImagePath(position, args);

@@ -38,22 +38,38 @@ describe('MCP conformance', () => {
     await client.connect(clientTransport);
   });
 
-  it('lists all 16 tools in deterministic sorted order with titles, schemas and annotations', async () => {
+  it('lists all 20 tools in deterministic sorted order with titles, schemas and annotations', async () => {
     const result = await client.listTools();
     const names = result.tools.map((t) => t.name);
     expect(names).toEqual(ALL_TOOLS.map((t) => t.name));
-    expect(result.tools).toHaveLength(16);
+    expect(result.tools).toHaveLength(20);
     for (const tool of result.tools) {
       expect(tool.title, tool.name).toBeTruthy();
       expect(tool.description, tool.name).toBeTruthy();
       expect(tool.inputSchema, tool.name).toBeTruthy();
+      // Documentation tools read a bundled index (closed world); API tools call the live API.
       expect(tool.annotations, tool.name).toMatchObject({
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: true,
+        openWorldHint: !/documentation|api_parameters/.test(tool.name),
       });
     }
+  });
+
+  it('sends the server instructions at initialisation', () => {
+    expect(client.getInstructions()).toContain('search_documentation');
+  });
+
+  it('answers a documentation question without touching the API', async () => {
+    const result = await client.callTool({
+      name: 'search_documentation',
+      arguments: { query: 'truck_weight', api: 'Directions' },
+    });
+    expect(result.isError).toBeFalsy();
+    const structured = result.structuredContent as { results: Array<{ doc_id: string }> };
+    expect(structured.results[0]?.doc_id).toMatch(/^routing\/directions-api/);
+    expect(requests).toHaveLength(0);
   });
 
   it('serves identical tool lists across separate connections', async () => {
