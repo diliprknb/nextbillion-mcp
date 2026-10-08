@@ -1,5 +1,68 @@
 # Changelog
 
+## 0.3.0 — 2026-10-08
+
+Documentation knowledge base: the server can now answer questions about the APIs from the
+official documentation, offline, with citations. 16 → 20 tools.
+
+- **Three documentation tools**: `search_documentation` (ranked excerpts with `source_url`
+  and `related_tools`), `get_documentation` (one page or section, code samples on
+  request) and `list_documentation_topics`. They read a bundled index of 342 pages from
+  docs.nextbillion.ai (`packages/server/data/docs-index.json`, about 1 MB compressed) and
+  never use the network. The server now sends initialisation `instructions` telling hosts
+  to use `search_documentation` for how-to questions. Every API tool declares the pages
+  that document it, which feeds `related_tools`. Retrieval is BM25 with the docs' own
+  vocabulary, boosts for titles, headings and exact parameter names, and synonyms for
+  everyday phrasing.
+- **`get_api_parameters`**: structured request parameters (type, required, default, allowed
+  values, units, description) for a REST endpoint, parsed from the reference pages' tables,
+  with every API variant (`directions/flexible`, `directions/fast`, `geofence/create`, …).
+  Units are only reported when the docs state them; `packages/server/docs/reports/missing-units-report.md`
+  lists numeric parameters without one for the docs team.
+- The `directions`, `distance_matrix`, `isochrone` and `place_search` descriptions point
+  how-to questions to `search_documentation`.
+- Refreshing the docs is a manual procedure documented in `packages/server/docs/README.md`.
+
+- `packages/server/docs/` holds the checked-in inputs for the upcoming documentation
+  tools: the mapping of docs-repo pages to live URLs (rules plus `url-overrides.json`),
+  a pinned page list and sitemap snapshot, and two coverage reports. `npm run docs:validate`
+  keeps them consistent and runs in CI without access to the private docs repository. The refresh procedure is manual by decision (see
+  `packages/server/docs/README.md`).
+
+## 0.2.2 — 2026-09-29
+
+- Claude Desktop extension listing text revised for the directory submission (description
+  and long description). API key instructions in the README, the manual setup guide and the
+  extension's key prompt now also offer support@nextbillion.ai as a way to get a key.
+  No server changes.
+
+## 0.2.1 — 2026-09-23
+
+Preparation for the Claude Desktop extension directory (Anthropic's review checks that
+read-only tools have no side effects).
+
+- **Rendered map images are no longer saved to disk by default.** Previously every
+  `static_map_image` / `static_route_map` call also wrote the image to
+  `<OS temp dir>/nextbillion-mcp/`. Now the server writes nothing unless you opt in.
+  Desktop hosts (Claude Desktop, Claude Code, Cursor) display the inline image and lose
+  nothing. **To re-enable saving**, set `NBAI_IMAGE_DIR` in the server's environment to
+  an absolute directory, or to `tmp` for the OS temp directory (portable across
+  platforms); the result caption then reports the file path as before. The Codex plugin
+  and the Codex snippet in `distributions/manual/README.md` set `NBAI_IMAGE_DIR=tmp`
+  because that client cannot display images. Relative paths are rejected with a startup
+  warning, and an existing file is never overwritten. Both map tool descriptions state the
+  optional save.
+- README gains a full **Privacy Policy** section (data sent to the API, no telemetry, API
+  key handling, no local storage unless `NBAI_IMAGE_DIR` is set, policy link) as required
+  for the Claude Desktop extension directory submission.
+- Claude Desktop extension: `npm run build:mcpb` packs the server into
+  `nextbillion-mcp-<version>.mcpb` (manifest in `distributions/claude-desktop/`, built in CI,
+  attached to the GitHub release). The extension bundles the server, asks for the API key at
+  install, and never writes to disk.
+- Tests guard that every tool exposes a Title Case `title` and the full read-only
+  annotation set over `tools/list`; one `distance_matrix` sentence that directed model
+  behaviour was reworded (#5).
+
 ## 0.2.0 — 2026-09-08
 
 Closes the capability gaps found in the external MCP-server evaluation and Arnav's audit.

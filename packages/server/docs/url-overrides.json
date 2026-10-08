@@ -1,0 +1,84 @@
+{
+  "$comment": "Overrides for scripts/docs/mapping.ts. folderAliases keys are slugified repo folder paths; values are URL path prefixes on docs.nextbillion.ai. pages keys are exact repo paths; a url may carry a #fragment when the file is one section of a live page; exclude needs a reason. Validate with `npm run docs:validate`.",
+  "folderAliases": {
+    "maps/mobile-sdks/android": "maps/android-maps-sdk",
+    "maps/mobile-sdks/ios": "maps/ios-maps-sdk",
+    "maps/mobile-sdks/flutter": "maps/flutter-maps-sdk",
+    "maps/mobile-sdks/jetpack-compose": "maps/maps-sdk-jetpack-compose-extension",
+    "maps/mobile-sdks/web-maps": "maps/web-maps-sdk-v2",
+    "maps/mobile-sdks/ios-offline-maps": "maps/ios-offline-maps",
+    "routing/mobile-sdks/android": "routing/android-navigation-sdk",
+    "routing/mobile-sdks/ios": "routing/ios-navigation-sdk",
+    "routing/mobile-sdks/flutter": "routing/flutter-navigation-sdk",
+    "routing/mobile-sdks/jetpack": "routing/navigation-sdk-jetpack-compose-extension",
+    "routing/mobile-sdks/ios-offline-navigation": "routing/ios-offline-navigation",
+    "tracking/mobile-sdks/android": "tracking/android-tracking-sdk",
+    "tracking/mobile-sdks/ios": "tracking/ios-tracking-sdk",
+    "tracking/mobile-sdks/flutter": "tracking/flutter-tracking-sdk",
+    "routing/distance-matrix": "routing/distance-matrix-api",
+    "routing/snap-to-road": "routing/snap-to-roads-api",
+    "places/geocoding/batch-geocode": "places/geocoding/batch-api",
+    "places/geocoding/forward-geocode": "places/geocoding/forward-api",
+    "places/geocoding/geocode-postcode": "places/geocoding/postcode-api",
+    "places/geocoding/reverse-geocode": "places/geocoding/reverse-api",
+    "places/geocoding/structured-geocode": "places/geocoding/structured-api",
+    "places/multi-geocode": "places/multi-geocode-api",
+    "places/place-lookup": "places/place-lookup-api",
+    "places/autosuggestions": "places"
+  },
+  "pages": {
+    "README.md": {
+      "exclude": "repository readme, not a documentation page"
+    },
+    "Places/Autosuggestions/autosuggest-api.md": {
+      "url": "places/autosuggestions-api",
+      "why": "page renamed on the live site"
+    },
+    "Places/Search/Search Places API/search-places-apis.md": {
+      "url": "places/search/search-places-api",
+      "why": "overview of the combined Search Places page"
+    },
+    "Places/Search/Search Places API/discover-api.md": {
+      "url": "places/search/search-places-api#discover-api",
+      "why": "Discover is an H2 section of the Search Places page"
+    },
+    "Places/Search/Search Places API/browse-api.md": {
+      "url": "places/search/search-places-api#browse-api",
+      "why": "Browse is an H2 section of the Search Places page"
+    },
+    "Integrations/Motive/motive-fleet-hub-integration.md": {
+      "url": "integrations/motive/fleet-hub-integration",
+      "why": "file name carries the vendor prefix; the URL does not"
+    },
+    "Integrations/ServiceNow/service-now.md": {
+      "url": "integrations/service-now",
+      "why": "folder slug (servicenow) differs from the page slug (service-now)"
+    },
+    "Optimization/Route Optimization API/Tutorials/3d-volume-and-cargo-orientation.md": {
+      "url": "optimization/route-optimization-api/tutorials/delivery-load-optimization-3d-volume-and-cargo-orientation",
+      "why": "page renamed on the live site"
+    },
+    "Maps/Mobile SDKs/Web Maps/Examples/support-right-to-left-text.md": {
+      "url": "maps/web-maps-sdk-v2/examples/add-support-right-to-left",
+      "why": "page renamed on the live site"
+    },
+    "Routing/Mobile SDKs/iOS/sdk-configuration-and-plug-in.md": {
+      "url": "routing/ios-navigation-sdk/sdk-configuration",
+      "why": "page renamed on the live site"
+    },
+    "Routing/Mobile SDKs/iOS Offline Navigation/preview-offline-map.md": {
+      "url": "routing/ios-offline-navigation/offline-map-preview",
+      "why": "page renamed on the live site"
+    },
+    "Places/Autosuggestions/autosuggestion-apis.md": {
+      "exclude": "overview that repeats autosuggest-api.md and autocomplete-api.md; the live site has no combined page"
+    },
+    "Optimization/Route Optimization API/Tutorials/skill_example.md": {
+      "exclude": "empty file (1 byte) in the docs repo; no live URL"
+    },
+    "Routing/Mobile SDKs/Android/Examples/add-Infowindow-on-mapview.md": {
+      "url": "routing/android-navigation-sdk/examples/add-Infowindow-on-mapview",
+      "why": "page renamed on the live site"
+    }
+  }
+}

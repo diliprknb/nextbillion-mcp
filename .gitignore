@@ -2,6 +2,8 @@ node_modules/
 dist/
 # The Claude Code plugin ships its bundled server; that copy must be committed.
 !distributions/claude-code/dist/
+# Claude Desktop extension build output (attached to releases, not committed)
+dist-mcpb/
 *.tsbuildinfo
 .env
 .env.*

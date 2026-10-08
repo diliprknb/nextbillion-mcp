@@ -22,9 +22,15 @@ jobs:
       - run: npm run format:check
       - run: node scripts/check-dist-versions.mjs
       - run: npm run typecheck
+      - run: npm run docs:validate --workspace packages/server
       - run: npm run build
       - run: node scripts/sync-plugin-bundle.mjs --check
       - run: npm test
+      - run: npm run build:mcpb
+      - uses: actions/upload-artifact@v4
+        with:
+          name: claude-desktop-extension
+          path: dist-mcpb/*.mcpb
 
   e2e:
     # Live-API smoke tests; needs the NBAI_API_KEY secret (sandbox key).

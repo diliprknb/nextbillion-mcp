@@ -1,0 +1,142 @@
+{
+  "manifest_version": "0.2",
+  "name": "nextbillion-mcp",
+  "display_name": "NextBillion.ai Maps",
+  "version": "0.3.0",
+  "description": "Geocoding, place search, routing, isochrones and static maps from NextBillion.ai",
+  "long_description": "Gives Claude tools for NextBillion.ai's location APIs: turn addresses into coordinates and back, find places and businesses, get directions, including truck-aware routing, compare travel times across many locations, map reachable areas, and render map images with markers, routes and shapes.\n\nRequires a NextBillion.ai API key. Get one from https://console.nextbillion.ai or by emailing support@nextbillion.ai. Tool inputs are sent only to api.nextbillion.io. Nothing is stored locally and no telemetry is collected.",
+  "author": {
+    "name": "NextBillion.ai",
+    "email": "support@nextbillion.ai",
+    "url": "https://nextbillion.ai"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nextbillion-ai/nextbillion-mcp"
+  },
+  "homepage": "https://nextbillion.ai",
+  "documentation": "https://github.com/nextbillion-ai/nextbillion-mcp#readme",
+  "support": "mailto:support@nextbillion.ai",
+  "icon": "icon.png",
+  "server": {
+    "type": "node",
+    "entry_point": "server/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/server/index.js"],
+      "env": {
+        "NBAI_API_KEY": "${user_config.nbai_api_key}"
+      }
+    }
+  },
+  "tools": [
+    {
+      "name": "autocomplete",
+      "description": "Complete a partial address into full addresses as the user types."
+    },
+    {
+      "name": "autosuggest",
+      "description": "Suggest addresses and places from an incomplete or misspelled query."
+    },
+    {
+      "name": "directions",
+      "description": "Calculate a route between two points, with waypoints, truck and avoidance options."
+    },
+    {
+      "name": "distance_matrix",
+      "description": "Travel distance and duration for every origin-destination pair in one call."
+    },
+    {
+      "name": "geocode_batch",
+      "description": "Forward-geocode up to 100 free-text addresses in one request."
+    },
+    {
+      "name": "geocode_forward",
+      "description": "Convert an address or place name into coordinates and a full postal address."
+    },
+    {
+      "name": "geocode_reverse",
+      "description": "Find the nearest address for a coordinate."
+    },
+    {
+      "name": "geocode_structured",
+      "description": "Geocode an address given as separate fields such as street, city and postal code."
+    },
+    {
+      "name": "get_api_parameters",
+      "description": "Structured request parameters (type, required, default, allowed values, units) for a REST API endpoint."
+    },
+    {
+      "name": "get_documentation",
+      "description": "Fetch one documentation page or section by its doc_id."
+    },
+    {
+      "name": "isochrone",
+      "description": "Compute the area reachable from a point within given travel times or distances."
+    },
+    {
+      "name": "list_documentation_topics",
+      "description": "List the documentation categories, APIs and pages in the bundled index."
+    },
+    {
+      "name": "place_browse",
+      "description": "List places of given categories around a location, ranked by distance."
+    },
+    {
+      "name": "place_lookup",
+      "description": "Fetch the full details of a place by its id."
+    },
+    {
+      "name": "place_search",
+      "description": "Search points of interest and businesses with a free-text query."
+    },
+    {
+      "name": "postcode_lookup",
+      "description": "Look up a postal code's centroid and boundary, or the postal code containing a coordinate."
+    },
+    {
+      "name": "search_along_route",
+      "description": "Find places matching a query along a driving route, with the detour each stop adds."
+    },
+    {
+      "name": "search_documentation",
+      "description": "Search NextBillion's official API and SDK documentation; returns excerpts with source URLs and the tool that performs the operation."
+    },
+    {
+      "name": "static_map_image",
+      "description": "Render a static map image centered on a location, with markers, lines and polygons."
+    },
+    {
+      "name": "static_route_map",
+      "description": "Render a static map auto-fitted to a route and/or line and polygon overlays."
+    }
+  ],
+  "tools_generated": false,
+  "keywords": [
+    "maps",
+    "geocoding",
+    "routing",
+    "directions",
+    "distance matrix",
+    "isochrone",
+    "places",
+    "nextbillion"
+  ],
+  "license": "Apache-2.0",
+  "privacy_policies": ["https://nextbillion.ai/privacy"],
+  "compatibility": {
+    "platforms": ["darwin", "win32"],
+    "runtimes": {
+      "node": ">=20.0.0"
+    }
+  },
+  "user_config": {
+    "nbai_api_key": {
+      "type": "string",
+      "title": "NextBillion.ai API key",
+      "description": "Get one from https://console.nextbillion.ai or by emailing support@nextbillion.ai. It is sent only to api.nextbillion.io and is never written to disk.",
+      "sensitive": true,
+      "required": true
+    }
+  }
+}

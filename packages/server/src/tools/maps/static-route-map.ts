@@ -61,7 +61,8 @@ export const staticRouteMap: NbTool<typeof Schema> = {
     'Render a static map auto-fitted to a route and/or overlays: a route from directions, ' +
     'and/or lines and filled polygons such as isochrone contours; very long geometry is ' +
     'simplified automatically to fit the map API URL limit (distances unaffected). Returns ' +
-    'the image inline and also saves it to a local file (path in the result text). ' +
+    'the image inline and, if NBAI_IMAGE_DIR is set, also saves it as a file (path in the ' +
+    'result text). ' +
     'Parameters: at least one of encoded_polyline (the geometry string from directions, ' +
     'preferred), route_points (array of {latitude, longitude}) or paths (array of {points OR ' +
     'geojson_coordinates [[longitude, latitude], ...], stroke_color, stroke_width, ' +
@@ -73,6 +74,7 @@ export const staticRouteMap: NbTool<typeof Schema> = {
     '"longitude": -122.4194, "color": "red"}]}',
   inputSchema: Schema,
   annotations: READ_ONLY,
+  docs: ['maps/static-images-api/static-images-api'],
   async run(args, nb) {
     if (args.encoded_polyline && args.route_points) {
       throw new ToolInputError('Provide either `encoded_polyline` or `route_points`, not both.');

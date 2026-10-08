@@ -25,6 +25,7 @@ export const placeBrowse: NbTool<typeof Schema> = {
     '{"latitude": 1.2839, "longitude": 103.8607}, "radius_m": 800, "limit": 10}',
   inputSchema: Schema,
   annotations: READ_ONLY,
+  docs: ['places/search/search-places-api/browse-api'],
   async run(args, nb) {
     const response = await nb.getJson<Record<string, unknown>>('/browse', {
       categories: args.categories.join(','),

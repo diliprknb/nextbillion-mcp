@@ -17,6 +17,7 @@ export const placeLookup: NbTool<typeof Schema> = {
     '{"id": "2EmBgAmFpR9dg0D89EBzNA"}',
   inputSchema: Schema,
   annotations: READ_ONLY,
+  docs: ['places/place-lookup/place-lookup'],
   async run(args, nb) {
     const response = await nb.getJson<Record<string, unknown>>('/lookup', {
       id: args.id,

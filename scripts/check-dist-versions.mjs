@@ -6,6 +6,7 @@ const serverVersion = JSON.parse(readFileSync('packages/server/package.json', 'u
 const manifests = [
   'distributions/claude-code/.claude-plugin/plugin.json',
   'distributions/codex/.codex-plugin/plugin.json',
+  'distributions/claude-desktop/manifest.json',
 ];
 const marketplace = JSON.parse(readFileSync('.claude-plugin/marketplace.json', 'utf8'));
 if (marketplace.plugins[0].version !== serverVersion) {

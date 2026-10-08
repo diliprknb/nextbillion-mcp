@@ -173,20 +173,28 @@ export async function fetchImageResult(
 
 /**
  * Persist the rendered image locally so terminal clients (which drop inline image
- * content) can open it. Failures are logged and never fail the tool call.
+ * content) can open it. Opt-in: does nothing unless NBAI_IMAGE_DIR is set. The file name
+ * is fixed by the server (prefix, UTC timestamp, content hash), never by tool arguments,
+ * and an existing file is never overwritten. Failures are logged and never fail the call.
  */
 async function saveImage(
   data: Uint8Array,
   prefix: string,
   ext: string,
 ): Promise<string | undefined> {
+  const dir = imageOutputDir();
+  if (!dir) return undefined;
   try {
-    const dir = imageOutputDir();
     await mkdir(dir, { recursive: true });
     const hash = createHash('sha1').update(data).digest('hex').slice(0, 8);
     const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\..+/, '');
     const filePath = join(dir, `${prefix}-${stamp}-${hash}.${ext === 'jpg' ? 'jpg' : ext}`);
-    await writeFile(filePath, data);
+    try {
+      await writeFile(filePath, data, { flag: 'wx' });
+    } catch (error) {
+      // Same second and same content hash: the identical file is already there.
+      if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
+    }
     return filePath;
   } catch (error) {
     logError('Could not save rendered image to disk', error);

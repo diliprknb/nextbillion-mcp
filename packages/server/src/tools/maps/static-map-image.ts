@@ -32,8 +32,8 @@ export const staticMapImage: NbTool<typeof Schema> = {
   title: 'Static Map Image',
   description:
     'Render a static map image centered on a location, with optional markers and line/polygon ' +
-    'overlays; returns the image inline and also saves it to a local file (path in the result ' +
-    'text) for clients that cannot display images. For a map auto-fitted to a route or to ' +
+    'overlays; returns the image inline and, if NBAI_IMAGE_DIR is set, also saves it as a file ' +
+    '(path in the result text). For a map auto-fitted to a route or to ' +
     'overlays, use static_route_map. Parameters: center {latitude, longitude} and zoom (0-22) ' +
     '(required); optional markers (array of {latitude, longitude, color, icon_url, anchor, ' +
     'scale}), paths (array of {points [{latitude, longitude}] OR geojson_coordinates ' +
@@ -45,6 +45,7 @@ export const staticMapImage: NbTool<typeof Schema> = {
     '48.86, "longitude": 2.30}], "stroke_color": "green"}]}',
   inputSchema: Schema,
   annotations: READ_ONLY,
+  docs: ['maps/static-images-api/static-images-api'],
   async run(args, nb) {
     const position = `${args.center.latitude},${args.center.longitude},${args.zoom}`;
     const path = staticImagePath(position, args);

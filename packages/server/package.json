@@ -1,6 +1,6 @@
 {
   "name": "nextbillion-mcp",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "MCP server exposing NextBillion.ai location APIs (geocoding, places, routing, maps) as tools for AI agents",
   "license": "Apache-2.0",
   "type": "module",
@@ -10,6 +10,7 @@
   "main": "dist/index.js",
   "files": [
     "dist",
+    "data",
     "README.md"
   ],
   "engines": {
@@ -30,10 +31,12 @@
   "scripts": {
     "prepublishOnly": "npm run typecheck && npm run test && npm run build",
     "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && esbuild src/index.ts --bundle --platform=node --format=esm --target=node20 --outfile=dist/index.js --log-level=warning --define:__NBMCP_VERSION__=\\\"$npm_package_version\\\" && node -e \"require('fs').chmodSync('dist/index.js', 0o755)\"",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.scripts.json --noEmit",
     "test": "vitest run tests/unit tests/conformance",
     "test:e2e": "vitest run tests/e2e",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "docs:validate": "tsx scripts/docs/validate-mapping.ts",
+    "docs:build-index": "tsx scripts/docs/build-index.ts"
   },
   "devDependencies": {
     "@modelcontextprotocol/client": "^2.1.0",

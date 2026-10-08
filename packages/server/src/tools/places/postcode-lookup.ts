@@ -41,6 +41,7 @@ export const postcodeLookup: NbTool<typeof Schema> = {
     '"90011", "country": "USA"}',
   inputSchema: Schema,
   annotations: READ_ONLY,
+  docs: ['places/geocoding/geocode-postcode/geocode-postcode'],
   async run(args, nb) {
     if (args.postal_code && args.coordinate) {
       throw new ToolInputError('Provide either `postal_code` or `coordinate`, not both.');

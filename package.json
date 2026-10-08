@@ -13,9 +13,11 @@
     "test:e2e": "npm run test:e2e --workspace packages/server",
     "eval": "node --experimental-strip-types evals/run_evals.ts",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "build:mcpb": "node scripts/build-mcpb.mjs"
   },
   "devDependencies": {
+    "@anthropic-ai/mcpb": "2.1.2",
     "prettier": "^3.6.0"
   },
   "dependencies": {

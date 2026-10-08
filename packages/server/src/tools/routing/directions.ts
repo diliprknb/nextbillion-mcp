@@ -128,13 +128,12 @@ export const directions: NbTool<typeof Schema> = {
   description:
     'Calculate a route between an origin and a destination with optional waypoints; returns ' +
     'distance (meters), duration (seconds) and an encoded polyline per route - pass the ' +
-    'polyline to static_route_map to draw it. Use distance_matrix for many origin/destination ' +
-    'pairs. Parameters: origin, destination {latitude, longitude} (required); optional ' +
+    'polyline to static_route_map to draw it. Use distance_matrix for many pairs. ' +
+    'pairs. For how-to questions about this API, use search_documentation. Parameters: origin, destination {latitude, longitude} (required); optional ' +
     'waypoints (array, max 200), mode (car | truck | motorcycle | bike | walk), service ' +
     '("flexible" default: all modes and options; "fast": car/truck only, lower latency), ' +
     'route_type, departure_time (UNIX seconds), avoid (soft filter), exclude (strict filter), ' +
-    'road_info (max_speed, toll_distance, toll_cost, toll_info, truck_route, stop_sign, ' +
-    'traffic_light), honor_restrictions, alternatives, steps (fast only), geometry (polyline ' +
+    'road_info (max_speed, toll_*, truck_route, stop_sign, traffic_light), honor_restrictions, alternatives, steps (fast only), geometry (polyline ' +
     '| polyline6), truck options: truck_size_cm {height, width, length}, truck_weight_kg, ' +
     'truck_axle_load (tonnes), hazmat_type, emission_class (euro0-euro9), cross_border. ' +
     'Example: {"origin": {"latitude": 37.7749, "longitude": -122.4194}, "destination": ' +
@@ -142,6 +141,7 @@ export const directions: NbTool<typeof Schema> = {
     '18000, "hazmat_type": ["flammable_liquid"]}',
   inputSchema: Schema,
   annotations: READ_ONLY,
+  docs: ['routing/directions-api/directions-api'],
   async run(args, nb) {
     const service = args.service ?? 'flexible';
     if (service === 'fast' && args.mode && args.mode !== 'car' && args.mode !== 'truck') {

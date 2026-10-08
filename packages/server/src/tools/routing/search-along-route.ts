@@ -46,6 +46,7 @@ export const searchAlongRoute: NbTool<typeof Schema> = {
     '-118.231}], "query": "gas station", "max_detour_seconds": 600}',
   inputSchema: Schema,
   annotations: READ_ONLY,
+  docs: ['places/search/search-along-route-api/search-along-route-api'],
   async run(args, nb) {
     const response = await nb.postJson<Record<string, unknown>>(
       '/orbis/alongroute',

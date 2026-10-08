@@ -4,6 +4,7 @@ import type { NbClient } from '../nbclient/client.js';
 import { ALL_TOOLS } from '../tools/index.js';
 import { ToolInputError, type ToolResult } from '../tools/types.js';
 import { logError } from '../log.js';
+import { SERVER_INSTRUCTIONS } from '../tools/docs/descriptions.js';
 
 export const SERVER_NAME = 'nextbillion-mcp';
 
@@ -21,6 +22,7 @@ export function buildServer(nb: NbClient, version: string): McpServer {
     { name: SERVER_NAME, version },
     {
       capabilities: { tools: {} },
+      instructions: SERVER_INSTRUCTIONS,
       cacheHints: {
         'tools/list': { ttlMs: 86_400_000, cacheScope: 'public' },
       },

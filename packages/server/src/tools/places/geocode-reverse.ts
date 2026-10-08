@@ -27,6 +27,7 @@ export const geocodeReverse: NbTool<typeof Schema> = {
     'Example: {"coordinate": {"latitude": 48.8566, "longitude": 2.3522}}',
   inputSchema: Schema,
   annotations: READ_ONLY,
+  docs: ['places/geocoding/reverse-geocode/reverse-geocode'],
   async run(args, nb) {
     const inFilter = args.country_codes
       ? `countryCode:${args.country_codes.map((c) => c.toUpperCase()).join(',')}`

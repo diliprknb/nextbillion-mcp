@@ -18,7 +18,7 @@ import { fakeNbClient } from '../helpers/fake-fetch.js';
 const PNG = { body: new Uint8Array([137, 80, 78, 71]), contentType: 'image/png' };
 
 describe('tool registry', () => {
-  it('exposes exactly the 16 tools, sorted by name', () => {
+  it('exposes exactly the 20 tools, sorted by name', () => {
     const names = ALL_TOOLS.map((t) => t.name);
     expect(names).toEqual([...names].sort());
     expect(names).toEqual([
@@ -30,12 +30,16 @@ describe('tool registry', () => {
       'geocode_forward',
       'geocode_reverse',
       'geocode_structured',
+      'get_api_parameters',
+      'get_documentation',
       'isochrone',
+      'list_documentation_topics',
       'place_browse',
       'place_lookup',
       'place_search',
       'postcode_lookup',
       'search_along_route',
+      'search_documentation',
       'static_map_image',
       'static_route_map',
     ]);
@@ -49,10 +53,28 @@ describe('tool registry', () => {
     }
   });
 
-  it('marks every tool read-only', () => {
+  it('marks every tool read-only with the full annotation set', () => {
+    // Claude's connector directory requires a title and accurate safety hints on
+    // every tool; read-only tools run without per-call confirmation there.
     for (const tool of ALL_TOOLS) {
-      expect(tool.annotations?.readOnlyHint, tool.name).toBe(true);
-      expect(tool.annotations?.destructiveHint, tool.name).toBe(false);
+      expect(tool.annotations, tool.name).toEqual({
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: !/documentation|api_parameters/.test(tool.name),
+      });
+    }
+  });
+
+  it('gives every tool a short name and a human-readable Title Case title', () => {
+    const minor = new Set(['by', 'of', 'for', 'and', 'along', 'to']);
+    for (const tool of ALL_TOOLS) {
+      expect(tool.name.length, tool.name).toBeLessThanOrEqual(64);
+      expect(tool.title.trim(), tool.name).toBe(tool.title);
+      expect(tool.title.length, tool.name).toBeGreaterThan(0);
+      for (const word of tool.title.split(' ')) {
+        if (!minor.has(word)) expect(word, `${tool.name} title word "${word}"`).toMatch(/^[A-Z]/);
+      }
     }
   });
 });

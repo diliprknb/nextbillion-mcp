@@ -1,5 +1,5 @@
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { isAbsolute, join } from 'node:path';
 
 export interface ServerConfig {
   apiKey: string;
@@ -7,13 +7,36 @@ export interface ServerConfig {
   timeoutMs: number;
 }
 
+export interface ImageDirResolution {
+  /** Directory to save rendered map images to; undefined means nothing is written. */
+  dir?: string;
+  /** Set when NBAI_IMAGE_DIR was given but unusable; saving is disabled in that case. */
+  warning?: string;
+}
+
 /**
- * Directory where rendered map images are saved (in addition to being returned inline).
- * Terminal-based MCP clients such as the Codex CLI cannot display image content, so a
- * local file path in the result text is the only way for those users to see the map.
+ * Saving rendered map images to disk is opt-in via NBAI_IMAGE_DIR. When it is unset the
+ * server never touches the filesystem: the image is returned inline only, which is all
+ * that desktop hosts need. Terminal-based MCP clients such as the Codex CLI cannot display
+ * image content, so their configs set the variable; the literal value `tmp` selects
+ * `<OS temp dir>/nextbillion-mcp` and keeps those configs portable. Relative paths are
+ * rejected because a stdio server's working directory is whatever the host chose.
  */
-export function imageOutputDir(env: NodeJS.ProcessEnv = process.env): string {
-  return env.NBAI_IMAGE_DIR?.trim() || join(tmpdir(), 'nextbillion-mcp');
+export function resolveImageDir(env: NodeJS.ProcessEnv = process.env): ImageDirResolution {
+  const raw = env.NBAI_IMAGE_DIR?.trim();
+  if (!raw) return {};
+  if (raw.toLowerCase() === 'tmp') return { dir: join(tmpdir(), 'nextbillion-mcp') };
+  if (!isAbsolute(raw)) {
+    return {
+      warning: `NBAI_IMAGE_DIR must be an absolute path or "tmp", got "${raw}"; map images will not be saved`,
+    };
+  }
+  return { dir: raw };
+}
+
+/** Directory for saved map images, or undefined when saving is not enabled. */
+export function imageOutputDir(env: NodeJS.ProcessEnv = process.env): string | undefined {
+  return resolveImageDir(env).dir;
 }
 
 export const DEFAULT_BASE_URL = 'https://api.nextbillion.io';

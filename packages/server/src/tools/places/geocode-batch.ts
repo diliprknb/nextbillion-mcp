@@ -36,6 +36,7 @@ export const geocodeBatch: NbTool<typeof Schema> = {
     '["USA"]}]}',
   inputSchema: Schema,
   annotations: READ_ONLY,
+  docs: ['places/geocoding/batch-geocode/batch-geocode'],
   async run(args, nb) {
     const body = args.queries.map((entry) => {
       const filters = placesFilterQuery(entry);

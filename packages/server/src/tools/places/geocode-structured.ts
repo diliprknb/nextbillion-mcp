@@ -40,6 +40,7 @@ export const geocodeStructured: NbTool<typeof Schema> = {
     '"house_number": "221B"}',
   inputSchema: Schema,
   annotations: READ_ONLY,
+  docs: ['places/geocoding/structured-geocode/structured-geocode'],
   async run(args, nb) {
     const hasComponent =
       args.state ??
