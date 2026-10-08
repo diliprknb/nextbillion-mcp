@@ -1,0 +1,156 @@
+{
+  "suiteName": "Nextbillion-MCPEval-KB-SuiteLite",
+  "description": "Lite suite: one case per documentation tool added in v0.3.0 (search_documentation, get_documentation, get_api_parameters, list_documentation_topics).",
+  "version": "1.0.0",
+  "metadata": {
+    "totalCases": 4,
+    "toolsCovered": 4,
+    "casesPerTool": 1
+  },
+  "cases": [
+    {
+      "id": "tc_17a_search_documentation_truck_weight",
+      "title": "Search docs for truck weight restrictions in Directions API",
+      "name": "search_documentation",
+      "category": "documentation",
+      "description": "Keyword search of the bundled docs index, boosted to the Directions API",
+      "prompt": "Search the NextBillion.ai documentation for 'truck weight restrictions' in the Directions API.",
+      "expectedTool": "search_documentation",
+      "expectedArgs": {},
+      "passCriteria": "Calls search_documentation (query/api wording is model-chosen, so not asserted)",
+      "expectedResponseContains": {
+        "needle": "truck weight",
+        "caseSensitive": false
+      },
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "results"
+          ],
+          "properties": {
+            "results": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "doc_id",
+                  "title",
+                  "source_url",
+                  "snippet"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "tc_18a_get_documentation_avoid_tolls",
+      "title": "Fetch the Avoid Tolls & Highways example page",
+      "name": "get_documentation",
+      "category": "documentation",
+      "description": "Retrieve a full docs page by doc_id (as returned by search_documentation)",
+      "prompt": "Open the documentation page with doc_id 'routing/directions-api/examples/avoid-tolls-and-highways'.",
+      "expectedTool": "get_documentation",
+      "expectedArgs": {
+        "doc_id": "routing/directions-api/examples/avoid-tolls-and-highways"
+      },
+      "passCriteria": "Calls get_documentation with the given doc_id",
+      "expectedResponseContains": {
+        "needle": "Avoid Tolls",
+        "caseSensitive": false
+      },
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "doc_id",
+            "title",
+            "source_url",
+            "content"
+          ],
+          "properties": {
+            "content": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "tc_19a_get_api_parameters_truck_weight",
+      "title": "Look up the Directions truck_weight parameter",
+      "name": "get_api_parameters",
+      "category": "documentation",
+      "description": "Structured parameter lookup for one named parameter of an endpoint",
+      "prompt": "What are the type, default, and allowed range of the 'truck_weight' parameter in the Directions API?",
+      "expectedTool": "get_api_parameters",
+      "expectedArgs": {
+        "endpoint": "directions",
+        "name": "truck_weight"
+      },
+      "passCriteria": "Calls get_api_parameters with endpoint 'directions' and name 'truck_weight'",
+      "expectedResponseContains": {
+        "needle": "truck_weight",
+        "caseSensitive": false
+      },
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "parameters"
+          ],
+          "properties": {
+            "parameters": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "endpoint",
+                  "description"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "tc_20a_list_documentation_topics_routing",
+      "title": "List Routing documentation topics",
+      "name": "list_documentation_topics",
+      "category": "documentation",
+      "description": "Browse the docs catalogue filtered to one category",
+      "prompt": "List the documentation topics available in the Routing category.",
+      "expectedTool": "list_documentation_topics",
+      "expectedArgs": {
+        "category": "Routing"
+      },
+      "passCriteria": "Calls list_documentation_topics with category 'Routing'",
+      "expectedResponseContains": {
+        "needle": "Directions API",
+        "caseSensitive": false
+      },
+      "expectedResponseSchema": {
+        "schema": {
+          "type": "object",
+          "required": [
+            "total_pages",
+            "categories"
+          ],
+          "properties": {
+            "categories": {
+              "type": "array",
+              "minItems": 1
+            }
+          }
+        }
+      }
+    }
+  ]
+}

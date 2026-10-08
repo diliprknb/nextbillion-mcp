@@ -32,14 +32,24 @@ loadEnvFile(resolve(process.cwd(), '.env'));
 const MCPJAM_API_KEY = process.env.MCPJAM_API_KEY;
 const MCPJAM_PROJECT_ID = process.env.MCPJAM_PROJECT_ID;
 const MODEL = process.env.EVAL_MODEL || 'google/gemini-2.5-flash';
+// Prefer the key that matches the provider of EVAL_MODEL (e.g. anthropic/claude-sonnet-5.5).
+const MODEL_PROVIDER_KEY: Record<string, string | undefined> = {
+  anthropic: process.env.ANTHROPIC_API_KEY,
+  openai: process.env.OPENAI_API_KEY,
+  google: process.env.GEMINI_API_KEY,
+};
 const LLM_API_KEY =
+  MODEL_PROVIDER_KEY[MODEL.split('/')[0] ?? ''] ||
   process.env.GEMINI_API_KEY ||
   process.env.LLM_API_KEY ||
   process.env.OPENAI_API_KEY ||
   process.env.ANTHROPIC_API_KEY;
 
 const NBAI_API_KEY = process.env.NBAI_API_KEY;
-const SUITE_PATH = resolve(process.cwd(), 'evals/nextbillion_eval_suite.json');
+const SUITE_PATH = resolve(
+  process.cwd(),
+  process.env.EVAL_SUITE_PATH ?? 'evals/nextbillion_eval_suite.json',
+);
 
 interface TestCase {
   id: string;

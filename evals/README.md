@@ -9,6 +9,7 @@ The evaluation suite tests that LLM agents correctly identify and invoke the app
 - **Places & Geocoding** (`autocomplete`, `autosuggest`, `place_search`, `place_lookup`, `place_browse`, `geocode_structured`, `geocode_reverse`, `geocode_batch`, `postcode_lookup`)
 - **Routing & Navigation** (`directions`, `distance_matrix`, `isochrone`, `search_along_route`)
 - **Maps & Overlays** (`static_map_image`, `static_route_map`)
+- **Documentation** (`search_documentation`, `get_documentation`, `get_api_parameters`, `list_documentation_topics`)
 - **Negative / Out-of-Scope Disambiguation** (verifying tools are not erroneously called)
 
 ## Prerequisites

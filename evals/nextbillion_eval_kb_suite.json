@@ -1,6 +1,6 @@
 {
-  "suiteName": "Nextbillion-MCPEval-Suite-Gemini",
-  "description": "Comprehensive evaluation suite for NextBillion MCP tools: 2 representative test cases for each of the 20 registered tools (40 cases total).",
+  "suiteName": "Nextbillion-MCPEval-KB-Suite-Master-Gemini",
+  "description": "Master suite (16 geospatial tools) plus the documentation knowledge-base tools added in v0.3.0: 20 tools, 40 cases.",
   "version": "3.1.0",
   "metadata": {
     "totalCases": 40,
