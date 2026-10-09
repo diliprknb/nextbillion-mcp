@@ -1,0 +1,1389 @@
+{
+  "name": "NB_Hybrid_MCP_EvalTestSuite_Gemini",
+  "description": "Eval suite for the deployed NextBillion MCP server (https://nb-mcp-server-84559404454.us-central1.run.app/sse): geocoding, places, routing, maps, documentation, weather, snap-to-roads and traffic tools. Argument names follow the deployed server (q, at, country, ...).",
+  "servers": [
+    "nb-hybrid-mcp"
+  ],
+  "model": "google/gemini-2.5-flash",
+  "provider": "google",
+  "cases": [
+    {
+      "title": "Autocomplete Google Amphitheatre address prefix",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "I am typing 1600 Amphitheatre Pkwy into the search bar. Show autocomplete candidates for the prefix '1600 Amphitheatre Pkw'."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "autocomplete",
+            "args": {
+              "args": {
+                "q": "1600 Amphitheatre Pkw"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Amphitheatre",
+            "caseSensitive": false,
+            "toolName": "autocomplete",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Autocomplete 'stat' prefix near Oklahoma City restricted to USA",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Complete the partial address prefix 'stat' near latitude 35.4769, longitude -97.4872 restricted to country USA."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "autocomplete",
+            "args": {
+              "args": {
+                "q": "stat",
+                "country": "USA"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "State",
+            "caseSensitive": false,
+            "toolName": "autocomplete",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Autosuggest misspelled aquarium query",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "I made a typo while searching. Suggest places for the misspelled query 'aqauriums' near latitude 42.3501 and longitude -71.0689."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "autosuggest",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Aquarium",
+            "caseSensitive": false,
+            "toolName": "autosuggest",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Autosuggest partial tourist query",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Find search-as-you-type suggestions for the incomplete query 'London muse' near latitude 51.5074, longitude -0.1278."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "autosuggest",
+            "args": {
+              "args": {
+                "q": "London muse"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Museum",
+            "caseSensitive": false,
+            "toolName": "autosuggest",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Geocode 10 Downing Street address",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Geocode the address '10 Downing Street, London' and give me its coordinates."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_forward",
+            "args": {
+              "args": {
+                "query": "10 Downing Street, London"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Downing Street",
+            "caseSensitive": false,
+            "toolName": "geocode_forward",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Geocode White House with USA country filter",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Find the coordinates of '1600 Pennsylvania Avenue NW, Washington DC', restricted to country USA."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_forward",
+            "args": {
+              "args": {
+                "country": "USA"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Pennsylvania Avenue",
+            "caseSensitive": false,
+            "toolName": "geocode_forward",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Reverse geocode Paris coordinates",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "What address is at latitude 48.8566, longitude 2.3522?"
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_reverse",
+            "args": {
+              "args": {
+                "at": "48.8566,2.3522"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Paris",
+            "caseSensitive": false,
+            "toolName": "geocode_reverse",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Reverse geocode Berlin coordinates",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Reverse geocode latitude 52.5200, longitude 13.4050 and tell me the city."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_reverse",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Berlin",
+            "caseSensitive": false,
+            "toolName": "geocode_reverse",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Structured geocode 221B Baker Street London",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Geocode a structured address: house number 221B, street Baker Street, city London, country GBR."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_structured",
+            "args": {
+              "args": {
+                "country": "GBR",
+                "street": "Baker Street",
+                "city": "London"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Baker Street",
+            "caseSensitive": false,
+            "toolName": "geocode_structured",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Structured geocode Mullen Ave San Francisco",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Geocode this structured address: street Mullen Avenue, city San Francisco, state California, postal code 94110, country USA."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_structured",
+            "args": {
+              "args": {
+                "country": "USA",
+                "street": "Mullen Avenue",
+                "city": "San Francisco"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Mullen",
+            "caseSensitive": false,
+            "toolName": "geocode_structured",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Batch geocode US landmarks",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Geocode these three locations in a single batch request: 'Empire State Building, NY', 'Golden Gate Bridge, CA', and 'Space Needle, WA'."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_batch",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Empire State",
+            "caseSensitive": false,
+            "toolName": "geocode_batch",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Search coffee shops near location",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Find coffee shops near latitude 37.7749, longitude -122.4194."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_places",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "title",
+            "caseSensitive": false,
+            "toolName": "search_places",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Search hospitals within a circle in Berlin",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Find hospitals within a 2000 meter radius circle centered at latitude 52.52, longitude 13.405."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_places",
+            "args": {
+              "args": {
+                "q": "hospitals"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "title",
+            "caseSensitive": false,
+            "toolName": "search_places",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Lookup postal code 90011 USA",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Use the geocoding tools to find the location of the postal code 90011."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_postcode",
+            "args": {
+              "args": {
+                "q": "90011"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "90011",
+            "caseSensitive": false,
+            "toolName": "geocode_postcode",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Lookup postal code SW1A 1AA UK",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Find the location of the UK postcode SW1A 1AA."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_postcode",
+            "args": {
+              "args": {
+                "q": "SW1A 1AA"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "SW1A",
+            "caseSensitive": false,
+            "toolName": "geocode_postcode",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Directions SF to LA avoiding tolls",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Calculate driving directions from San Francisco (latitude 37.7749, longitude -122.4194) to Los Angeles (latitude 34.0522, longitude -118.2437) avoiding tolls."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_directions",
+            "args": {
+              "args": {
+                "avoid": "toll"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "routes",
+            "caseSensitive": false,
+            "toolName": "get_directions",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Truck directions with weight and hazmat",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Calculate truck directions with real-time traffic from (41.349302, 2.136480) to (41.389925, 2.136258) for an 18000 kg truck carrying flammable hazmat."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_directions",
+            "args": {
+              "args": {
+                "mode": "truck",
+                "truck_weight": 18000
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "routes",
+            "caseSensitive": false,
+            "toolName": "get_directions",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Distance matrix Singapore 1x2",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Compute a distance matrix from origin (1.3521, 103.8198) to destinations (1.2897, 103.8501) and (1.3644, 103.9915)."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "distance_matrix",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "distance",
+            "caseSensitive": false,
+            "toolName": "distance_matrix",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Distance matrix Barcelona 2x1 for trucks",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Compute a truck distance matrix from origins (41.3851, 2.1734) and (41.4036, 2.1744) to destination (41.3809, 2.1228)."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "distance_matrix",
+            "args": {
+              "args": {
+                "mode": "truck"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "distance",
+            "caseSensitive": false,
+            "toolName": "distance_matrix",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Isochrone 10 and 20 minute driving contours",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Show the areas reachable by car within 10 and 20 minutes of latitude 37.7749, longitude -122.4194."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "isochrone",
+            "args": {
+              "args": {
+                "contours_minutes": "10,20"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "contour",
+            "caseSensitive": false,
+            "toolName": "isochrone",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Isochrone 5-minute walking polygon",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Give me a 5 minute walking isochrone polygon around latitude 51.5074, longitude -0.1278."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "isochrone",
+            "args": {
+              "args": {
+                "mode": "walk",
+                "contours_minutes": "5",
+                "polygons": true
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "contour",
+            "caseSensitive": false,
+            "toolName": "isochrone",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Search gas stations along a 2-point route",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Find gas stations along the route from (34.0493, -118.2557) to (34.0471, -118.2389) with a maximum detour of 600 seconds."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_along_route",
+            "args": {
+              "args": {
+                "max_detour_time": 600
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "title",
+            "caseSensitive": false,
+            "toolName": "search_along_route",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Static map of Paris with red marker",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Render a static map centered on Paris (48.8566, 2.3522) at zoom 12 with a red marker."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_static_map",
+            "args": {
+              "args": {
+                "center": "48.8566,2.3522",
+                "zoom": 12
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "image",
+            "caseSensitive": false,
+            "toolName": "get_static_map",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Hybrid static map centered in LA",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Render a 800x600 static map in the hybrid style centered at latitude 34.0522, longitude -118.2437 with zoom 10."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_static_map",
+            "args": {
+              "args": {
+                "map_id": "hybrid",
+                "width": 800,
+                "height": 600
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "image",
+            "caseSensitive": false,
+            "toolName": "get_static_map",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Search docs for truck weight restrictions",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Search the NextBillion.ai documentation for 'truck weight restrictions'."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_documentation",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "truck",
+            "caseSensitive": false,
+            "toolName": "search_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Search Android SDK docs for navigation",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Search the docs for 'turn by turn navigation', only in Android SDK pages."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_documentation",
+            "args": {
+              "args": {
+                "sdk": "Android"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "navigation",
+            "caseSensitive": false,
+            "toolName": "search_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Fetch the Directions API documentation page",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Use the documentation tools to fetch the NextBillion documentation page with doc_id 'routing/directions-api/directions-api' and summarize it."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_documentation",
+            "args": {
+              "args": {
+                "doc_id": "routing/directions-api/directions-api"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Directions",
+            "caseSensitive": false,
+            "toolName": "get_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "List Routing documentation topics",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "List the documentation topics available in the Routing category."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "list_documentation_topics",
+            "args": {
+              "args": {
+                "category": "Routing"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Directions",
+            "caseSensitive": false,
+            "toolName": "list_documentation_topics",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Daily weather forecast for Amsterdam",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "What is the 3-day daily weather forecast for latitude 52.37, longitude 4.9?"
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_daily_weather_forecast",
+            "args": {
+              "args": {
+                "forecast_days": 3
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "temperature",
+            "caseSensitive": false,
+            "toolName": "get_daily_weather_forecast",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Snap GPS trace to roads",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Snap this GPS trace to the road network: (34.0263,-118.3), (34.0271,-118.2991), (34.0279,-118.2982)."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "snap_to_roads",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "snapped",
+            "caseSensitive": false,
+            "toolName": "snap_to_roads",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Traffic incidents in a bounding box",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Show current traffic incidents inside the bounding box with min lon -118.4, min lat 33.95, max lon -118.1, max lat 34.15."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_traffic_incidents",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "incident",
+            "caseSensitive": false,
+            "toolName": "get_traffic_incidents",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": false
+    },
+    {
+      "title": "Out-of-scope general knowledge question calls no tool",
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Who wrote the play Hamlet, and in roughly what year was it first performed?"
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ],
+      "iterations": 1,
+      "isNegative": true
+    }
+  ]
+}

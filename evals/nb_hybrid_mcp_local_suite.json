@@ -1,0 +1,539 @@
+{
+  "suiteName": "NB_Hybrid_MCP_EvalTestSuite_Gemini",
+  "description": "Local (run_evals.ts) run of the hybrid suite against the deployed NextBillion MCP server.",
+  "version": "1.0.0",
+  "cases": [
+    {
+      "id": "nbh_01a_autocomplete",
+      "title": "Autocomplete Google Amphitheatre address prefix",
+      "name": "autocomplete",
+      "category": "hybrid",
+      "description": "Autocomplete Google Amphitheatre address prefix",
+      "prompt": "I am typing 1600 Amphitheatre Pkwy into the search bar. Show autocomplete candidates for the prefix '1600 Amphitheatre Pkw'.",
+      "expectedTool": "autocomplete",
+      "expectedArgs": {
+        "q": "1600 Amphitheatre Pkw"
+      },
+      "passCriteria": "Calls autocomplete",
+      "expectedResponseContains": {
+        "needle": "Amphitheatre",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_01b_autocomplete",
+      "title": "Autocomplete 'stat' prefix near Oklahoma City restricted to USA",
+      "name": "autocomplete",
+      "category": "hybrid",
+      "description": "Autocomplete 'stat' prefix near Oklahoma City restricted to USA",
+      "prompt": "Complete the partial address prefix 'stat' near latitude 35.4769, longitude -97.4872 restricted to country USA.",
+      "expectedTool": "autocomplete",
+      "expectedArgs": {
+        "q": "stat",
+        "country": "USA"
+      },
+      "passCriteria": "Calls autocomplete",
+      "expectedResponseContains": {
+        "needle": "State",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_02a_autosuggest",
+      "title": "Autosuggest misspelled aquarium query",
+      "name": "autosuggest",
+      "category": "hybrid",
+      "description": "Autosuggest misspelled aquarium query",
+      "prompt": "I made a typo while searching. Suggest places for the misspelled query 'aqauriums' near latitude 42.3501 and longitude -71.0689.",
+      "expectedTool": "autosuggest",
+      "expectedArgs": {},
+      "passCriteria": "Calls autosuggest (the model may correct the typo, so query is not asserted)",
+      "expectedResponseContains": {
+        "needle": "Aquarium",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_02b_autosuggest",
+      "title": "Autosuggest partial tourist query",
+      "name": "autosuggest",
+      "category": "hybrid",
+      "description": "Autosuggest partial tourist query",
+      "prompt": "Find search-as-you-type suggestions for the incomplete query 'London muse' near latitude 51.5074, longitude -0.1278.",
+      "expectedTool": "autosuggest",
+      "expectedArgs": {
+        "q": "London muse"
+      },
+      "passCriteria": "Calls autosuggest",
+      "expectedResponseContains": {
+        "needle": "Museum",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_03a_geocode_forward",
+      "title": "Geocode 10 Downing Street address",
+      "name": "geocode_forward",
+      "category": "hybrid",
+      "description": "Geocode 10 Downing Street address",
+      "prompt": "Geocode the address '10 Downing Street, London' and give me its coordinates.",
+      "expectedTool": "geocode_forward",
+      "expectedArgs": {
+        "query": "10 Downing Street, London"
+      },
+      "passCriteria": "Calls geocode_forward",
+      "expectedResponseContains": {
+        "needle": "Downing Street",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_03b_geocode_forward",
+      "title": "Geocode White House with USA country filter",
+      "name": "geocode_forward",
+      "category": "hybrid",
+      "description": "Geocode White House with USA country filter",
+      "prompt": "Find the coordinates of '1600 Pennsylvania Avenue NW, Washington DC', restricted to country USA.",
+      "expectedTool": "geocode_forward",
+      "expectedArgs": {
+        "country": "USA"
+      },
+      "passCriteria": "Calls geocode_forward",
+      "expectedResponseContains": {
+        "needle": "Pennsylvania Avenue",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_04a_geocode_reverse",
+      "title": "Reverse geocode Paris coordinates",
+      "name": "geocode_reverse",
+      "category": "hybrid",
+      "description": "Reverse geocode Paris coordinates",
+      "prompt": "What address is at latitude 48.8566, longitude 2.3522?",
+      "expectedTool": "geocode_reverse",
+      "expectedArgs": {
+        "at": "48.8566,2.3522"
+      },
+      "passCriteria": "Calls geocode_reverse",
+      "expectedResponseContains": {
+        "needle": "Paris",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_04b_geocode_reverse",
+      "title": "Reverse geocode Berlin coordinates",
+      "name": "geocode_reverse",
+      "category": "hybrid",
+      "description": "Reverse geocode Berlin coordinates",
+      "prompt": "Reverse geocode latitude 52.5200, longitude 13.4050 and tell me the city.",
+      "expectedTool": "geocode_reverse",
+      "expectedArgs": {},
+      "passCriteria": "Calls geocode_reverse (coordinate formatting is model-chosen)",
+      "expectedResponseContains": {
+        "needle": "Berlin",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_05a_geocode_structured",
+      "title": "Structured geocode 221B Baker Street London",
+      "name": "geocode_structured",
+      "category": "hybrid",
+      "description": "Structured geocode 221B Baker Street London",
+      "prompt": "Geocode a structured address: house number 221B, street Baker Street, city London, country GBR.",
+      "expectedTool": "geocode_structured",
+      "expectedArgs": {
+        "country": "GBR",
+        "street": "Baker Street",
+        "city": "London"
+      },
+      "passCriteria": "Calls geocode_structured",
+      "expectedResponseContains": {
+        "needle": "Baker Street",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_05b_geocode_structured",
+      "title": "Structured geocode Mullen Ave San Francisco",
+      "name": "geocode_structured",
+      "category": "hybrid",
+      "description": "Structured geocode Mullen Ave San Francisco",
+      "prompt": "Geocode this structured address: street Mullen Avenue, city San Francisco, state California, postal code 94110, country USA.",
+      "expectedTool": "geocode_structured",
+      "expectedArgs": {
+        "country": "USA",
+        "street": "Mullen Avenue",
+        "city": "San Francisco"
+      },
+      "passCriteria": "Calls geocode_structured",
+      "expectedResponseContains": {
+        "needle": "Mullen",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_06a_geocode_batch",
+      "title": "Batch geocode US landmarks",
+      "name": "geocode_batch",
+      "category": "hybrid",
+      "description": "Batch geocode US landmarks",
+      "prompt": "Geocode these three locations in a single batch request: 'Empire State Building, NY', 'Golden Gate Bridge, CA', and 'Space Needle, WA'.",
+      "expectedTool": "geocode_batch",
+      "expectedArgs": {},
+      "passCriteria": "Calls geocode_batch",
+      "expectedResponseContains": {
+        "needle": "Empire State",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_07a_search_places",
+      "title": "Search coffee shops near location",
+      "name": "search_places",
+      "category": "hybrid",
+      "description": "Search coffee shops near location",
+      "prompt": "Find coffee shops near latitude 37.7749, longitude -122.4194.",
+      "expectedTool": "search_places",
+      "expectedArgs": {},
+      "passCriteria": "Calls search_places",
+      "expectedResponseContains": {
+        "needle": "title",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_07b_search_places",
+      "title": "Search hospitals within a circle in Berlin",
+      "name": "search_places",
+      "category": "hybrid",
+      "description": "Search hospitals within a circle in Berlin",
+      "prompt": "Find hospitals within a 2000 meter radius circle centered at latitude 52.52, longitude 13.405.",
+      "expectedTool": "search_places",
+      "expectedArgs": {
+        "q": "hospitals"
+      },
+      "passCriteria": "Calls search_places",
+      "expectedResponseContains": {
+        "needle": "title",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_08a_geocode_postcode",
+      "title": "Lookup postal code 90011 USA",
+      "name": "geocode_postcode",
+      "category": "hybrid",
+      "description": "Lookup postal code 90011 USA",
+      "prompt": "Use the geocoding tools to find the location of the postal code 90011.",
+      "expectedTool": "geocode_postcode",
+      "expectedArgs": {
+        "q": "90011"
+      },
+      "passCriteria": "Calls geocode_postcode",
+      "expectedResponseContains": {
+        "needle": "90011",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_08b_geocode_postcode",
+      "title": "Lookup postal code SW1A 1AA UK",
+      "name": "geocode_postcode",
+      "category": "hybrid",
+      "description": "Lookup postal code SW1A 1AA UK",
+      "prompt": "Find the location of the UK postcode SW1A 1AA.",
+      "expectedTool": "geocode_postcode",
+      "expectedArgs": {
+        "q": "SW1A 1AA"
+      },
+      "passCriteria": "Calls geocode_postcode",
+      "expectedResponseContains": {
+        "needle": "SW1A",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_09a_get_directions",
+      "title": "Directions SF to LA avoiding tolls",
+      "name": "get_directions",
+      "category": "hybrid",
+      "description": "Directions SF to LA avoiding tolls",
+      "prompt": "Calculate driving directions from San Francisco (latitude 37.7749, longitude -122.4194) to Los Angeles (latitude 34.0522, longitude -118.2437) avoiding tolls.",
+      "expectedTool": "get_directions",
+      "expectedArgs": {
+        "avoid": "toll"
+      },
+      "passCriteria": "Calls get_directions",
+      "expectedResponseContains": {
+        "needle": "routes",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_09b_get_directions",
+      "title": "Truck directions with weight and hazmat",
+      "name": "get_directions",
+      "category": "hybrid",
+      "description": "Truck directions with weight and hazmat",
+      "prompt": "Calculate truck directions with real-time traffic from (41.349302, 2.136480) to (41.389925, 2.136258) for an 18000 kg truck carrying flammable hazmat.",
+      "expectedTool": "get_directions",
+      "expectedArgs": {
+        "mode": "truck",
+        "truck_weight": 18000
+      },
+      "passCriteria": "Calls get_directions",
+      "expectedResponseContains": {
+        "needle": "routes",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_10a_distance_matrix",
+      "title": "Distance matrix Singapore 1x2",
+      "name": "distance_matrix",
+      "category": "hybrid",
+      "description": "Distance matrix Singapore 1x2",
+      "prompt": "Compute a distance matrix from origin (1.3521, 103.8198) to destinations (1.2897, 103.8501) and (1.3644, 103.9915).",
+      "expectedTool": "distance_matrix",
+      "expectedArgs": {},
+      "passCriteria": "Calls distance_matrix",
+      "expectedResponseContains": {
+        "needle": "distance",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_10b_distance_matrix",
+      "title": "Distance matrix Barcelona 2x1 for trucks",
+      "name": "distance_matrix",
+      "category": "hybrid",
+      "description": "Distance matrix Barcelona 2x1 for trucks",
+      "prompt": "Compute a truck distance matrix from origins (41.3851, 2.1734) and (41.4036, 2.1744) to destination (41.3809, 2.1228).",
+      "expectedTool": "distance_matrix",
+      "expectedArgs": {
+        "mode": "truck"
+      },
+      "passCriteria": "Calls distance_matrix",
+      "expectedResponseContains": {
+        "needle": "distance",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_11a_isochrone",
+      "title": "Isochrone 10 and 20 minute driving contours",
+      "name": "isochrone",
+      "category": "hybrid",
+      "description": "Isochrone 10 and 20 minute driving contours",
+      "prompt": "Show the areas reachable by car within 10 and 20 minutes of latitude 37.7749, longitude -122.4194.",
+      "expectedTool": "isochrone",
+      "expectedArgs": {
+        "contours_minutes": "10,20"
+      },
+      "passCriteria": "Calls isochrone",
+      "expectedResponseContains": {
+        "needle": "contour",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_11b_isochrone",
+      "title": "Isochrone 5-minute walking polygon",
+      "name": "isochrone",
+      "category": "hybrid",
+      "description": "Isochrone 5-minute walking polygon",
+      "prompt": "Give me a 5 minute walking isochrone polygon around latitude 51.5074, longitude -0.1278.",
+      "expectedTool": "isochrone",
+      "expectedArgs": {
+        "mode": "walk",
+        "contours_minutes": "5",
+        "polygons": true
+      },
+      "passCriteria": "Calls isochrone",
+      "expectedResponseContains": {
+        "needle": "contour",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_12a_search_along_route",
+      "title": "Search gas stations along a 2-point route",
+      "name": "search_along_route",
+      "category": "hybrid",
+      "description": "Search gas stations along a 2-point route",
+      "prompt": "Find gas stations along the route from (34.0493, -118.2557) to (34.0471, -118.2389) with a maximum detour of 600 seconds.",
+      "expectedTool": "search_along_route",
+      "expectedArgs": {
+        "max_detour_time": 600
+      },
+      "passCriteria": "Calls search_along_route",
+      "expectedResponseContains": {
+        "needle": "title",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_13a_get_static_map",
+      "title": "Static map of Paris with red marker",
+      "name": "get_static_map",
+      "category": "hybrid",
+      "description": "Static map of Paris with red marker",
+      "prompt": "Render a static map centered on Paris (48.8566, 2.3522) at zoom 12 with a red marker.",
+      "expectedTool": "get_static_map",
+      "expectedArgs": {
+        "center": "48.8566,2.3522",
+        "zoom": 12
+      },
+      "passCriteria": "Calls get_static_map",
+      "expectedResponseContains": {
+        "needle": "image",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_13b_get_static_map",
+      "title": "Hybrid static map centered in LA",
+      "name": "get_static_map",
+      "category": "hybrid",
+      "description": "Hybrid static map centered in LA",
+      "prompt": "Render a 800x600 static map in the hybrid style centered at latitude 34.0522, longitude -118.2437 with zoom 10.",
+      "expectedTool": "get_static_map",
+      "expectedArgs": {
+        "map_id": "hybrid",
+        "width": 800,
+        "height": 600
+      },
+      "passCriteria": "Calls get_static_map",
+      "expectedResponseContains": {
+        "needle": "image",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_14a_search_documentation",
+      "title": "Search docs for truck weight restrictions",
+      "name": "search_documentation",
+      "category": "hybrid",
+      "description": "Search docs for truck weight restrictions",
+      "prompt": "Search the NextBillion.ai documentation for 'truck weight restrictions'.",
+      "expectedTool": "search_documentation",
+      "expectedArgs": {},
+      "passCriteria": "Calls search_documentation",
+      "expectedResponseContains": {
+        "needle": "truck",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_14b_search_documentation",
+      "title": "Search Android SDK docs for navigation",
+      "name": "search_documentation",
+      "category": "hybrid",
+      "description": "Search Android SDK docs for navigation",
+      "prompt": "Search the docs for 'turn by turn navigation', only in Android SDK pages.",
+      "expectedTool": "search_documentation",
+      "expectedArgs": {
+        "sdk": "Android"
+      },
+      "passCriteria": "Calls search_documentation",
+      "expectedResponseContains": {
+        "needle": "navigation",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_15a_get_documentation",
+      "title": "Fetch the Directions API documentation page",
+      "name": "get_documentation",
+      "category": "hybrid",
+      "description": "Fetch the Directions API documentation page",
+      "prompt": "Use the documentation tools to fetch the NextBillion documentation page with doc_id 'routing/directions-api/directions-api' and summarize it.",
+      "expectedTool": "get_documentation",
+      "expectedArgs": {
+        "doc_id": "routing/directions-api/directions-api"
+      },
+      "passCriteria": "Calls get_documentation",
+      "expectedResponseContains": {
+        "needle": "Directions",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_16a_list_documentation_topics",
+      "title": "List Routing documentation topics",
+      "name": "list_documentation_topics",
+      "category": "hybrid",
+      "description": "List Routing documentation topics",
+      "prompt": "List the documentation topics available in the Routing category.",
+      "expectedTool": "list_documentation_topics",
+      "expectedArgs": {
+        "category": "Routing"
+      },
+      "passCriteria": "Calls list_documentation_topics",
+      "expectedResponseContains": {
+        "needle": "Directions",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_17a_get_daily_weather_forecast",
+      "title": "Daily weather forecast for Amsterdam",
+      "name": "get_daily_weather_forecast",
+      "category": "hybrid",
+      "description": "Daily weather forecast for Amsterdam",
+      "prompt": "What is the 3-day daily weather forecast for latitude 52.37, longitude 4.9?",
+      "expectedTool": "get_daily_weather_forecast",
+      "expectedArgs": {
+        "forecast_days": 3
+      },
+      "passCriteria": "Calls get_daily_weather_forecast",
+      "expectedResponseContains": {
+        "needle": "temperature",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_18a_snap_to_roads",
+      "title": "Snap GPS trace to roads",
+      "name": "snap_to_roads",
+      "category": "hybrid",
+      "description": "Snap GPS trace to roads",
+      "prompt": "Snap this GPS trace to the road network: (34.0263,-118.3), (34.0271,-118.2991), (34.0279,-118.2982).",
+      "expectedTool": "snap_to_roads",
+      "expectedArgs": {},
+      "passCriteria": "Calls snap_to_roads",
+      "expectedResponseContains": {
+        "needle": "snapped",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_19a_get_traffic_incidents",
+      "title": "Traffic incidents in a bounding box",
+      "name": "get_traffic_incidents",
+      "category": "hybrid",
+      "description": "Traffic incidents in a bounding box",
+      "prompt": "Show current traffic incidents inside the bounding box with min lon -118.4, min lat 33.95, max lon -118.1, max lat 34.15.",
+      "expectedTool": "get_traffic_incidents",
+      "expectedArgs": {},
+      "passCriteria": "Calls get_traffic_incidents",
+      "expectedResponseContains": {
+        "needle": "incident",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "nbh_20a_negative_general_knowledge",
+      "title": "Out-of-scope general knowledge question calls no tool",
+      "name": "none",
+      "category": "hybrid",
+      "description": "Negative case",
+      "prompt": "Who wrote the play Hamlet, and in roughly what year was it first performed?",
+      "expectedTool": null,
+      "passCriteria": "Calls no tool"
+    }
+  ]
+}

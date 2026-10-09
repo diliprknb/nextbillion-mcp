@@ -46,6 +46,8 @@ const LLM_API_KEY =
   process.env.ANTHROPIC_API_KEY;
 
 const NBAI_API_KEY = process.env.NBAI_API_KEY;
+const STEP_TIMEOUT_MS = Number(process.env.EVAL_STEP_TIMEOUT_MS ?? 25_000);
+const CASE_FILTER = (process.env.EVAL_CASE_IDS ?? '').split(',').map((c) => c.trim()).filter(Boolean);
 const SUITE_PATH = resolve(
   process.cwd(),
   process.env.EVAL_SUITE_PATH ?? 'evals/nextbillion_eval_suite.json',
@@ -223,35 +225,53 @@ async function main() {
 
   // Load test suite
   const suiteData: SuiteDefinition = JSON.parse(readFileSync(SUITE_PATH, 'utf-8'));
-  const testCases = suiteData.cases;
+  const testCases = CASE_FILTER.length
+    ? suiteData.cases.filter((c) => CASE_FILTER.some((id) => c.id.startsWith(id)))
+    : suiteData.cases;
   console.log(`Loaded ${testCases.length} evaluation cases from: ${SUITE_PATH}\n`);
 
-  // Ensure server bundle exists
-  const serverBundlePath = resolve(process.cwd(), 'packages/server/dist/index.js');
-  if (!existsSync(serverBundlePath)) {
-    console.error(
-      `[Error] Server bundle not found at ${serverBundlePath}. Run 'npm run build' first.`,
-    );
-    process.exit(1);
-  }
-
-  // Initialize MCPClientManager and connect to localhost nextbillion-mcp
-  console.log('Connecting to localhost NextBillion MCP server via stdio...');
   const manager = new MCPClientManager();
-  const SERVER_ID = 'nextbillion-mcp';
+  const SERVER_ID = process.env.EVAL_SERVER_ID ?? 'nextbillion-mcp';
 
-  await manager.connectToServer(SERVER_ID, {
-    command: 'node',
-    args: [serverBundlePath],
-    env: {
-      ...process.env,
-      NBAI_API_KEY: NBAI_API_KEY ?? '',
-    },
-  });
+  if (process.env.EVAL_MCP_URL) {
+    // Remote (deployed) MCP server over HTTP/SSE; the NextBillion key is sent as headers.
+    console.log(`Connecting to remote MCP server: ${process.env.EVAL_MCP_URL}`);
+    await manager.connectToServer(SERVER_ID, {
+      url: process.env.EVAL_MCP_URL,
+      requestInit: { headers: { 'x-api-key': NBAI_API_KEY ?? '' } },
+    });
+  } else {
+    // Ensure server bundle exists
+    const serverBundlePath = resolve(process.cwd(), 'packages/server/dist/index.js');
+    if (!existsSync(serverBundlePath)) {
+      console.error(
+        `[Error] Server bundle not found at ${serverBundlePath}. Run 'npm run build' first.`,
+      );
+      process.exit(1);
+    }
+
+    // Initialize MCPClientManager and connect to localhost nextbillion-mcp
+    console.log('Connecting to localhost NextBillion MCP server via stdio...');
+    await manager.connectToServer(SERVER_ID, {
+      command: 'node',
+      args: [serverBundlePath],
+      env: {
+        ...process.env,
+        NBAI_API_KEY: NBAI_API_KEY ?? '',
+      },
+    });
+  }
 
   console.log('Connected successfully!');
   const tools = await manager.getToolsForAiSdk([SERVER_ID]);
-  console.log(`Registered ${Object.keys(tools).length} tools for evaluation.\n`);
+  // Tools whose schemas the model provider rejects (e.g. Gemini and `exclusiveMinimum`) can be
+  // withheld; their cases are skipped rather than reported as failures.
+  const excluded = new Set(
+    (process.env.EVAL_EXCLUDE_TOOLS ?? '').split(',').map((t) => t.trim()).filter(Boolean),
+  );
+  for (const name of excluded) delete (tools as Record<string, unknown>)[name];
+  console.log(`Registered ${Object.keys(tools).length} tools for evaluation.`);
+  if (excluded.size > 0) console.log(`Excluded tools: ${[...excluded].join(', ')}\n`);
 
   // Initialize HostRunner with system prompt to guide tool invocation
   process.env.AI_SDK_LOG_WARNINGS = 'false';
@@ -297,9 +317,15 @@ async function main() {
 
   let passed = 0;
   let failed = 0;
+  let skipped = 0;
 
   for (let i = 0; i < testCases.length; i++) {
     const tc = testCases[i]!;
+    if (tc.expectedTool && excluded.has(tc.expectedTool)) {
+      skipped++;
+      console.log(`| SKIP   | ${tc.id.padEnd(29, ' ')} | ${tc.expectedTool.padEnd(21, ' ')} | (tool excluded)          |         |`);
+      continue;
+    }
     const startTime = Date.now();
     let status = 'PASS';
     let calledTools: string[] = [];
@@ -307,7 +333,7 @@ async function main() {
 
     try {
       let runResult = await runner.run(tc.prompt, {
-        timeout: { totalMs: 35_000, stepMs: 25_000 },
+        timeout: { totalMs: STEP_TIMEOUT_MS + 10_000, stepMs: STEP_TIMEOUT_MS },
       });
 
       // Handle rate limit / quota exceeded with backoff retry
@@ -334,6 +360,18 @@ async function main() {
             timeout: { totalMs: 45_000, stepMs: 35_000 },
           });
         }
+      }
+
+      // Gemini intermittently returns an empty completion (0 output tokens, finishReason "stop")
+      // when many tool definitions are in context. Retry those instead of scoring them as misses.
+      const emptyRetries = Number(process.env.EVAL_EMPTY_RETRIES ?? 0);
+      for (let attempt = 1; attempt <= emptyRetries; attempt++) {
+        if (runResult.hasError() || runResult.toolsCalled().length > 0 || runResult.text.trim()) break;
+        console.log(`  └─> [Empty completion] retry ${attempt}/${emptyRetries}`);
+        runner.resetPromptHistory();
+        runResult = await runner.run(tc.prompt, {
+          timeout: { totalMs: STEP_TIMEOUT_MS + 10_000, stepMs: STEP_TIMEOUT_MS },
+        });
       }
 
       const failureReasons: string[] = [];
@@ -458,9 +496,9 @@ async function main() {
   console.log(
     '-----------------------------------------------------------------------------------------------------\n',
   );
-  const total = testCases.length;
+  const total = testCases.length - skipped;
   const passRate = ((passed / total) * 100).toFixed(1);
-  console.log(`Results: ${passed}/${total} Passed (${passRate}% Pass Rate)`);
+  console.log(`Results: ${passed}/${total} Passed (${passRate}% Pass Rate)${skipped ? `, ${skipped} skipped` : ''}`);
 
   if (reporter && reporter.getAddedCount() > 0) {
     console.log('\nFinalizing and uploading run results to MCPJam Cloud dashboard...');
