@@ -26,7 +26,7 @@ never writes to disk; Claude Desktop displays rendered maps inline.
 ## Manual test checklist (run on macOS and on Windows before a submission)
 
 1. Install as above. Expected: the API key prompt appears once; the extension shows as
-   enabled with 16 tools.
+   enabled with 20 tools.
 2. Ask: "Geocode 1600 Pennsylvania Avenue NW, Washington DC". Expected: `geocode_forward`
    runs without a permission prompt (read-only) and returns coordinates near 38.8977, -77.0365.
 3. Ask: "Show me a map of Singapore's Marina Bay". Expected: `static_map_image` returns an

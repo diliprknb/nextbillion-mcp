@@ -1,6 +1,25 @@
 # Changelog
 
-## 0.3.0 — 2026-10-08
+## 0.3.1 — 2026-10-11
+
+Preparation of the Claude Desktop extension for Anthropic's directory review (replaces the
+0.2.2 submission). No new features, no tool or schema changes.
+
+- **Tool descriptions and the server `instructions` string** reworded to describe what each
+  tool does and when it applies, instead of directing how the model should behave (the
+  directory's pre-submission checklist rejects behaviour-directing wording). Changed:
+  `search_documentation`, `get_documentation`, `get_api_parameters`,
+  `list_documentation_topics`, `geocode_batch`, `directions`, `distance_matrix`,
+  `isochrone`, `place_search`, `static_route_map`; a duplicated word in `directions` and a
+  duplicated "Example" label in `static_route_map` fixed. Two new tests: one names the four
+  documentation tools in the title/annotation guard, one rejects behaviour-directing
+  phrasing in any description or in the instructions.
+- **README Privacy Policy**: states that the four documentation tools run fully offline and
+  send nothing anywhere.
+- **Extension manifest**: `author.url` is now https://github.com/nextbillion-ai.
+- 0.3.0 release date corrected to 7 October; the extension README's tool count updated.
+
+## 0.3.0 — 2026-10-07
 
 Documentation knowledge base: the server can now answer questions about the APIs from the
 official documentation, offline, with citations. 16 → 20 tools.

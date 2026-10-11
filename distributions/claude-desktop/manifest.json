@@ -2,13 +2,13 @@
   "manifest_version": "0.2",
   "name": "nextbillion-mcp",
   "display_name": "NextBillion.ai Maps",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Geocoding, place search, routing, isochrones and static maps from NextBillion.ai",
   "long_description": "Gives Claude tools for NextBillion.ai's location APIs: turn addresses into coordinates and back, find places and businesses, get directions, including truck-aware routing, compare travel times across many locations, map reachable areas, and render map images with markers, routes and shapes.\n\nRequires a NextBillion.ai API key. Get one from https://console.nextbillion.ai or by emailing support@nextbillion.ai. Tool inputs are sent only to api.nextbillion.io. Nothing is stored locally and no telemetry is collected.",
   "author": {
     "name": "NextBillion.ai",
     "email": "support@nextbillion.ai",
-    "url": "https://nextbillion.ai"
+    "url": "https://github.com/nextbillion-ai"
   },
   "repository": {
     "type": "git",

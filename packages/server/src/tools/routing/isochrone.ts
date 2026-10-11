@@ -53,8 +53,9 @@ export const isochrone: NbTool<typeof Schema> = {
   description:
     'Calculate the area reachable from a point within given travel times or distances; ' +
     'returns a GeoJSON FeatureCollection of contours (geometry coordinates are [longitude, ' +
-    'latitude]). To draw the result, pass each contour ring to static_route_map as ' +
-    'paths[].geojson_coordinates with a fill_color. For how-to questions about this API, use search_documentation. Parameters: origin {latitude, longitude} ' +
+    'latitude]). Each contour ring can be drawn with static_route_map by passing it as ' +
+    'paths[].geojson_coordinates with a fill_color. Documentation for this API is available ' +
+    'through search_documentation. Parameters: origin {latitude, longitude} ' +
     '(required); exactly one of contours_minutes (array, up to 4 values, max 40) or ' +
     'contours_meters (array, up to 4 values, max 60000); optional mode, polygons (true for ' +
     'Polygon geometry), denoise, generalize (meters), contours_colors (hex without #, one per ' +

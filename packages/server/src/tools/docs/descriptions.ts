@@ -1,24 +1,29 @@
 /**
- * Descriptions and server instructions for the documentation tools, verbatim from the
- * build instructions (revision 4, appendix). Each description follows the standard
- * enforced by tests/unit/tools-mapping.test.ts: a `Parameters:` section, one example
- * call, under 1,200 characters.
+ * Descriptions and server instructions for the documentation tools. Each description
+ * follows the standard enforced by tests/unit/tools-mapping.test.ts: a `Parameters:`
+ * section, one example call, under 1,200 characters, and no behaviour-directing phrasing
+ * (Anthropic's directory review rejects descriptions that tell the model how to behave or
+ * interfere with calling other tools; the text states what each tool does and when it
+ * applies).
  */
 
 export const SERVER_INSTRUCTIONS =
-  'For questions about how a NextBillion API or SDK works, use search_documentation and ' +
-  'cite the returned source_url. The other tools execute real requests; use them only when ' +
-  'the user wants an actual result, such as a route or a geocode.';
+  'This server provides two kinds of tools. The four documentation tools ' +
+  '(search_documentation, get_documentation, get_api_parameters, list_documentation_topics) ' +
+  'answer questions about how NextBillion.ai APIs and SDKs work from a bundled copy of the ' +
+  'official documentation and make no network requests; their results include a source_url ' +
+  'for citation. The other tools call the NextBillion.ai API and return live results such ' +
+  'as geocodes, places, routes, travel-time matrices, isochrones and map images.';
 
 export const SEARCH_DOCUMENTATION_DESCRIPTION =
   "Search NextBillion's official API and SDK documentation. Use for any question about how " +
   'NextBillion works: calling an API, what a parameter means, which API to use, or SDK setup. ' +
-  'The map tools (directions, place_search, etc.) execute real requests; do not use them to ' +
-  'answer such questions.\n' +
-  "Search with the docs' own terms and exact parameter names (truck_weight, option=flexible), " +
-  'not everyday phrasing; retry with other API terms if results are thin. Results are ' +
-  'excerpts: for multi-part questions, search again or fetch pages with get_documentation. ' +
-  'Cite source_url; related_tools names the tool that performs the operation.\n' +
+  'Answers come from the bundled documentation index, not from live API calls.\n' +
+  "Queries match best with the docs' own terms and exact parameter names (truck_weight, " +
+  'option=flexible) rather than everyday phrasing; when results are thin, other API terms ' +
+  'may match. Results are excerpts: get_documentation returns a full page. Each result ' +
+  'carries a source_url for citation and related_tools, the name of the tool that performs ' +
+  'the operation.\n' +
   'Parameters:\n' +
   '- query (string, required): search terms.\n' +
   '- category (string, optional): e.g. Routing, Places.\n' +
@@ -31,8 +36,9 @@ export const SEARCH_DOCUMENTATION_DESCRIPTION =
 export const GET_DOCUMENTATION_DESCRIPTION =
   'Fetch the full text of one documentation page by its doc_id, as returned by ' +
   'search_documentation. Use when an excerpt is not enough to answer accurately. Pages over ' +
-  'the size limit return truncated: true and a section list; request one section with ' +
-  'section. Sample request and response bodies are omitted unless include_examples is true.\n' +
+  'the size limit return truncated: true and a section list; a single section can be ' +
+  'requested with section. Sample request and response bodies are omitted unless ' +
+  'include_examples is true.\n' +
   'Parameters:\n' +
   '- doc_id (string, required): page id from search results.\n' +
   '- section (string, optional): heading of one section to return.\n' +
@@ -41,10 +47,10 @@ export const GET_DOCUMENTATION_DESCRIPTION =
 
 export const GET_API_PARAMETERS_DESCRIPTION =
   'Get structured parameter details for a NextBillion REST API endpoint: type, required, ' +
-  'default, allowed values, units and description. Prefer this over searching prose for ' +
-  'questions about a specific parameter. Returns every matching API variant (e.g. ' +
-  'directions/flexible and directions/fast); check heading_path. Empty units means the docs ' +
-  'do not state the unit; do not infer it. SDK methods are not covered.\n' +
+  'default, allowed values, units and description. More precise than a prose search for ' +
+  'questions about one specific parameter. Returns every matching API variant (e.g. ' +
+  'directions/flexible and directions/fast), identified by heading_path. Empty units means ' +
+  'the documentation does not state a unit. SDK methods are not covered.\n' +
   'Parameters:\n' +
   '- endpoint (string, required unless doc_id given): API slug, optionally with variant, ' +
   'e.g. directions or directions/flexible.\n' +
@@ -53,9 +59,9 @@ export const GET_API_PARAMETERS_DESCRIPTION =
   'Example: {"endpoint": "directions", "name": "truck_weight"}';
 
 export const LIST_DOCUMENTATION_TOPICS_DESCRIPTION =
-  'List the available documentation categories, APIs and pages, with index metadata. Use ' +
-  "when you don't yet know the right terms to search for, e.g. to see which APIs exist for a " +
-  'problem area before searching.\n' +
+  'List the available documentation categories, APIs and pages, with index metadata. Useful ' +
+  'before searching, when the right terms are not yet known, e.g. to see which APIs exist ' +
+  'for a problem area.\n' +
   'Parameters:\n' +
   '- category (string, optional): limit to one category.\n' +
   '- sdk (string, optional): Android, iOS or Flutter.\n' +

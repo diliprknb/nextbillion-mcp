@@ -25,9 +25,10 @@ export const geocodeBatch: NbTool<typeof Schema> = {
   title: 'Batch Geocode',
   description:
     'Forward-geocode up to 100 free-text queries in one request; returns one ranked result ' +
-    'set per query, in input order. Prefer this over repeated geocode_forward calls - this ' +
-    'endpoint has its own low rate limit (60 requests per minute), so batch as much as ' +
-    'possible into each call. Parameters: queries (required array; each item: query ' +
+    'set per query, in input order. Use it instead of repeated geocode_forward calls when ' +
+    'several addresses are needed: this endpoint has its own rate limit of 60 requests per ' +
+    'minute, so larger batches per call stay within it. Parameters: queries (required array; ' +
+    'each item: query ' +
     '(required), optional near {latitude, longitude}, radius_m, country_codes, bounding_box, ' +
     'limit, language, view, types); optional top-level types (houseNumber | addressBlock | ' +
     'street | intersection | place | area) as the default for all queries (a per-query types ' +

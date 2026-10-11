@@ -68,7 +68,7 @@ export const staticRouteMap: NbTool<typeof Schema> = {
     'geojson_coordinates [[longitude, latitude], ...], stroke_color, stroke_width, ' +
     'fill_color}); optional markers (array of {latitude, longitude, color, icon_url, anchor, ' +
     'scale}), stroke_color, stroke_width (route line), padding, width, height, style, format, ' +
-    'retina. Example (isochrone contours) - Example: {"paths": [{"geojson_coordinates": [[-122.42, 37.77], ' +
+    'retina. The example draws isochrone contours. Example: {"paths": [{"geojson_coordinates": [[-122.42, 37.77], ' +
     '[-122.40, 37.78], [-122.41, 37.79], [-122.42, 37.77]], "fill_color": ' +
     '"rgba(29,78,216,0.35)", "stroke_color": "#1d4ed8"}], "markers": [{"latitude": 37.7749, ' +
     '"longitude": -122.4194, "color": "red"}]}',
