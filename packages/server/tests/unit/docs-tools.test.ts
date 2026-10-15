@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { getApiParameters, normalizeEndpoint } from '../../src/tools/docs/get-api-parameters.js';
+import {
+  getApiParameters,
+  normalizeEndpoint,
+  resolveReorderedEndpoint,
+} from '../../src/tools/docs/get-api-parameters.js';
 import { getDocumentation, MAX_PAGE_CHARS } from '../../src/tools/docs/get-documentation.js';
 import { listDocumentationTopics } from '../../src/tools/docs/list-documentation-topics.js';
 import { searchDocumentation } from '../../src/tools/docs/search-documentation.js';
@@ -134,6 +138,18 @@ describe('get_api_parameters', () => {
     expect(normalizeEndpoint('distance-matrix-api/synchronous')).toBe(
       'distance-matrix/synchronous',
     );
+  });
+
+  it('resolves a reordered slug to the single matching endpoint instead of erroring', async () => {
+    const { data } = await run(getApiParameters, { endpoint: 'geocode/batch' });
+    expect(data.scope).toBe('batch-geocode');
+    expect(data.parameters.length).toBeGreaterThan(0);
+    expect(resolveReorderedEndpoint('geocode/batch', ['batch-geocode', 'forward-geocode'])).toBe(
+      'batch-geocode',
+    );
+    // ambiguous or unknown words must still fail
+    expect(resolveReorderedEndpoint('geocode', ['batch-geocode', 'forward-geocode'])).toBeNull();
+    expect(resolveReorderedEndpoint('no-such-api', ['batch-geocode'])).toBeNull();
   });
 
   it('reports SDK pages as unsupported and unknown endpoints as input errors', async () => {

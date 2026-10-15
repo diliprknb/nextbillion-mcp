@@ -33,6 +33,28 @@ export function normalizeEndpoint(raw: string): string {
   return rest.length > 0 ? `${apiSlug}/${rest.join('/')}` : apiSlug;
 }
 
+/**
+ * `geocode/batch` → `batch-geocode`: models often reorder or split a slug's words. Resolves only when
+ * the words match exactly one known endpoint, so a genuinely unknown slug still errors.
+ */
+export function resolveReorderedEndpoint(
+  endpoint: string,
+  known: readonly string[],
+): string | null {
+  const words = (value: string) =>
+    value
+      .split(/[\s/_-]+/)
+      .filter((w) => w.length > 0 && w !== 'api' && w !== 'apis')
+      .sort()
+      .join(' ');
+  const wanted = words(endpoint);
+  if (wanted === '') return null;
+  const matches = [...new Set(known.map((e) => e.split('/')[0] ?? e))].filter(
+    (base) => words(base) === wanted,
+  );
+  return matches.length === 1 ? matches[0]! : null;
+}
+
 export const getApiParameters: NbTool<typeof Schema> = {
   name: 'get_api_parameters',
   title: 'Get API Parameters',
@@ -69,10 +91,17 @@ export const getApiParameters: NbTool<typeof Schema> = {
       records = index.parameters.filter((p) => p.doc_id === docId);
       scope = docId;
     } else {
-      const endpoint = normalizeEndpoint(args.endpoint!);
-      records = index.parameters.filter(
-        (p) => p.endpoint === endpoint || p.endpoint.startsWith(`${endpoint}/`),
-      );
+      let endpoint = normalizeEndpoint(args.endpoint!);
+      const matches = (e: string) => (p: ParameterRecord) =>
+        p.endpoint === e || p.endpoint.startsWith(`${e}/`);
+      records = index.parameters.filter(matches(endpoint));
+      if (records.length === 0) {
+        const resolved = resolveReorderedEndpoint(endpoint, index.endpoints);
+        if (resolved !== null) {
+          endpoint = resolved;
+          records = index.parameters.filter(matches(endpoint));
+        }
+      }
       scope = endpoint;
       if (records.length === 0) {
         const first = endpoint.split('/')[0] ?? endpoint;
