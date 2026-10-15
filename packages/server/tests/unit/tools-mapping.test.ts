@@ -13,6 +13,7 @@ import { staticMapImage } from '../../src/tools/maps/static-map-image.js';
 import { staticRouteMap } from '../../src/tools/maps/static-route-map.js';
 import { encodePolyline } from '../../src/tools/maps/polyline.js';
 import { textResult, ToolInputError } from '../../src/tools/types.js';
+import { SERVER_INSTRUCTIONS } from '../../src/tools/docs/descriptions.js';
 import { fakeNbClient } from '../helpers/fake-fetch.js';
 
 const PNG = { body: new Uint8Array([137, 80, 78, 71]), contentType: 'image/png' };
@@ -64,6 +65,38 @@ describe('tool registry', () => {
         openWorldHint: !/documentation|api_parameters/.test(tool.name),
       });
     }
+  });
+
+  it('registers the four documentation tools with titles and read-only, closed-world annotations', () => {
+    const docsTools = [
+      'get_api_parameters',
+      'get_documentation',
+      'list_documentation_topics',
+      'search_documentation',
+    ];
+    for (const name of docsTools) {
+      const tool = ALL_TOOLS.find((t) => t.name === name);
+      expect(tool, name).toBeDefined();
+      expect(tool!.title, name).toMatch(/\S/);
+      expect(tool!.annotations, name).toEqual({
+        readOnlyHint: true,
+        destructiveHint: false,
+        idempotentHint: true,
+        openWorldHint: false,
+      });
+    }
+  });
+
+  it('describes what each tool does without directing how the model should behave', () => {
+    // Anthropic's directory review rejects descriptions that tell Claude how to behave or
+    // interfere with calling other tools ("Avoid prompt-injection patterns" in the connector
+    // pre-submission checklist). Descriptions state what a tool does and when it applies.
+    const directive =
+      /\b(do not|don't|never) use\b|\bprefer this\b|\balways\b|\buse (them|it) only\b|\bonly use\b/i;
+    for (const tool of ALL_TOOLS) {
+      expect(tool.description, tool.name).not.toMatch(directive);
+    }
+    expect(SERVER_INSTRUCTIONS).not.toMatch(directive);
   });
 
   it('gives every tool a short name and a human-readable Title Case title', () => {

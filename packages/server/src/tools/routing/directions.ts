@@ -127,9 +127,10 @@ export const directions: NbTool<typeof Schema> = {
   title: 'Directions',
   description:
     'Calculate a route between an origin and a destination with optional waypoints; returns ' +
-    'distance (meters), duration (seconds) and an encoded polyline per route - pass the ' +
-    'polyline to static_route_map to draw it. Use distance_matrix for many pairs. ' +
-    'pairs. For how-to questions about this API, use search_documentation. Parameters: origin, destination {latitude, longitude} (required); optional ' +
+    'distance (meters), duration (seconds) and an encoded polyline per route, which ' +
+    'static_route_map can draw. Use distance_matrix for many pairs. Documentation for this ' +
+    'API is available through search_documentation. Parameters: origin, destination ' +
+    '{latitude, longitude} (required); optional ' +
     'waypoints (array, max 200), mode (car | truck | motorcycle | bike | walk), service ' +
     '("flexible" default: all modes and options; "fast": car/truck only, lower latency), ' +
     'route_type, departure_time (UNIX seconds), avoid (soft filter), exclude (strict filter), ' +

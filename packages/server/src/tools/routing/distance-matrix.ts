@@ -84,7 +84,8 @@ export const distanceMatrix: NbTool<typeof Schema> = {
   description:
     'Compute travel distance (meters) and duration (seconds) for every origin-to-destination ' +
     'pair in one call; one row per origin with one element per destination, in input order. ' +
-    'Use it instead of repeated directions calls when several pairs are needed. For how-to questions about this API, use search_documentation. Parameters: ' +
+    'Use it instead of repeated directions calls when several pairs are needed. Documentation ' +
+    'for this API is available through search_documentation. Parameters: ' +
     'origins, destinations (arrays of {latitude, longitude}, required); optional mode, ' +
     'service ("fast" default: up to 1000x1000 points; "flexible": the options below, max ' +
     '50x50), route_type, departure_time, avoid (soft), exclude (strict), honor_restrictions, ' +

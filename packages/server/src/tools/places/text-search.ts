@@ -85,7 +85,8 @@ export const placeSearch = textSearchTool({
   description:
     'Search for places, points of interest and businesses with a free-text query (e.g. "gas ' +
     'station", "coffee"), ranked by relevance around a location. Use geocode_forward for ' +
-    'plain address-to-coordinates conversion. For how-to questions about this API, use search_documentation. Parameters: query (required); optional near ' +
+    'plain address-to-coordinates conversion. Documentation for this API is available through ' +
+    'search_documentation. Parameters: query (required); optional near ' +
     '{latitude, longitude} (recommended), radius_m (with near), country_codes, bounding_box ' +
     '{west, south, east, north}, limit, language, view. Example: {"query": "coffee", "near": ' +
     '{"latitude": 37.7749, "longitude": -122.4194}, "radius_m": 1000, "limit": 5}',

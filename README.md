@@ -73,13 +73,18 @@ Four tools answer questions about the APIs and SDKs from the official documentat
 MCP client, and communicates only with the NextBillion.ai API. NextBillion.ai's privacy
 policy applies to the API service: https://nextbillion.ai/privacy.
 
-**What is collected and sent.** When your AI client calls a tool, the server sends that
-tool call's arguments (for example addresses, place names, coordinates, route and map
-parameters) to `api.nextbillion.io` over HTTPS, authenticated with your API key, and
+**What is collected and sent.** When your AI client calls one of the API tools, the server
+sends that tool call's arguments (for example addresses, place names, coordinates, route
+and map parameters) to `api.nextbillion.io` over HTTPS, authenticated with your API key, and
 returns the API's response to your client unchanged. The server does not collect or
 transmit anything else: no conversation content beyond the tool arguments, no files, no
 device or usage information. The server does not query your client's memory, chat history
 or files.
+
+**Documentation tools.** The four documentation tools (`search_documentation`,
+`get_documentation`, `get_api_parameters` and `list_documentation_topics`) run fully
+offline: they answer from the documentation index bundled with the package and send
+nothing anywhere, not even to NextBillion.ai.
 
 **Telemetry.** None. The server contains no analytics, crash reporting or update checks;
 its only network destination is the NextBillion.ai API (configurable via `NBAI_BASE_URL`).
