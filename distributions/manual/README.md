@@ -1,17 +1,32 @@
-# Manual configuration (any MCP client)
+# Connecting to the hosted server (any MCP client)
 
-The `nextbillion-mcp` server runs locally over stdio via `npx`. Any MCP-capable client can use
-it with the snippets below. You need a NextBillion.ai API key from
-[console.nextbillion.ai](https://console.nextbillion.ai) or by emailing support@nextbillion.ai.
+`nextbillion-mcp` runs as a hosted MCP server at **https://mcp.nextbillion.io**. Nothing is
+installed locally: add the URL to your client and sign in with your NextBillion.ai API key
+when the browser opens (get a key at [console.nextbillion.ai](https://console.nextbillion.ai)
+or by emailing support@nextbillion.ai).
+
+## Claude (claude.ai / Claude Desktop)
+
+Settings → Connectors → _Add custom connector_ → URL `https://mcp.nextbillion.io` → Connect.
+The browser sign-in page asks for your API key once.
 
 ## Claude Code
 
 ```bash
-claude mcp add nextbillion \
-  --env NBAI_API_KEY=YOUR_KEY \
-  --env npm_config_audit=false --env npm_config_fund=false --env npm_config_update_notifier=false \
-  -- npx -y nextbillion-mcp
+claude mcp add --transport http nextbillion https://mcp.nextbillion.io
 ```
+
+Then `/mcp` → nextbillion → Authenticate. (The Claude Code plugin in this repository does the
+same with one command: `claude plugin marketplace add nextbillion-ai/nextbillion-mcp &&
+claude plugin install nextbillion-mcp@nextbillion`.)
+
+## Codex
+
+```bash
+codex mcp add nextbillion --url https://mcp.nextbillion.io
+```
+
+Codex detects the sign-in and opens the browser.
 
 ## Cursor
 
@@ -21,78 +36,26 @@ Add to `~/.cursor/mcp.json` (or `.cursor/mcp.json` in your project):
 {
   "mcpServers": {
     "nextbillion": {
-      "command": "npx",
-      "args": ["-y", "nextbillion-mcp"],
-      "env": {
-        "NBAI_API_KEY": "YOUR_KEY",
-        "npm_config_audit": "false",
-        "npm_config_fund": "false",
-        "npm_config_update_notifier": "false"
-      }
+      "url": "https://mcp.nextbillion.io"
     }
   }
 }
 ```
 
-## Claude Desktop
+## Scripts and CI (no browser)
 
-The simplest route is the extension bundle: download `nextbillion-mcp-<version>.mcpb` from
-the [latest release](https://github.com/nextbillion-ai/nextbillion-mcp/releases/latest) and
-open it; see [`../claude-desktop/README.md`](../claude-desktop/README.md). The manual
-configuration below is the alternative for people who prefer npx.
+Send the API key directly as a bearer token instead of signing in:
 
-Claude Desktop → Settings → Developer → Edit Config opens `claude_desktop_config.json`
-(macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`,
-Windows: `%APPDATA%\Claude\claude_desktop_config.json`). Add:
-
-```json
-{
-  "mcpServers": {
-    "nextbillion": {
-      "command": "npx",
-      "args": ["-y", "nextbillion-mcp"],
-      "env": {
-        "NBAI_API_KEY": "YOUR_KEY",
-        "npm_config_audit": "false",
-        "npm_config_fund": "false",
-        "npm_config_update_notifier": "false"
-      }
-    }
-  }
-}
+```bash
+claude mcp add --transport http nextbillion https://mcp.nextbillion.io \
+  --header "Authorization: Bearer $NBAI_API_KEY"
 ```
 
-Restart Claude Desktop afterwards; the nextbillion tools appear under the tools icon.
-Requires Node.js on the machine. Note: the "Add custom connector" dialog is only for
-remote (URL-based) MCP servers — this package currently ships as a local stdio server,
-so use the config file instead.
+Any client that can set a header on an HTTP MCP server works the same way.
 
-## Codex CLI
+## Notes
 
-Add to `~/.codex/config.toml`:
-
-```toml
-[mcp_servers.nextbillion]
-command = "npx"
-args = ["-y", "nextbillion-mcp"]
-env = { "NBAI_API_KEY" = "YOUR_KEY", "NBAI_IMAGE_DIR" = "tmp", "npm_config_audit" = "false", "npm_config_fund" = "false", "npm_config_update_notifier" = "false" }
-```
-
-`NBAI_IMAGE_DIR = "tmp"` makes the map tools also save each rendered image to the OS temp
-directory and report the file path, because the Codex CLI cannot display images inline.
-Leave it out for clients that show images (Claude Desktop, Claude Code, Cursor); the
-server then writes nothing to disk.
-
-The three `npm_config_*` variables switch off npm's post-install security audit, funding
-notice, and self-update check when npx launches the server. None of them affect the server;
-on some corporate networks the audit request hangs for minutes and MCP clients give up
-after their 30 s startup timeout.
-
-## Environment variables
-
-| Variable          | Required | Description                                                                                                                                                                                         |
-| ----------------- | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `NBAI_API_KEY`    | yes      | NextBillion.ai API key                                                                                                                                                                              |
-| `NBAI_BASE_URL`   | no       | API base URL (default `https://api.nextbillion.io`)                                                                                                                                                 |
-| `NBAI_TIMEOUT_MS` | no       | Per-request timeout in milliseconds (default 30000)                                                                                                                                                 |
-| `NBAI_IMAGE_DIR`  | no       | Opt-in: also save rendered map images to this absolute directory, or `tmp` for the OS temp dir. Unset (default): nothing is written to disk. Needed only for terminal clients such as the Codex CLI |
+- The four documentation tools need no sign-in; API tools ask you to sign in on first use.
+- Requests to the NextBillion.ai API come from the server's fixed address `136.85.116.23`.
+  If your key has an IP allowlist, allow that address.
+- To revoke the server's access, reset your API key in the console.

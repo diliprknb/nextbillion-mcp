@@ -3,6 +3,7 @@ import {
   chunkSection,
   hasUnbalancedFence,
   headingAnchor,
+  mergeTinyChunks,
   parseBlocks,
   splitSections,
 } from '../../src/docs/markdown.js';
@@ -129,6 +130,40 @@ describe('chunkSection', () => {
     expect(chunks.map((c) => c.text).join('\n')).toBe(
       long.blocks.flatMap((b) => b.lines).join('\n'),
     );
+  });
+});
+
+describe('mergeTinyChunks', () => {
+  const chunksOf = (markdown: string, cap: number) =>
+    splitSections(parseBlocks(markdown)).flatMap((s) => chunkSection(s, { cap }));
+
+  it('never leaves a heading alone before a large table or fence', () => {
+    const rows = Array.from({ length: 20 }, (_, i) => `| r${i} | ${'x'.repeat(40)} |`);
+    const table = ['| a | b |', '| --- | --- |', ...rows].join('\n');
+    const fence = '```';
+    const sampleFence = `${fence}json\n${'{"k": 1},\n'.repeat(30)}${fence}`;
+    const markdown = `# Page\n\n## Request Body\n\n${table}\n\n## Sample\n\n${sampleFence}\n`;
+    const raw = chunksOf(markdown, 500);
+    expect(raw.some((c) => c.text.trim() === '## Request Body')).toBe(true);
+    const merged = mergeTinyChunks(raw);
+    expect(merged.map((c) => c.text).join('\n')).toBe(markdown);
+    for (const c of merged) expect(c.text.trim().length).toBeGreaterThanOrEqual(100);
+    const body = merged.find((c) => c.text.startsWith('# Page'))!;
+    expect(body.text).toContain('## Request Body\n\n| a | b |');
+    expect(body.chunkType).toBe('content');
+    const sample = merged.find((c) => c.chunkType === 'example')!;
+    expect(sample.text.startsWith('## Sample')).toBe(true);
+    expect(sample.headingPath).toEqual(['Page', 'Sample']);
+  });
+
+  it('merges a tiny last chunk backwards and keeps whole pages intact', () => {
+    const markdown = `# Page\n\n${'Body text. '.repeat(20)}\n\n## Notes\n`;
+    const merged = mergeTinyChunks(chunksOf(markdown, 2000));
+    expect(merged).toHaveLength(1);
+    expect(merged[0]!.text).toBe(markdown);
+    expect(merged[0]!.headingPath).toEqual(['Page']);
+    const small = mergeTinyChunks([{ headingPath: ['T'], chunkType: 'content', text: '# T' }]);
+    expect(small).toEqual([{ headingPath: ['T'], chunkType: 'content', text: '# T' }]);
   });
 });
 

@@ -17,14 +17,19 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { DOCS_SITE, mapDocPath, stripFragment, type UrlOverrides } from './mapping.js';
+import {
+  DOCS_SITE,
+  mapDocPath,
+  stripFragment,
+  type UrlOverrides,
+} from '../../src/docs/build/mapping.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const docsDir = resolve(here, '../../docs');
 const FILES = join(docsDir, 'docs-files.txt');
 const PIN = join(docsDir, 'docs-pin.json');
 const SITEMAP = join(docsDir, 'sitemap-urls.txt');
-const OVERRIDES = join(docsDir, 'url-overrides.json');
+const OVERRIDES = resolve(here, '../../src/docs/build/url-overrides.json');
 const REPORT_FILES = join(docsDir, 'reports', 'files-without-urls.md');
 const REPORT_URLS = join(docsDir, 'reports', 'urls-without-files.md');
 const SITEMAP_URL = `${DOCS_SITE}/sitemap-0.xml`;

@@ -4,6 +4,9 @@ import {
   EmissionClassSchema,
   ExcludeSchema,
   HazmatSchema,
+  PreferSchema,
+  TruckTypeSchema,
+  checkTruckRouteOptions,
   toLatLngList,
 } from '../shared/geo.js';
 import { READ_ONLY, textResult, ToolInputError, type NbTool } from '../types.js';
@@ -46,6 +49,8 @@ const Schema = z.strictObject({
     .optional()
     .describe('Load per axle in tonnes (truck mode, flexible service only)'),
   emission_class: EmissionClassSchema.optional(),
+  prefer: PreferSchema.optional(),
+  truck_type: TruckTypeSchema.optional(),
   cross_border: z
     .boolean()
     .optional()
@@ -91,7 +96,8 @@ export const distanceMatrix: NbTool<typeof Schema> = {
     '50x50), route_type, departure_time, avoid (soft), exclude (strict), honor_restrictions, ' +
     'route_failed_prompt (unroutable pairs return -1 instead of 0), truck options: ' +
     'truck_size_cm {height, width, length}, truck_weight_kg, truck_axle_load, hazmat_type, ' +
-    'emission_class, cross_border. Example: {"origins": [{"latitude": 1.29, "longitude": ' +
+    'emission_class, cross_border, prefer "truck_route" + truck_type (roads legal for a truck ' +
+    'class on the designated freight network). Example: {"origins": [{"latitude": 1.29, "longitude": ' +
     '103.85}], "destinations": [{"latitude": 1.35, "longitude": 103.99}, {"latitude": 1.3, ' +
     '"longitude": 103.77}], "route_failed_prompt": true}',
   inputSchema: Schema,
@@ -102,6 +108,7 @@ export const distanceMatrix: NbTool<typeof Schema> = {
     if (service === 'fast' && args.mode && args.mode !== 'car' && args.mode !== 'truck') {
       throw new ToolInputError(`mode=${args.mode} requires service=flexible.`);
     }
+    checkTruckRouteOptions(args, service);
     if (service === 'flexible' && (args.origins.length > 50 || args.destinations.length > 50)) {
       throw new ToolInputError(
         'service=flexible is limited to 50 origins x 50 destinations; use service=fast for larger matrices.',
@@ -121,6 +128,8 @@ export const distanceMatrix: NbTool<typeof Schema> = {
         hazmat_type: args.hazmat_type?.length ? args.hazmat_type.join('|') : undefined,
         truck_axle_load: args.truck_axle_load,
         emission_class: args.emission_class,
+        prefer: args.prefer,
+        truck_type: args.truck_type?.length ? args.truck_type.join('|') : undefined,
         cross_border: args.cross_border,
         route_failed_prompt: args.route_failed_prompt,
         honor_restrictions: args.honor_restrictions,

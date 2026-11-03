@@ -1,5 +1,190 @@
 # Changelog
 
+## 0.5.3 — 2026-10-30
+
+- `list_documentation_topics` now says "docs last updated YYYY-MM-DD" and returns the field
+  `docs_updated_at` instead of `built_at`. The value is unchanged (the commit date of the
+  documentation the index was built from); the old name led clients to describe it as an
+  index build time and to doubt whether the docs were current. `/health` reports the same
+  renamed field.
+- The 7.5 MB documentation index snapshot is no longer committed or shipped in the image.
+  The hosted server builds its index from the docs repository at start-up as before; if that
+  is not possible, the four documentation tools now answer that the index is temporarily
+  unavailable and give the public docs site (https://docs.nextbillion.ai, with an example
+  page URL) to read instead, plus `docs_site_url` in the structured result, rather than
+  serving a stale copy. Their descriptions mention this. Tests use a small committed fixture
+  (`tests/fixtures/docs-index.json`, 26 pages) built by `npm run docs:build-index`.
+
+## 0.5.2 — 2026-10-30
+
+- Release pipeline only: CI now authenticates to Google Cloud through Workload Identity
+  Federation (a short-lived token GitHub issues per run) instead of a stored service-account
+  key, and a manual "GCP auth check" workflow verifies that path without deploying. The
+  hosted server's secrets are now generated and managed by Terraform; existing sign-ins were
+  invalidated once by the key rollover. No tool or behaviour changes.
+
+## 0.5.1 — 2026-10-29
+
+- `directions` and `distance_matrix` can route for a specific truck class on the designated
+  freight network: new `prefer: "truck_route"` and `truck_type` (rigid_truck, semi_trailer,
+  b_double, road_train, generic_truck) parameters, plus `require: "truck_route"` on `directions`
+  to stay on freight network roads only (the API answers 422 when none is within 2 km of a stop).
+  The API ignores `truck_type` and `require` without `prefer`, and all three outside flexible truck
+  routing; the tools reject those combinations instead of silently routing a generic truck.
+
+## 0.5.0 — 2026-10-27
+
+### Geometry tools (local, no sign-in)
+
+Seven new tools compute straight-line geometry inside the server, with no NextBillion.ai API
+call and no sign-in: `measure` (geodesic distance, line length, polygon area and perimeter,
+bearing), `points_in_polygon` (geofencing, holes respected), `polygon_ops` (union, intersect,
+difference), `buffer` (geodesic circle / corridor / grown or shrunk polygon; a shrunk shape may
+become a MultiPolygon), `nearest` (nearest candidates, or nearest position on a line), `bbox`
+(antimeridian-aware) and `centroid` (area-weighted centroid plus a guaranteed-inside label point).
+Inputs use the server's `{latitude, longitude}` points and GeoJSON Polygon/MultiPolygon (or an
+isochrone Feature) so results chain between tools. Measures use geographiclib (exact WGS84);
+polygon operations use polyclip-ts; the buffer is our own geodesic construction (no JSTS).
+Shapes are simplified to `max_vertices` (default 500) with the tolerance reported. Limits:
+5,000 vertices per shape, 20,000 vertices and 20 polygons per `polygon_ops` call, 1,000 points per call; shapes spanning the antimeridian are rejected
+in this version. Bundle +~200 KB.
+
+- Housekeeping after going hosted-only: README tool table lists `get_api_parameters`, a License
+  section and the copyright line in LICENSE; comments, docs and ignore files no longer refer to
+  the removed local mode; `--help` documents `NBAI_ALLOW_HTTP`; test fixtures use example hosts.
+
+## 0.4.2 — 2026-10-27
+
+**Hosted only.** The local (stdio) mode and everything that existed for it are removed; the
+server is the hosted service at https://mcp.nextbillion.io and nothing else.
+
+- Removed: the stdio transport and the `--http` flag (the binary is the HTTP server),
+  `NBAI_API_KEY` as a server-wide key, `NBAI_IMAGE_DIR` and saving map images to disk, the
+  bundled-server Claude Code plugin, the npx-based Codex plugin configuration, the Claude
+  Desktop extension (`.mcpb`) and its build script, the plugin bundle sync, and the npm
+  package publication (the package is now `private`; 0.3.2 remains the last npm release and
+  is deprecated in favour of the hosted server).
+- The Claude Code and Codex plugins now contain only the hosted server URL: installing them
+  configures the connection and the browser sign-in; no code is downloaded.
+- README and client snippets rewritten for the hosted server (Claude, Claude Code, Cursor,
+  Codex, scripts with a bearer header).
+
+## 0.4.1 — 2026-10-27
+
+- **Hosted mode: liveness URL is `GET /health`.** Google's front end intercepts the exact
+  path `/healthz` on `*.run.app` and custom domains and answers its own 404 before the
+  request reaches the container; `/health` returns the same document (status, version,
+  documentation index origin and commit). `/healthz` still works inside the container and
+  remains the Cloud Run probe path. The release workflow checks `/health` on the service URL
+  and only warns about the custom domain while DNS or the certificate is pending.
+
+## 0.4.0 — 2026-10-27
+
+Hosted mode: the same server runs at https://mcp.nextbillion.io with a browser sign-in, so
+Claude, Claude Code, Cursor and Codex connect to a URL instead of launching a local process.
+Stdio mode, tools and schemas are unchanged.
+
+### Documentation follows the docs repository
+
+- The hosted server rebuilds its documentation index in-process from `nextbillion-ai/nb-public-docs`:
+  at start, and again whenever `main` moves (checked every `NBAI_DOCS_REFRESH_MINUTES`,
+  default 10, with a conditional request that is free when nothing changed). A rebuild
+  downloads the repository as a tarball (~1 MB), runs the same builder as
+  `npm run docs:build-index` and swaps the new index in atomically; the previous one serves
+  until then. Documentation changes therefore reach the hosted server within minutes and
+  without a release. `NBAI_DOCS_GITHUB_TOKEN` (read access to the private repository) is
+  required for this; without it, or when GitHub is unreachable at start, the copy built into
+  the image is served and `/healthz` says so (`docs.origin`, `docs.commit_sha`,
+  `docs.last_error`).
+- The builder (`src/docs/builder.ts`, with the URL mapping and parameter extraction) is now
+  part of the server bundle; `scripts/docs/build-index.ts` is a thin wrapper around it.
+
+### Sign-in (OAuth authorization server)
+
+- **Built-in OAuth 2.1 authorization server** at `/oauth/authorize`, `/oauth/token`,
+  `/oauth/register` plus `/.well-known/oauth-authorization-server`. Sign-in is a page where the
+  user pastes their NextBillion.ai API key once; the key is checked with an unbilled gateway
+  request (`GET /h/geocode` without a query: 401 means an unknown key regardless of the
+  customer's SKUs; a 403 naming IP/origin restrictions is reported as such) and sealed into
+  the tokens. Hosts such as Claude, Claude Code, Cursor and Codex can now connect to the hosted
+  server with a browser sign-in and no local configuration.
+- **Stateless by design.** Authorization codes, access tokens (1 h), refresh tokens (30 d) and
+  dynamically registered client ids are all encrypted payloads (AES-256-GCM, key from
+  `NBAI_TOKEN_KEY`, comma-separated keys for rotation). The server stores nothing about any
+  user; revoking access is resetting the key in the console. Without `NBAI_TOKEN_KEY` a random
+  key is used and tokens die with the process (fine locally, warned at start-up).
+- Client identification by Client ID Metadata Document (what Claude uses) with a 5-minute
+  cache, and by stateless Dynamic Client Registration for other hosts. PKCE S256 required;
+  loopback redirect URIs match on any port (Claude Code); redirects only ever go to registered
+  URIs; RFC 9207 `iss` on the callback; refresh tokens rotate; failures are `invalid_grant`.
+- Access tokens from this server and bare API keys are both accepted as bearer tokens.
+- MCP SDK 2.0 → 2.3.1 (additive release; no behaviour change).
+
+### Streamable HTTP server
+
+- **`--http` mode (Streamable HTTP).** The same server can run hosted: `nextbillion-mcp --http`
+  listens on `PORT` (default 8080) and serves the MCP endpoint at the root of `NBAI_PUBLIC_URL`
+  (default `https://mcp.nextbillion.io`). Stateless by construction (one server instance per
+  request, per the 2026-07-28 revision); nothing about a caller is kept between requests.
+- **Per-request credentials.** Callers send `Authorization: Bearer <NextBillion.ai API key>`;
+  the key is used for that request's API calls only. `NBAI_API_KEY` and `NBAI_IMAGE_DIR` are
+  ignored in this mode (a hosted server bills nobody's key by default and writes nothing to
+  disk).
+- **Lazy authentication.** Anonymous hosts can connect, list tools and use the four
+  documentation tools. A call to an API tool without credentials is answered with HTTP 401 and
+  a `WWW-Authenticate: Bearer resource_metadata=…` challenge, which is what makes Claude open
+  its sign-in flow. `/.well-known/oauth-protected-resource` is served; the authorization
+  server behind it (paste-your-API-key sign-in) lands in the next change.
+- `GET /healthz` liveness route; `Dockerfile` (node:22-alpine, bundled server + docs index,
+  non-root); CI builds the image and checks `/healthz`, and a tag-triggered job publishes it
+  to the company registry with `nip`.
+- No changes to stdio mode, tools or schemas.
+
+## 0.3.2 — 2026-10-22
+
+Documentation tools: six fixes found while reproducing the knowledge-base evaluation runs
+of 15 October, plus a refresh of the bundled documentation. No new tools, no schema changes.
+
+- **Documentation refreshed to nb-public-docs 713d1e5 (2026-10-22).** 25 new pages: Android
+  Offline Maps (14) and Android Offline Navigation (11), mapped to their live URLs (five
+  files were renamed in the repo after publishing; the overrides keep the live slugs).
+  Updated pages: Directions API gains the `require=truck_route` parameter and the freight
+  network wording for `prefer`; Distance Matrix and Navigation API `prefer` wording; Route
+  Optimization gains `coordinate_jobs` (multi-technician jobs, 21 fields) and
+  `options.coordination` (3); Hours of Service fixes the type of
+  `driver_current_hos_state.daily_cycle_duty_times` (array of integer). 342 → 367 pages,
+  1,435 → 1,460 parameters, index 7.3 → 7.5 MB.
+- **`get_api_parameters` resolves more endpoint spellings.** Hosts build the slug from
+  whatever they have seen, so `geocode/batch`, `geocode_batch` (the tool name),
+  `Batch Geocode API` and the page's doc_id now all resolve to `batch-geocode`; the result
+  says what the input was matched by. The evaluation's one failing case was this miss.
+- **Array-element request-body fields are extracted.** Field names such as `[].q`,
+  `[].limit` (JSON-array request bodies; Batch Geocode has six) were dropped by the
+  extractor's name pattern, so the endpoint returned only `key`. 1,429 → 1,435 parameters.
+- **No near-empty search chunks.** 451 of the 4,537 index chunks were a bare heading such
+  as `## Request Body` (the heading was flushed alone when the next block was a large
+  table or code sample) and 982 were under 100 characters; they ranked well and came back
+  as results with an empty excerpt. Tiny chunks are now merged into their neighbour at
+  build time (`mergeTinyChunks`): 3,568 chunks, none under 100 characters, pages still
+  rejoin losslessly.
+- **One search result per page section.** Several chunks of the same section no longer
+  repeat the same title, heading and source_url; the best-scoring chunk represents the
+  section.
+- **sdk filter fallback.** When the `sdk` filter hides the page the query is really about
+  (the best unfiltered hit scores at least 1.5× the best filtered one), the result names
+  that page in `best_unfiltered` and in the text instead of filling the list with sdk
+  pages that share only incidental words.
+- **`get_documentation` returns pages up to 15% over the 32,000-character cap whole.** The
+  Directions API page (33.5k) was cut by 4.6% and hosts fetched it twice. When a page is
+  truncated, the section list now comes before the content.
+- **Lookup misses are results, not tool errors.** An unknown endpoint, parameter name,
+  doc_id or section returns `isError: false` with `found: false` and suggestions (similar
+  endpoints or doc_ids, the parameter names under the scope, or the page's sections).
+  Evaluation harnesses and the directory review count any tool error as a failure, even
+  when the message lets the model recover. Malformed input (neither endpoint nor doc_id)
+  is still an input error.
+- Nine new unit tests, including the three evaluation cases as retrieval checks.
+
 ## 0.3.1 — 2026-10-11
 
 Preparation of the Claude Desktop extension for Anthropic's directory review (replaces the

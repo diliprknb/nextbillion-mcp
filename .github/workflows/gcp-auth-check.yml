@@ -1,0 +1,27 @@
+# Manual check that this repository can still obtain GCP credentials without any stored key
+# (Workload Identity Federation, see ci.yml "image"). Run it from the Actions tab on main
+# after changing the Terraform side or before deleting a credential; it reads the service's
+# URL and changes nothing.
+name: GCP auth check
+
+on:
+  workflow_dispatch:
+
+jobs:
+  auth:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/111225689449/locations/global/workloadIdentityPools/github-actions/providers/nextbillion-mcp
+          service_account: nextbillion-mcp-deployer@nextbillion-controlled.iam.gserviceaccount.com
+      - uses: google-github-actions/setup-gcloud@v2
+      - name: Read the hosted service as the deployer
+        run: |
+          gcloud auth list --format 'value(account)'
+          gcloud run services describe nextbillion-mcp \
+            --project nextbillion-controlled --region asia-southeast1 \
+            --format 'value(status.url,status.latestReadyRevisionName)'

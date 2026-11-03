@@ -32,7 +32,7 @@ export const staticMapImage: NbTool<typeof Schema> = {
   title: 'Static Map Image',
   description:
     'Render a static map image centered on a location, with optional markers and line/polygon ' +
-    'overlays; returns the image inline and, if NBAI_IMAGE_DIR is set, also saves it as a file ' +
+    'overlays; returns the image inline ' +
     '(path in the result text). For a map auto-fitted to a route or to ' +
     'overlays, use static_route_map. Parameters: center {latitude, longitude} and zoom (0-22) ' +
     '(required); optional markers (array of {latitude, longitude, color, icon_url, anchor, ' +
@@ -74,7 +74,6 @@ export const staticMapImage: NbTool<typeof Schema> = {
       { markers, path: overlay?.values },
       `${parts.join(', ')}.`,
       args,
-      'map',
     );
   },
 };

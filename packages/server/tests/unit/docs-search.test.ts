@@ -7,9 +7,9 @@ const file: DocsIndexFile = {
   meta: {
     format: 2,
     commit_sha: 'abc1234',
-    built_at: '2026-10-07',
+    docs_updated_at: '2026-10-07',
     pages: 3,
-    chunks: 5,
+    chunks: 6,
     parameters: 0,
   },
   pages: [
@@ -69,6 +69,13 @@ const file: DocsIndexFile = {
       text: '```bash\ncurl truck_weight=5000 truck_weight truck_weight\n```',
     },
     {
+      chunk_id: 'routing/directions-api/directions-api#3',
+      doc_id: 'routing/directions-api/directions-api',
+      chunk_type: 'content',
+      heading_path: ['Directions API', 'Flexible', 'Request Parameters'],
+      text: '| truck_weight | No | truck_weight again, a second chunk of the same section |',
+    },
+    {
       chunk_id: 'maps/mobile-sdks/flutter/annotations#0',
       doc_id: 'maps/mobile-sdks/flutter/annotations',
       chunk_type: 'content',
@@ -124,6 +131,15 @@ describe('search', () => {
     expect(params.source_url).toBe(
       'https://docs.nextbillion.ai/routing/directions-api#request-parameters',
     );
+  });
+
+  it('returns one hit per page section, keeping the best chunk of it', () => {
+    const hits = search(index, { query: 'truck_weight', limit: 10 });
+    const sections = hits.map((h) => `${h.doc_id} ${h.heading_path.join('>')}`);
+    expect(new Set(sections).size).toBe(sections.length);
+    const params = hits.filter((h) => h.heading_path.includes('Request Parameters'));
+    expect(params).toHaveLength(1);
+    expect(params[0]!.snippet).toContain('a second chunk of the same section');
   });
 
   it('fills related_tools from the callback and returns nothing for an empty query', () => {

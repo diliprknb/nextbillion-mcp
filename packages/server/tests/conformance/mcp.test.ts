@@ -38,21 +38,24 @@ describe('MCP conformance', () => {
     await client.connect(clientTransport);
   });
 
-  it('lists all 20 tools in deterministic sorted order with titles, schemas and annotations', async () => {
+  it('lists all 27 tools in deterministic sorted order with titles, schemas and annotations', async () => {
     const result = await client.listTools();
     const names = result.tools.map((t) => t.name);
     expect(names).toEqual(ALL_TOOLS.map((t) => t.name));
-    expect(result.tools).toHaveLength(20);
+    expect(result.tools).toHaveLength(27);
     for (const tool of result.tools) {
       expect(tool.title, tool.name).toBeTruthy();
       expect(tool.description, tool.name).toBeTruthy();
       expect(tool.inputSchema, tool.name).toBeTruthy();
-      // Documentation tools read a bundled index (closed world); API tools call the live API.
+      // Documentation tools read the in-process index (closed world); API tools call the live API.
       expect(tool.annotations, tool.name).toMatchObject({
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: !/documentation|api_parameters/.test(tool.name),
+        openWorldHint:
+          !/documentation|api_parameters|^(measure|points_in_polygon|polygon_ops|buffer|nearest|bbox|centroid)$/.test(
+            tool.name,
+          ),
       });
     }
   });

@@ -10,7 +10,7 @@ export const SERVER_NAME = 'nextbillion-mcp';
 
 /**
  * Build one McpServer instance wired to the given NextBillion API client.
- * Used as the per-connection factory for serveStdio (and later HTTP serving).
+ * Used as the per-request factory by the HTTP handler (one instance per request).
  *
  * 2026-07-28 spec notes: the SDK provides server/discover, per-request _meta
  * validation, and resultType stamping. The deprecated Roots/Sampling/Logging

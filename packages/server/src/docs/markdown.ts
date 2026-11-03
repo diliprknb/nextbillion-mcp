@@ -186,6 +186,40 @@ export function chunkSection(section: Section, options: ChunkOptions = {}): Sect
   return chunks;
 }
 
+/** Chunks with less text than this (trimmed) are merged into a neighbour. */
+export const MIN_CHUNK_CHARS = 100;
+
+/**
+ * Merge near-empty chunks into their neighbours so no chunk is just a heading. A heading
+ * ends up alone when the block after it is atomic and over the cap (a large table or a
+ * long fence) or when a section holds nothing but its heading. Such chunks rank well on
+ * BM25 for the heading words and come back with an empty excerpt. A tiny chunk is
+ * appended to the front of the next chunk of the page (taking that chunk's heading path
+ * and type); the last chunk of a page merges backwards instead. Order and text are kept,
+ * so joining the page's chunks with `\n` still reproduces the page.
+ */
+export function mergeTinyChunks(
+  chunks: ReadonlyArray<SectionChunk>,
+  minChars = MIN_CHUNK_CHARS,
+): SectionChunk[] {
+  const out: SectionChunk[] = [];
+  let carry: SectionChunk | undefined;
+  for (const chunk of chunks) {
+    const merged = carry ? { ...chunk, text: `${carry.text}\n${chunk.text}` } : chunk;
+    carry = undefined;
+    if (merged.text.trim().length < minChars) {
+      carry = merged;
+      continue;
+    }
+    out.push(merged);
+  }
+  if (carry) {
+    const last = out.pop();
+    out.push(last ? { ...last, text: `${last.text}\n${carry.text}` } : carry);
+  }
+  return out;
+}
+
 /** True when the text has an unmatched fence marker, i.e. a fence was cut. */
 export function hasUnbalancedFence(text: string): boolean {
   let open: string | undefined;

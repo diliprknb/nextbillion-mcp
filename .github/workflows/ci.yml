@@ -3,6 +3,7 @@ name: CI
 on:
   push:
     branches: [main]
+    tags: ['v*']
   pull_request:
   schedule:
     # Nightly at 02:00 UTC: includes live-API e2e to catch upstream API changes.
@@ -16,7 +17,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - run: npm ci
       - run: npm run format:check
@@ -24,13 +25,68 @@ jobs:
       - run: npm run typecheck
       - run: npm run docs:validate --workspace packages/server
       - run: npm run build
-      - run: node scripts/sync-plugin-bundle.mjs --check
       - run: npm test
-      - run: npm run build:mcpb
-      - uses: actions/upload-artifact@v4
+      # Hosted mode: the image must build and answer /health without a docs token (the
+      # documentation tools then point at the public docs site).
+      - run: docker build -t nextbillion-mcp:ci .
+      - run: |
+          cid=$(docker run -d -p 18080:8080 -e NBAI_PUBLIC_URL=http://localhost:18080 nextbillion-mcp:ci)
+          for i in $(seq 1 20); do curl -fsS http://localhost:18080/health && break || sleep 1; done
+          curl -fsS http://localhost:18080/.well-known/oauth-protected-resource
+          # The server logs to stderr.
+          docker logs "$cid" 2>&1 | grep -q 'listening on http' || (docker logs "$cid" 2>&1; exit 1)
+          docker rm -f "$cid"
+
+  image:
+    # Publishes the hosted image on release tags and rolls it out to Cloud Run. Runs on a
+    # public runner and holds no credentials: GitHub's OIDC token for this run is exchanged
+    # for a one-hour credential of the deployer service account through Workload Identity
+    # Federation (pool, provider, account and roles are Terraform-managed in
+    # nextbillion-ai/nextbillion-infra, nextbillion-mcp.tf "Keyless CI"). The provider
+    # accepts only release tags and main of this repository.
+    # Pushes to asia-southeast1-docker.pkg.dev/nextbillion/internal/nextbillion-mcp:<tag>.
+    if: startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write # lets the job request GitHub's OIDC token
+    env:
+      REGISTRY: asia-southeast1-docker.pkg.dev
+      IMAGE: asia-southeast1-docker.pkg.dev/nextbillion/internal/nextbillion-mcp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: google-github-actions/auth@v2
         with:
-          name: claude-desktop-extension
-          path: dist-mcpb/*.mcpb
+          workload_identity_provider: projects/111225689449/locations/global/workloadIdentityPools/github-actions/providers/nextbillion-mcp
+          service_account: nextbillion-mcp-deployer@nextbillion-controlled.iam.gserviceaccount.com
+      - uses: google-github-actions/setup-gcloud@v2
+      - name: Build and push image
+        id: push
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          [ "$tag" = "$GITHUB_REF" ] && tag="sha-${GITHUB_SHA::7}"
+          gcloud auth configure-docker "$REGISTRY" --quiet
+          docker build -t "$IMAGE:$tag" .
+          docker push "$IMAGE:$tag"
+          echo "pushed $IMAGE:$tag"
+          echo "image=$IMAGE:$tag" >> "$GITHUB_OUTPUT"
+      # Rolls the new image out to the hosted service (infrastructure is Terraform-managed in
+      # nextbillion-ai/nextbillion-infra; the image field there is ignored so this step owns it).
+      # Only release tags deploy; manual dispatch builds and pushes without deploying.
+      - name: Deploy to Cloud Run
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          gcloud run deploy nextbillion-mcp \
+            --project nextbillion-controlled --region asia-southeast1 \
+            --image "${{ steps.push.outputs.image }}" --quiet
+          url=$(gcloud run services describe nextbillion-mcp --project nextbillion-controlled --region asia-southeast1 --format 'value(status.url)')
+          # /health, not /healthz: Google's front end answers a branded 404 for the exact path
+          # /healthz before the request reaches the container.
+          for i in $(seq 1 30); do curl -fsS "$url/health" && break || sleep 2; done
+          curl -fsS "$url/health"
+          # The custom domain depends on DNS and certificate state outside this repo: report, don't fail.
+          curl -fsS https://mcp.nextbillion.io/health || echo "::warning::https://mcp.nextbillion.io/health not reachable yet (DNS/certificate)"
 
   e2e:
     # Live-API smoke tests; needs the NBAI_API_KEY secret (sandbox key).
@@ -40,7 +96,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - run: npm ci
       - run: npm run test:e2e

@@ -1,18 +1,10 @@
 {
   "name": "nextbillion-mcp",
-  "version": "0.3.1",
-  "description": "MCP server exposing NextBillion.ai location APIs (geocoding, places, routing, maps) as tools for AI agents",
+  "version": "0.5.3",
+  "private": true,
+  "description": "The NextBillion.ai MCP server (hosted at https://mcp.nextbillion.io): location APIs as tools for AI agents",
   "license": "Apache-2.0",
   "type": "module",
-  "bin": {
-    "nextbillion-mcp": "dist/index.js"
-  },
-  "main": "dist/index.js",
-  "files": [
-    "dist",
-    "data",
-    "README.md"
-  ],
   "engines": {
     "node": ">=20"
   },
@@ -20,16 +12,7 @@
     "type": "git",
     "url": "https://github.com/nextbillion-ai/nextbillion-mcp.git"
   },
-  "keywords": [
-    "mcp",
-    "model-context-protocol",
-    "nextbillion",
-    "geocoding",
-    "routing",
-    "maps"
-  ],
   "scripts": {
-    "prepublishOnly": "npm run typecheck && npm run test && npm run build",
     "build": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\" && esbuild src/index.ts --bundle --platform=node --format=esm --target=node20 --outfile=dist/index.js --log-level=warning --define:__NBMCP_VERSION__=\\\"$npm_package_version\\\" && node -e \"require('fs').chmodSync('dist/index.js', 0o755)\"",
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.scripts.json --noEmit",
     "test": "vitest run tests/unit tests/conformance",
@@ -39,13 +22,18 @@
     "docs:build-index": "tsx scripts/docs/build-index.ts"
   },
   "devDependencies": {
-    "@modelcontextprotocol/client": "^2.1.0",
-    "@modelcontextprotocol/server": "^2.1.0",
+    "@modelcontextprotocol/client": "^2.3.1",
+    "@modelcontextprotocol/server": "^2.3.1",
     "@types/node": "^24.0.0",
     "esbuild": "^0.28.2",
     "tsx": "^4.23.0",
     "typescript": "^7.0.0",
     "vitest": "^4.1.0",
     "zod": "^4.2.0"
+  },
+  "dependencies": {
+    "geographiclib-geodesic": "^2.2.0",
+    "polyclip-ts": "^0.16.8",
+    "polylabel": "^2.1.0"
   }
 }

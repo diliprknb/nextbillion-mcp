@@ -9,6 +9,8 @@ export interface RecordedRequest {
 export interface FakeFetchOptions {
   /** Responses returned in order; the last one repeats. Defaults to `{}` JSON. */
   responses?: Array<{ status?: number; body?: unknown; contentType?: string }>;
+  /** API key the fake client sends; defaults to `test-key-1234`. */
+  apiKey?: string;
 }
 
 /** An NbClient whose fetch records every request and replays canned responses. */
@@ -35,7 +37,7 @@ export function fakeNbClient(options: FakeFetchOptions = {}): {
     });
   };
   const nb = new NbClient({
-    apiKey: 'test-key-1234',
+    apiKey: options.apiKey ?? 'test-key-1234',
     fetchFn,
     sleepFn: async () => {},
   });

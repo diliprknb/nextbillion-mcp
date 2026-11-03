@@ -170,3 +170,52 @@ export const ExcludeSchema = z
     'Strict filter: only routes that completely avoid these features are returned (error if none exists). ' +
       'Use `avoid` for a soft preference instead. Flexible service only',
   );
+
+/** Freight-network preference shared by directions and distance_matrix (flexible, truck). */
+export const PreferSchema = z
+  .enum(['truck_route'])
+  .describe(
+    'Prioritise designated freight network roads (flexible service, mode truck). ' +
+      'truck_type takes effect only together with this',
+  );
+
+/** Truck classes used to pick roads on the designated freight network. */
+export const TruckTypeSchema = z
+  .array(z.enum(['rigid_truck', 'semi_trailer', 'b_double', 'road_train', 'generic_truck']))
+  .min(1)
+  .describe(
+    'Truck class(es) the route must be legal for on the designated freight network ' +
+      '(rigid_truck, semi_trailer, b_double, road_train, generic_truck). Effective together with ' +
+      'prefer: "truck_route" (flexible service, mode truck)',
+  );
+
+/**
+ * The API silently ignores `truck_type` and `require` unless `prefer=truck_route` is also set,
+ * and ignores all three outside flexible truck routing. Reject those combinations so a request
+ * for a B-double-legal route never degrades to a generic truck route without notice.
+ */
+export function checkTruckRouteOptions(
+  args: {
+    prefer?: 'truck_route';
+    require?: 'truck_route';
+    truck_type?: readonly string[];
+    mode?: string;
+  },
+  service: 'flexible' | 'fast',
+): void {
+  if (args.truck_type?.length && !args.prefer) {
+    throw new ToolInputError(
+      'truck_type has no effect unless prefer is "truck_route"; add prefer: "truck_route".',
+    );
+  }
+  if (args.require && !args.prefer) {
+    throw new ToolInputError(
+      'require: "truck_route" has no effect unless prefer is also "truck_route".',
+    );
+  }
+  if (args.prefer && (args.mode !== 'truck' || service !== 'flexible')) {
+    throw new ToolInputError(
+      'prefer: "truck_route" applies to mode: "truck" with service: "flexible" only.',
+    );
+  }
+}

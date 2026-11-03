@@ -4,6 +4,9 @@ import {
   EmissionClassSchema,
   ExcludeSchema,
   HazmatSchema,
+  PreferSchema,
+  TruckTypeSchema,
+  checkTruckRouteOptions,
   toLatLng,
   toLatLngList,
 } from '../shared/geo.js';
@@ -85,6 +88,16 @@ const Schema = z.strictObject({
     .optional()
     .describe('Load per axle in tonnes (truck mode, flexible service only)'),
   emission_class: EmissionClassSchema.optional(),
+  prefer: PreferSchema.optional(),
+  require: z
+    .enum(['truck_route'])
+    .optional()
+    .describe(
+      'Restrict the route to designated freight network roads; the API answers HTTP 422 when no ' +
+        'such road is within 2 km of the origin, destination or a waypoint. Needs prefer: ' +
+        '"truck_route"',
+    ),
+  truck_type: TruckTypeSchema.optional(),
   cross_border: z
     .boolean()
     .optional()
@@ -130,16 +143,17 @@ export const directions: NbTool<typeof Schema> = {
     'distance (meters), duration (seconds) and an encoded polyline per route, which ' +
     'static_route_map can draw. Use distance_matrix for many pairs. Documentation for this ' +
     'API is available through search_documentation. Parameters: origin, destination ' +
-    '{latitude, longitude} (required); optional ' +
-    'waypoints (array, max 200), mode (car | truck | motorcycle | bike | walk), service ' +
-    '("flexible" default: all modes and options; "fast": car/truck only, lower latency), ' +
-    'route_type, departure_time (UNIX seconds), avoid (soft filter), exclude (strict filter), ' +
-    'road_info (max_speed, toll_*, truck_route, stop_sign, traffic_light), honor_restrictions, alternatives, steps (fast only), geometry (polyline ' +
-    '| polyline6), truck options: truck_size_cm {height, width, length}, truck_weight_kg, ' +
-    'truck_axle_load (tonnes), hazmat_type, emission_class (euro0-euro9), cross_border. ' +
-    'Example: {"origin": {"latitude": 37.7749, "longitude": -122.4194}, "destination": ' +
-    '{"latitude": 34.0522, "longitude": -118.2437}, "mode": "truck", "truck_weight_kg": ' +
-    '18000, "hazmat_type": ["flammable_liquid"]}',
+    '{latitude, longitude} (required); optional waypoints (max 200), mode (car | truck | ' +
+    'motorcycle | bike | walk), service ("flexible" default: all options; "fast": car/truck ' +
+    'only, lower latency), route_type, departure_time, avoid (soft), exclude (strict), ' +
+    'road_info, honor_restrictions, alternatives, steps (fast only), geometry (polyline | ' +
+    'polyline6), cross_border; truck options: truck_size_cm, truck_weight_kg, ' +
+    'truck_axle_load, hazmat_type, emission_class; freight network: prefer "truck_route" + ' +
+    'truck_type (rigid_truck | semi_trailer | b_double | road_train | generic_truck) for ' +
+    'roads legal for that truck class, require "truck_route" to stay on it. Example: ' +
+    '{"origin": {"latitude": 37.7749, "longitude": -122.4194}, "destination": {"latitude": ' +
+    '34.0522, "longitude": -118.2437}, "mode": "truck", "prefer": "truck_route", ' +
+    '"truck_type": ["b_double"]}',
   inputSchema: Schema,
   annotations: READ_ONLY,
   docs: ['routing/directions-api/directions-api'],
@@ -148,6 +162,7 @@ export const directions: NbTool<typeof Schema> = {
     if (service === 'fast' && args.mode && args.mode !== 'car' && args.mode !== 'truck') {
       throw new ToolInputError(`mode=${args.mode} requires service=flexible.`);
     }
+    checkTruckRouteOptions(args, service);
     // POST accepts up to 200 waypoints and avoids URL-length limits; params match GET.
     const response = await nb.postJson<Record<string, unknown>>(
       '/directions/json',
@@ -165,6 +180,9 @@ export const directions: NbTool<typeof Schema> = {
         hazmat_type: args.hazmat_type?.length ? args.hazmat_type.join('|') : undefined,
         truck_axle_load: args.truck_axle_load,
         emission_class: args.emission_class,
+        prefer: args.prefer,
+        require: args.require,
+        truck_type: args.truck_type?.length ? args.truck_type.join('|') : undefined,
         cross_border: args.cross_border,
         honor_restrictions: args.honor_restrictions,
         alternatives: args.alternatives,

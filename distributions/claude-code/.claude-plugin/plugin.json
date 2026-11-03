@@ -1,11 +1,11 @@
 {
   "name": "nextbillion-mcp",
   "displayName": "NextBillion.ai",
-  "description": "NextBillion.ai location APIs as MCP tools: geocoding, place search and browse, routing, distance matrix, isochrones, and static maps with overlays",
-  "version": "0.3.1",
+  "description": "NextBillion.ai location APIs as MCP tools (geocoding, places, routing, distance matrix, isochrones, static maps, documentation) \u2014 connects to the hosted server at https://mcp.nextbillion.io; sign in with your API key in the browser",
+  "version": "0.5.3",
   "author": {
     "name": "NextBillion.ai"
   },
-  "homepage": "https://docs.nextbillion.ai",
+  "homepage": "https://mcp.nextbillion.io",
   "mcpServers": "./.mcp.json"
 }

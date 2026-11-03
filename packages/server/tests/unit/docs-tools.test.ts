@@ -1,14 +1,16 @@
 import { describe, expect, it } from 'vitest';
+import { getApiParameters, normalizeEndpoint } from '../../src/tools/docs/get-api-parameters.js';
 import {
-  getApiParameters,
-  normalizeEndpoint,
-  resolveReorderedEndpoint,
-} from '../../src/tools/docs/get-api-parameters.js';
-import { getDocumentation, MAX_PAGE_CHARS } from '../../src/tools/docs/get-documentation.js';
+  getDocumentation,
+  MAX_PAGE_CHARS,
+  PAGE_OVERSHOOT,
+} from '../../src/tools/docs/get-documentation.js';
 import { listDocumentationTopics } from '../../src/tools/docs/list-documentation-topics.js';
 import { searchDocumentation } from '../../src/tools/docs/search-documentation.js';
 import { ToolInputError } from '../../src/tools/types.js';
+import { configureDocsIndex } from '../../src/docs/store.js';
 import { fakeNbClient } from '../helpers/fake-fetch.js';
+import { DOCS_FIXTURE } from '../setup.js';
 
 const nb = fakeNbClient({ responses: [] }).nb;
 type Structured = Record<string, any>;
@@ -46,6 +48,37 @@ describe('search_documentation', () => {
     for (const r of data.results) expect(r.doc_id).toMatch(/\/flutter\//);
   });
 
+  it('returns one result per page section (eval case 3: batch geocode request body)', async () => {
+    const { data } = await run(searchDocumentation, {
+      query: 'batch geocoding request body format and batch size limit',
+    });
+    const keys = data.results.map(
+      (r: { doc_id: string; heading_path: string[] }) => `${r.doc_id} ${r.heading_path.join('>')}`,
+    );
+    expect(new Set(keys).size).toBe(keys.length);
+    expect(data.results[0].doc_id).toBe('places/geocoding/batch-geocode/batch-geocode');
+    expect(data.results[0].heading_path).toContain('Request Body');
+    expect(data.results[0].snippet).toContain('| `[].');
+    for (const r of data.results) expect(r.snippet.length).toBeGreaterThan(100);
+  });
+
+  it('names the best unfiltered page when the sdk filter hides it (eval case 1)', async () => {
+    const { data, text } = await run(searchDocumentation, {
+      query: 'avoid toll roads Flutter SDK',
+      sdk: 'flutter',
+    });
+    for (const r of data.results) expect(r.doc_id).toMatch(/\/flutter\//);
+    expect(data.best_unfiltered.doc_id).toBe(
+      'routing/directions-api/examples/avoid-tolls-and-highways',
+    );
+    expect(text).toContain('without that filter the best match is');
+    const marker = await run(searchDocumentation, {
+      query: 'add a marker to the map',
+      sdk: 'Flutter',
+    });
+    expect(marker.data.best_unfiltered).toBeUndefined();
+  });
+
   it('returns guidance and the catalog when nothing matches', async () => {
     const { data, text } = await run(searchDocumentation, { query: 'zzzz qqqq' });
     expect(data.results).toEqual([]);
@@ -68,14 +101,23 @@ describe('get_documentation', () => {
     expect(withCode.data.content).toContain('```');
   });
 
-  it('truncates oversized pages with a section list and serves one section', async () => {
-    const big = await run(getDocumentation, { doc_id: 'routing/directions-api/directions-api' });
-    expect(big.data.total_chars).toBeGreaterThan(MAX_PAGE_CHARS);
+  it('returns a page a little over the cap whole (eval case 6: Directions)', async () => {
+    const page = await run(getDocumentation, { doc_id: 'routing/directions-api/directions-api' });
+    expect(page.data.total_chars).toBeGreaterThan(MAX_PAGE_CHARS);
+    expect(page.data.total_chars).toBeLessThanOrEqual(MAX_PAGE_CHARS * PAGE_OVERSHOOT);
+    expect(page.data.truncated).toBe(false);
+    expect(page.data.content.length).toBe(page.data.total_chars);
+    expect(page.text).not.toContain('[Truncated');
+  });
+
+  it('truncates oversized pages with the section list first and serves one section', async () => {
+    const id = 'tracking/geofence-api/geofence-api';
+    const big = await run(getDocumentation, { doc_id: id });
+    expect(big.data.total_chars).toBeGreaterThan(MAX_PAGE_CHARS * PAGE_OVERSHOOT);
     expect(big.data.truncated).toBe(true);
     expect(big.data.content.length).toBeLessThanOrEqual(MAX_PAGE_CHARS);
-    expect(big.data.sections.map((s: { heading: string }) => s.heading)).toContain(
-      'API Query Limits',
-    );
+    expect(big.text.indexOf('Sections:')).toBeLessThan(big.text.indexOf('<documentation '));
+    expect(big.data.sections.map((s: { heading: string }) => s.heading)).toContain('Request Body');
     const section = await run(getDocumentation, {
       doc_id: 'routing/directions-api/directions-api',
       section: 'api query limits',
@@ -85,16 +127,18 @@ describe('get_documentation', () => {
     expect(section.data.content).toContain('## API Query Limits');
   });
 
-  it('rejects unknown ids and sections as input errors', async () => {
-    await expect(getDocumentation.run({ doc_id: 'nope/missing' }, nb)).rejects.toBeInstanceOf(
-      ToolInputError,
-    );
-    await expect(
-      getDocumentation.run(
-        { doc_id: 'routing/isochrone-api/isochrone-api', section: 'no such section' },
-        nb,
-      ),
-    ).rejects.toThrow(/Sections:/);
+  it('reports an unknown id or section as found: false with suggestions, not as an error', async () => {
+    const page = await run(getDocumentation, { doc_id: 'routing/direction-api' });
+    expect(page.data.found).toBe(false);
+    expect(page.data.similar_doc_ids[0]).toBe('routing/directions-api/directions-api');
+    expect(page.text).toContain('Similar doc_ids: routing/directions-api/directions-api');
+    const section = await run(getDocumentation, {
+      doc_id: 'routing/isochrone-api/isochrone-api',
+      section: 'no such section',
+    });
+    expect(section.data.found).toBe(false);
+    expect(section.data.sections.length).toBeGreaterThan(0);
+    expect(section.text).toMatch(/Sections:/);
   });
 });
 
@@ -140,24 +184,79 @@ describe('get_api_parameters', () => {
     );
   });
 
-  it('resolves a reordered slug to the single matching endpoint instead of erroring', async () => {
-    const { data } = await run(getApiParameters, { endpoint: 'geocode/batch' });
-    expect(data.scope).toBe('batch-geocode');
-    expect(data.parameters.length).toBeGreaterThan(0);
-    expect(resolveReorderedEndpoint('geocode/batch', ['batch-geocode', 'forward-geocode'])).toBe(
-      'batch-geocode',
+  it('resolves tool names, swapped word order, titles and doc_ids to the endpoint (eval case 3)', async () => {
+    const expectBatch = (data: Structured, matchedBy?: string): void => {
+      expect(data.found).toBe(true);
+      expect(data.endpoints).toEqual(['batch-geocode']);
+      expect(data.matched_by).toBe(matchedBy);
+      const names = data.parameters.map((p: { name: string }) => p.name);
+      expect(names).toEqual(['key', '[].q', '[].at', '[].in', '[].types', '[].limit', '[].lang']);
+    };
+    expectBatch((await run(getApiParameters, { endpoint: 'geocode/batch' })).data, 'word_order');
+    expectBatch((await run(getApiParameters, { endpoint: 'geocode_batch' })).data, 'word_order');
+    expectBatch((await run(getApiParameters, { endpoint: 'Batch Geocode API' })).data, undefined);
+    expectBatch(
+      (await run(getApiParameters, { endpoint: 'places/geocoding/batch-geocode/batch-geocode' }))
+        .data,
+      'doc_id',
     );
-    // ambiguous or unknown words must still fail
-    expect(resolveReorderedEndpoint('geocode', ['batch-geocode', 'forward-geocode'])).toBeNull();
-    expect(resolveReorderedEndpoint('no-such-api', ['batch-geocode'])).toBeNull();
+    const byTool = await run(getApiParameters, { endpoint: 'place_search' });
+    expect(byTool.data.matched_by).toBe('tool_name');
+    expect(byTool.data.endpoints[0]).toMatch(/^search-places/);
+    const limit = await run(getApiParameters, { endpoint: 'geocode/batch', name: '[].limit' });
+    expect(limit.data.parameters[0]).toMatchObject({ type: 'integer', location: 'body' });
+    expect(limit.text).toContain('matched by word order');
   });
 
-  it('reports SDK pages as unsupported and unknown endpoints as input errors', async () => {
+  it('reports SDK pages as unsupported and misses as found: false, not as errors', async () => {
     const { data } = await run(getApiParameters, { doc_id: 'maps/mobile-sdks/android/mapview' });
     expect(data.unsupported).toBe(true);
-    await expect(getApiParameters.run({ endpoint: 'no-such-api' }, nb)).rejects.toBeInstanceOf(
-      ToolInputError,
-    );
+    const endpoint = await run(getApiParameters, { endpoint: 'no-such-api' });
+    expect(endpoint.data.found).toBe(false);
+    expect(endpoint.data.known_apis).toContain('directions');
+    expect(endpoint.text).toContain('Known APIs:');
+    const typo = await run(getApiParameters, { endpoint: 'geocode' });
+    expect(typo.data.found).toBe(false);
+    expect(typo.data.similar_endpoints).toContain('batch-geocode');
+    const name = await run(getApiParameters, { endpoint: 'directions', name: 'no_such_param' });
+    expect(name.data.found).toBe(false);
+    expect(name.data.parameter_names).toContain('truck_weight');
+    const docId = await run(getApiParameters, { doc_id: 'nope/missing' });
+    expect(docId.data.found).toBe(false);
     await expect(getApiParameters.run({}, nb)).rejects.toBeInstanceOf(ToolInputError);
+  });
+});
+
+describe('documentation tools without an index', () => {
+  it('answer with the public docs site instead of an error', async () => {
+    configureDocsIndex({});
+    try {
+      for (const tool of [
+        searchDocumentation,
+        getDocumentation,
+        getApiParameters,
+        listDocumentationTopics,
+      ]) {
+        const result = await tool.run(
+          {
+            query: 'directions',
+            doc_id: 'routing/directions-api/directions-api',
+            endpoint: 'directions',
+          },
+          nb,
+        );
+        expect(result.isError, tool.name).toBeUndefined();
+        expect(result.content[0]!.text, tool.name).toContain('temporarily unavailable');
+        expect(result.content[0]!.text, tool.name).toContain(
+          'https://docs.nextbillion.ai/routing/directions-api',
+        );
+        expect(result.structuredContent, tool.name).toMatchObject({
+          available: false,
+          docs_site_url: 'https://docs.nextbillion.ai',
+        });
+      }
+    } finally {
+      configureDocsIndex({ file: DOCS_FIXTURE });
+    }
   });
 });

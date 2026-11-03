@@ -7,7 +7,7 @@ import {
   slugify,
   stripFragment,
   type UrlOverrides,
-} from '../../scripts/docs/mapping.js';
+} from '../../src/docs/build/mapping.js';
 
 const docsDir = fileURLToPath(new URL('../../docs/', import.meta.url));
 const read = (name: string): string => readFileSync(`${docsDir}${name}`, 'utf8');
@@ -16,7 +16,12 @@ const list = (name: string): string[] =>
     .split('\n')
     .filter((l) => l.length > 0);
 
-const overrides = JSON.parse(read('url-overrides.json')) as UrlOverrides;
+const overrides = JSON.parse(
+  readFileSync(
+    fileURLToPath(new URL('../../src/docs/build/url-overrides.json', import.meta.url)),
+    'utf8',
+  ),
+) as UrlOverrides;
 const files = list('docs-files.txt');
 const sitemap = new Set(list('sitemap-urls.txt'));
 

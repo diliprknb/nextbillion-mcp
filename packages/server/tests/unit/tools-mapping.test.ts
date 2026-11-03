@@ -19,12 +19,15 @@ import { fakeNbClient } from '../helpers/fake-fetch.js';
 const PNG = { body: new Uint8Array([137, 80, 78, 71]), contentType: 'image/png' };
 
 describe('tool registry', () => {
-  it('exposes exactly the 20 tools, sorted by name', () => {
+  it('exposes exactly the 27 tools, sorted by name', () => {
     const names = ALL_TOOLS.map((t) => t.name);
     expect(names).toEqual([...names].sort());
     expect(names).toEqual([
       'autocomplete',
       'autosuggest',
+      'bbox',
+      'buffer',
+      'centroid',
       'directions',
       'distance_matrix',
       'geocode_batch',
@@ -35,9 +38,13 @@ describe('tool registry', () => {
       'get_documentation',
       'isochrone',
       'list_documentation_topics',
+      'measure',
+      'nearest',
       'place_browse',
       'place_lookup',
       'place_search',
+      'points_in_polygon',
+      'polygon_ops',
       'postcode_lookup',
       'search_along_route',
       'search_documentation',
@@ -62,7 +69,10 @@ describe('tool registry', () => {
         readOnlyHint: true,
         destructiveHint: false,
         idempotentHint: true,
-        openWorldHint: !/documentation|api_parameters/.test(tool.name),
+        openWorldHint:
+          !/documentation|api_parameters|^(measure|points_in_polygon|polygon_ops|buffer|nearest|bbox|centroid)$/.test(
+            tool.name,
+          ),
       });
     }
   });
@@ -100,7 +110,7 @@ describe('tool registry', () => {
   });
 
   it('gives every tool a short name and a human-readable Title Case title', () => {
-    const minor = new Set(['by', 'of', 'for', 'and', 'along', 'to']);
+    const minor = new Set(['a', 'by', 'of', 'for', 'and', 'along', 'to', 'in', 'on', 'or']);
     for (const tool of ALL_TOOLS) {
       expect(tool.name.length, tool.name).toBeLessThanOrEqual(64);
       expect(tool.title.trim(), tool.name).toBe(tool.title);
@@ -673,5 +683,84 @@ describe('static map parameter mapping', () => {
         nb,
       ),
     ).rejects.toBeInstanceOf(ToolInputError);
+  });
+});
+
+describe('0.5.1 freight network (truck_route) options', () => {
+  const od = {
+    origin: { latitude: -37.8136, longitude: 144.9631 },
+    destination: { latitude: -33.8688, longitude: 151.2093 },
+  };
+
+  it('directions passes prefer, require and pipe-joined truck_type through', async () => {
+    const { nb, requests } = fakeNbClient({ responses: [{ body: { routes: [] } }] });
+    await directions.run(
+      {
+        ...od,
+        mode: 'truck',
+        prefer: 'truck_route',
+        require: 'truck_route',
+        truck_type: ['b_double', 'road_train'],
+      },
+      nb,
+    );
+    expect(requests[0]!.body).toMatchObject({
+      mode: 'truck',
+      prefer: 'truck_route',
+      require: 'truck_route',
+      truck_type: 'b_double|road_train',
+    });
+  });
+
+  it('directions omits the freight network fields when unused', async () => {
+    const { nb, requests } = fakeNbClient({ responses: [{ body: { routes: [] } }] });
+    await directions.run({ ...od, mode: 'truck' }, nb);
+    expect(requests[0]!.body).not.toHaveProperty('prefer');
+    expect(requests[0]!.body).not.toHaveProperty('require');
+    expect(requests[0]!.body).not.toHaveProperty('truck_type');
+  });
+
+  it('directions rejects combinations the API would silently ignore', async () => {
+    const { nb, requests } = fakeNbClient();
+    // truck_type without prefer: the API routes a generic truck without saying so.
+    await expect(
+      directions.run({ ...od, mode: 'truck', truck_type: ['b_double'] }, nb),
+    ).rejects.toThrow(/prefer/);
+    // require without prefer.
+    await expect(
+      directions.run({ ...od, mode: 'truck', require: 'truck_route' }, nb),
+    ).rejects.toThrow(/prefer/);
+    // prefer outside truck mode / outside the flexible service.
+    await expect(directions.run({ ...od, prefer: 'truck_route' }, nb)).rejects.toThrow(/truck/);
+    await expect(
+      directions.run({ ...od, mode: 'truck', service: 'fast', prefer: 'truck_route' }, nb),
+    ).rejects.toBeInstanceOf(ToolInputError);
+    expect(requests).toHaveLength(0);
+  });
+
+  it('distance_matrix passes prefer and truck_type through and applies the same checks', async () => {
+    const { nb, requests } = fakeNbClient({ responses: [{ body: { rows: [] } }] });
+    const base = { origins: [od.origin], destinations: [od.destination] };
+    await distanceMatrix.run(
+      {
+        ...base,
+        service: 'flexible',
+        mode: 'truck',
+        prefer: 'truck_route',
+        truck_type: ['semi_trailer'],
+      },
+      nb,
+    );
+    expect(requests[0]!.body).toMatchObject({ prefer: 'truck_route', truck_type: 'semi_trailer' });
+    await expect(
+      distanceMatrix.run(
+        { ...base, service: 'flexible', mode: 'truck', truck_type: ['semi_trailer'] },
+        nb,
+      ),
+    ).rejects.toThrow(/prefer/);
+    // The matrix defaults to the fast service, where the freight network is not available.
+    await expect(
+      distanceMatrix.run({ ...base, mode: 'truck', prefer: 'truck_route' }, nb),
+    ).rejects.toThrow(/flexible/);
   });
 });

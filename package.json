@@ -6,18 +6,15 @@
     "packages/*"
   ],
   "scripts": {
-    "publish:server": "npm publish --workspace packages/server",
     "build": "npm run build --workspace packages/server",
     "typecheck": "npm run typecheck --workspace packages/server",
     "test": "npm run test --workspace packages/server",
     "test:e2e": "npm run test:e2e --workspace packages/server",
     "eval": "node --experimental-strip-types evals/run_evals.ts",
     "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "build:mcpb": "node scripts/build-mcpb.mjs"
+    "format:check": "prettier --check ."
   },
   "devDependencies": {
-    "@anthropic-ai/mcpb": "2.1.2",
     "prettier": "^3.6.0"
   },
   "dependencies": {

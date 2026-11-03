@@ -1,9 +1,5 @@
-import { createHash } from 'node:crypto';
-import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import * as z from 'zod/v4';
-import { imageOutputDir } from '../../config.js';
-import { logError } from '../../log.js';
 import type { NbClient, Query } from '../../nbclient/client.js';
 import { CoordinateSchema, type Coordinate } from '../shared/geo.js';
 import { fitPolylineToBudget } from './polyline.js';
@@ -153,53 +149,17 @@ export async function fetchImageResult(
   query: Query,
   caption: string,
   args: StaticImageArgs,
-  filePrefix = 'map',
 ): Promise<ToolResult> {
   const image = await nb.getBinary(path, query);
   const mimeType = image.contentType.startsWith('image/')
     ? image.contentType
     : MIME_TYPES[args.format ?? 'png']!;
-  const savedPath = await saveImage(image.data, filePrefix, args.format ?? 'png');
-  const location = savedPath
-    ? ` Saved to ${savedPath} (for clients that cannot display images inline).`
-    : '';
   return {
     content: [
       { type: 'image', data: Buffer.from(image.data).toString('base64'), mimeType },
-      { type: 'text', text: caption + location },
+      { type: 'text', text: caption },
     ],
   };
-}
-
-/**
- * Persist the rendered image locally so terminal clients (which drop inline image
- * content) can open it. Opt-in: does nothing unless NBAI_IMAGE_DIR is set. The file name
- * is fixed by the server (prefix, UTC timestamp, content hash), never by tool arguments,
- * and an existing file is never overwritten. Failures are logged and never fail the call.
- */
-async function saveImage(
-  data: Uint8Array,
-  prefix: string,
-  ext: string,
-): Promise<string | undefined> {
-  const dir = imageOutputDir();
-  if (!dir) return undefined;
-  try {
-    await mkdir(dir, { recursive: true });
-    const hash = createHash('sha1').update(data).digest('hex').slice(0, 8);
-    const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\..+/, '');
-    const filePath = join(dir, `${prefix}-${stamp}-${hash}.${ext === 'jpg' ? 'jpg' : ext}`);
-    try {
-      await writeFile(filePath, data, { flag: 'wx' });
-    } catch (error) {
-      // Same second and same content hash: the identical file is already there.
-      if ((error as NodeJS.ErrnoException).code !== 'EEXIST') throw error;
-    }
-    return filePath;
-  } catch (error) {
-    logError('Could not save rendered image to disk', error);
-    return undefined;
-  }
 }
 
 /** Stay comfortably under the Static Images API's documented 8192-byte URL limit. */

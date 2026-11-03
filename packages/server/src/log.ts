@@ -1,7 +1,6 @@
 /**
- * stdout is the JSON-RPC channel on stdio transports, so all logging goes to stderr.
- * The MCP `logging` capability is deprecated in the 2026-07-28 revision; stderr is
- * the recommended channel for locally-spawned servers.
+ * All logging goes to stderr, where Cloud Run collects it. The MCP `logging`
+ * capability is deprecated in the 2026-07-28 revision and is not used.
  */
 export function logError(message: string, error?: unknown): void {
   const detail = error instanceof Error ? `: ${error.message}` : error ? `: ${String(error)}` : '';

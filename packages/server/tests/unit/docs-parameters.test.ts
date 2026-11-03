@@ -7,7 +7,7 @@ import {
   extractParameters,
   parseTable,
   unitsFrom,
-} from '../../scripts/docs/parameters.js';
+} from '../../src/docs/build/parameters.js';
 
 const page = (overrides: Partial<PageRecord>): PageRecord => ({
   doc_id: 'routing/directions-api/directions-api',
@@ -176,6 +176,31 @@ describe('extractParameters', () => {
     });
     expect(records.find((r) => r.name === 'key')!.location).toBe('query');
     expect(records.find((r) => r.name === 'geofences')!.endpoint).toBe('geofence/batch-create');
+  });
+
+  it('reads array-element field names of a JSON-array request body', () => {
+    const batch = [
+      '# Batch Geocode API',
+      '',
+      '## Request Body',
+      '',
+      '| Field | Type | Description |',
+      '| --- | --- | --- |',
+      '| `[].q` | string | Specify the free-text search query. |',
+      '| `[].limit` | integer | Maximum number of results, 1 to 100. |',
+      '| `[]` | array | Not a field name. |',
+    ].join('\n');
+    const records = extractParameters(
+      page({ doc_id: 'places/geocoding/batch-geocode/batch-geocode', api: 'Batch Geocode API' }),
+      batch,
+    );
+    expect(records.map((r) => r.name)).toEqual(['[].q', '[].limit']);
+    expect(records[1]).toMatchObject({
+      endpoint: 'batch-geocode',
+      type: 'integer',
+      location: 'body',
+      required: null,
+    });
   });
 
   it('dedupes by endpoint and name keeping the first record', () => {

@@ -1,8 +1,8 @@
 /**
  * Ranked documentation search over the in-memory index (spec §7): BM25 on chunk text
  * and on the title/heading field, whole-identifier emphasis, synonym expansion,
- * category/api boosts, an sdk filter, chunk-type penalties, result diversity and
- * fence-safe snippets centred on the matched terms.
+ * category/api boosts, an sdk filter, chunk-type penalties, one result per page section,
+ * result diversity and fence-safe snippets centred on the matched terms.
  */
 import { hasUnbalancedFence } from './markdown.js';
 import type { DocsIndex } from './store.js';
@@ -91,13 +91,19 @@ export function search(index: DocsIndex, options: SearchOptions): SearchHit[] {
   }
   candidates.sort((a, b) => b.score - a.score || a.chunk - b.chunk);
 
-  // Diversity: at most N chunks per page until the list is full; overflow fills the rest.
+  // One result per page section (the best-scoring chunk of it; the others would repeat
+  // the same title, heading and source_url), then diversity: at most N sections per page
+  // until the list is full; overflow fills the rest.
   const chosen: Array<{ chunk: number; score: number }> = [];
   const overflow: Array<{ chunk: number; score: number }> = [];
   const perPage = new Map<string, number>();
+  const seenSections = new Set<string>();
   for (const candidate of candidates) {
     if (chosen.length >= limit) break;
-    const docId = index.chunks[candidate.chunk]!.doc_id;
+    const { doc_id: docId, heading_path: headingPath } = index.chunks[candidate.chunk]!;
+    const sectionKey = `${docId}\u0000${headingPath.join('\u0000')}`;
+    if (seenSections.has(sectionKey)) continue;
+    seenSections.add(sectionKey);
     const count = perPage.get(docId) ?? 0;
     if (count >= SEARCH_WEIGHTS.maxChunksPerPage) {
       overflow.push(candidate);

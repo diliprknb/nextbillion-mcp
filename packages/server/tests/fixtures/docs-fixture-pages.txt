@@ -1,0 +1,34 @@
+# Pages of nextbillion-ai/nb-public-docs (repo-relative paths, at the commit pinned in
+# docs/docs-pin.json) that make up tests/fixtures/docs-index.json. Regenerate the fixture
+# after editing: npm run docs:build-index -- --docs <clone>. Keep it small: every page here
+# is a test dependency, not documentation coverage.
+#
+# Reference page of every API tool (tests/unit/docs-index-data.test.ts checks the links).
+Maps/Static Images API/static-images-api.md
+Places/Autosuggestions/autocomplete-api.md
+Places/Autosuggestions/autosuggest-api.md
+Places/Geocoding/Batch Geocode/batch-geocode.md
+Places/Geocoding/Forward Geocode/forward-geocode.md
+Places/Geocoding/Geocode Postcode/geocode-postcode.md
+Places/Geocoding/Reverse Geocode/reverse-geocode.md
+Places/Geocoding/Structured Geocode/structured-geocode.md
+Places/Place Lookup/place-lookup.md
+Places/Search/Search Along Route API/search-along-route-api.md
+Places/Search/Search Places API/browse-api.md
+Places/Search/Search Places API/discover-api.md
+Places/Search/Search Places API/search-places-apis.md
+Routing/Directions API/directions-api.md
+Routing/Distance Matrix/asynchronous.md
+Routing/Distance Matrix/synchronous.md
+Routing/Isochrone API/isochrone-api.md
+# Search and page-fetch cases (truck routing examples; a page over the size cap).
+Routing/Directions API/Examples/directions-for-custom-truck-sizes.md
+Routing/Directions API/Examples/legal-routes-for-a-given-truck-weight.md
+Routing/Directions API/Examples/avoid-tolls-and-highways.md
+Tracking/Geofence API/geofence-api.md
+# SDK pages (platform tagging, sdk filters) and one page per remaining category.
+Maps/Mobile SDKs/Android/mapview.md
+Maps/Mobile SDKs/Flutter/annotations.md
+Maps/Mobile SDKs/Flutter/Examples/mapview-markers.md
+Optimization/Driver Assignment API/Examples/back-to-back-order-assignments.md
+Tracking/Mobile SDKs/Flutter/examples.md

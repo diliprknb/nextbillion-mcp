@@ -1,5 +1,6 @@
 /**
- * Shape of the packed documentation index (`data/docs-index.json`), the only thing that
+ * Shape of the packed documentation index (built in-process; tests/fixtures/docs-index.json
+ * is a small committed sample), the only thing that
  * crosses from build time (scripts/docs/build-index.ts) to runtime (src/docs/*).
  * Plain chunks, no prebuilt term index: ranking can change without a docs rebuild.
  */
@@ -10,8 +11,12 @@ export interface DocsIndexMeta {
   format: 2;
   /** Commit of nextbillion-ai/nb-public-docs the index was built from. */
   commit_sha: string;
-  /** Commit date of that docs commit (deterministic, so rebuilds without changes are no-ops). */
-  built_at: string;
+  /**
+   * When the documentation was last updated: the commit date of `commit_sha` (deterministic,
+   * so rebuilds without changes are no-ops). Named for what it means to a reader, not for
+   * when the index was built.
+   */
+  docs_updated_at: string;
   pages: number;
   chunks: number;
   parameters: number;

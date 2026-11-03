@@ -8,8 +8,8 @@
     {
       "name": "nextbillion-mcp",
       "source": "./distributions/claude-code",
-      "description": "NextBillion.ai location APIs as MCP tools: geocoding, place search and browse, routing, distance matrix, isochrones, and static maps with overlays",
-      "version": "0.3.1",
+      "description": "NextBillion.ai location APIs as MCP tools: geocoding, place search and browse, routing, distance matrix, isochrones, static maps and documentation. Connects to the hosted server at https://mcp.nextbillion.io.",
+      "version": "0.5.3",
       "author": {
         "name": "NextBillion.ai"
       }

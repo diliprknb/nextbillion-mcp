@@ -16,6 +16,13 @@ import { getApiParameters } from './docs/get-api-parameters.js';
 import { getDocumentation } from './docs/get-documentation.js';
 import { listDocumentationTopics } from './docs/list-documentation-topics.js';
 import { searchDocumentation } from './docs/search-documentation.js';
+import { bbox } from './geometry/bbox.js';
+import { buffer } from './geometry/buffer.js';
+import { centroid } from './geometry/centroid.js';
+import { measure } from './geometry/measure.js';
+import { nearest } from './geometry/nearest.js';
+import { pointsInPolygon } from './geometry/points-in-polygon.js';
+import { polygonOps } from './geometry/polygon-ops.js';
 
 /**
  * Every tool served by this MCP server, sorted by name. The order is deliberately
@@ -43,4 +50,11 @@ export const ALL_TOOLS: ReadonlyArray<NbTool> = [
   searchAlongRoute,
   staticMapImage,
   staticRouteMap,
+  bbox,
+  buffer,
+  centroid,
+  measure,
+  nearest,
+  pointsInPolygon,
+  polygonOps,
 ].sort((a, b) => a.name.localeCompare(b.name));
