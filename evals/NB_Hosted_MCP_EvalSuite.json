@@ -1,0 +1,3771 @@
+{
+  "name": "NB_Hosted_MCP_EvalSuite",
+  "description": "Hosted nextbillion-mcp (https://mcp.nextbillion.io, v0.5.3, 27 tools). Ports the cases from Nextbillion-MCPEval_KB_Suite-Master and NB_offcl_KB_Tools_EvalSuite, plus new cases for the geometry tools (bbox, buffer, centroid, measure, nearest, points_in_polygon, polygon_ops) and newer routing/search options. Model: Claude Sonnet 4.5.",
+  "servers": [
+    "nextbillion-mcp-hosted"
+  ],
+  "model": "anthropic/claude-sonnet-4.5",
+  "cases": [
+    {
+      "title": "Autocomplete Google Amphitheatre address prefix",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "I am typing 1600 Amphitheatre Pkwy into the search bar. Show autocomplete candidates for the prefix '1600 Amphitheatre Pkw'."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "autocomplete",
+            "args": {
+              "args": {
+                "query": "1600 Amphitheatre Pkw"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Amphitheatre",
+            "caseSensitive": false,
+            "toolName": "autocomplete",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Autocomplete 'stat' prefix in Oklahoma City with country filter",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Complete the partial address prefix 'stat' near latitude 35.4769, longitude -97.4872 restricted to country USA."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "autocomplete",
+            "args": {
+              "args": {
+                "country_codes": [
+                  "USA"
+                ],
+                "near": {
+                  "latitude": 35.4769,
+                  "longitude": -97.4872
+                },
+                "query": "stat"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "State",
+            "caseSensitive": false,
+            "toolName": "autocomplete",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Autosuggest misspelled aquarium query",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "I made a typo while searching. Suggest places for the misspelled query 'aqauriums' near latitude 42.3501 and longitude -71.0689."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "autosuggest",
+            "args": {
+              "args": {
+                "near": {
+                  "latitude": 42.3501,
+                  "longitude": -71.0689
+                },
+                "query": "aqauriums"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Aquarium",
+            "caseSensitive": false,
+            "toolName": "autosuggest",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Autosuggest partial tourist query with radius",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Find search-as-you-type suggestions for the incomplete query 'London muse' within a 10000 meter radius of latitude 51.5074, longitude -0.1278."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "autosuggest",
+            "args": {
+              "args": {
+                "query": "London muse",
+                "radius_m": 10000
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Museum",
+            "caseSensitive": false,
+            "toolName": "autosuggest",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Search coffee shops near location",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Find coffee shops near latitude 37.7749, longitude -122.4194 within a 1000 meter radius."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "place_search",
+            "args": {
+              "args": {
+                "near": {
+                  "latitude": 37.7749,
+                  "longitude": -122.4194
+                },
+                "radius_m": 1000
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "items": {
+                  "items": {
+                    "properties": {
+                      "categories": {
+                        "contains": {
+                          "properties": {
+                            "name": {
+                              "pattern": "café/pub",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "categories"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "type": "object"
+            },
+            "toolName": "place_search",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Search business by name around coordinates",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Search for the place or business 'Gas Light' around latitude 37.8037, longitude -122.4331."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "place_search",
+            "args": {
+              "args": {
+                "near": {
+                  "latitude": 37.8037,
+                  "longitude": -122.4331
+                },
+                "query": "Gas Light"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Gas Light",
+            "caseSensitive": false,
+            "toolName": "place_search",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Geocode 10 Downing Street address",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "What are the geographical coordinates and full postal address for '10 Downing Street, London, UK'?"
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_forward",
+            "args": {
+              "args": {
+                "query": "10 Downing Street, London, UK"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Downing Street",
+            "caseSensitive": false,
+            "toolName": "geocode_forward",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Geocode White House with USA country code",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Forward geocode '1600 Pennsylvania Avenue NW, Washington DC' filtered to country USA."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_forward",
+            "args": {
+              "args": {
+                "country_codes": [
+                  "USA"
+                ],
+                "query": "1600 Pennsylvania Avenue NW, Washington DC"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Pennsylvania Avenue",
+            "caseSensitive": false,
+            "toolName": "geocode_forward",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Reverse geocode Paris coordinates",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "What is the street address located at latitude 48.8566 and longitude 2.3522 in Paris?"
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_reverse",
+            "args": {
+              "args": {
+                "coordinate": {
+                  "latitude": 48.8566,
+                  "longitude": 2.3522
+                }
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Paris",
+            "caseSensitive": false,
+            "toolName": "geocode_reverse",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Reverse geocode Berlin coordinates with country filter",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Reverse geocode the GPS coordinates latitude 52.5308, longitude 13.3856 in Germany (country code DEU)."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_reverse",
+            "args": {
+              "args": {
+                "coordinate": {
+                  "latitude": 52.5308,
+                  "longitude": 13.3856
+                },
+                "country_codes": [
+                  "DEU"
+                ]
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Berlin",
+            "caseSensitive": false,
+            "toolName": "geocode_reverse",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Structured geocode 221B Baker Street London",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Find the coordinates for 221B Baker Street, London in country GBR using structured address fields."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_structured",
+            "args": {
+              "args": {
+                "city": "London",
+                "country_code": "GBR",
+                "house_number": "221B",
+                "street": "Baker Street"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Baker Street",
+            "caseSensitive": false,
+            "toolName": "geocode_structured",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Structured geocode Mullen Ave San Francisco",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Geocode this structured address: country 'USA', state 'California', city 'San Francisco', street 'Mullen Avenue', postal code '94110'."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_structured",
+            "args": {
+              "args": {
+                "city": "San Francisco",
+                "country_code": "USA",
+                "postal_code": "94110",
+                "state": "California",
+                "street": "Mullen Avenue"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Mullen Avenue",
+            "caseSensitive": false,
+            "toolName": "geocode_structured",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Batch geocode US landmarks",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Geocode these three locations in a single batch request: 'Empire State Building, NY', 'Golden Gate Bridge, CA', and 'Space Needle, WA'."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_batch",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "results": {
+                  "items": {
+                    "properties": {
+                      "items": {
+                        "minItems": 1,
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "items"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 3,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "results"
+              ],
+              "type": "object"
+            },
+            "toolName": "geocode_batch",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Batch geocode White House and Empire State Building",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Perform a batch geocode request for '1600 Pennsylvania Avenue NW, Washington DC' and 'Empire State Building, 350 5th Ave, New York, NY' in country USA."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_batch",
+            "args": {
+              "args": {
+                "queries": [
+                  {
+                    "country_codes": [
+                      "USA"
+                    ],
+                    "query": "1600 Pennsylvania Avenue NW, Washington DC"
+                  },
+                  {
+                    "country_codes": [
+                      "USA"
+                    ],
+                    "query": "Empire State Building, 350 5th Ave, New York, NY"
+                  }
+                ]
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "results": {
+                  "items": {
+                    "properties": {
+                      "items": {
+                        "minItems": 1,
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "items"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 2,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "results"
+              ],
+              "type": "object"
+            },
+            "toolName": "geocode_batch",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Browse restaurants near Singapore coordinates",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "List places in the 'restaurant' category near latitude 1.2839, longitude 103.8607 within an 800 meter radius."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "place_browse",
+            "args": {
+              "args": {
+                "categories": [
+                  "restaurant"
+                ],
+                "near": {
+                  "latitude": 1.2839,
+                  "longitude": 103.8607
+                },
+                "radius_m": 800
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "items": {
+                  "items": {
+                    "properties": {
+                      "categories": {
+                        "contains": {
+                          "properties": {
+                            "name": {
+                              "pattern": "restaurant",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "categories"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "type": "object"
+            },
+            "toolName": "place_browse",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Browse schools near Berlin coordinates",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Browse places in the 'schools' category within 2000 meters of latitude 52.5308, longitude 13.3856."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "place_browse",
+            "args": {
+              "args": {
+                "categories": [
+                  "schools"
+                ],
+                "near": {
+                  "latitude": 52.5308,
+                  "longitude": 13.3856
+                },
+                "radius_m": 2000
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "items": {
+                  "items": {
+                    "properties": {
+                      "categories": {
+                        "contains": {
+                          "properties": {
+                            "name": {
+                              "pattern": "school",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "categories"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "type": "object"
+            },
+            "toolName": "place_browse",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Lookup place details for Mullen Avenue",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Fetch the full place details and contacts for place ID '2EmBgAmFpR9dg0D89EBzNA'."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "place_lookup",
+            "args": {
+              "args": {
+                "id": "2EmBgAmFpR9dg0D89EBzNA"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Mullen Avenue",
+            "caseSensitive": false,
+            "toolName": "place_lookup",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Lookup details for Empire State Building ID",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Get the complete place details and access coordinates for place ID '5GjOCyXMUOsLhBw6vwpo_Q'."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "place_lookup",
+            "args": {
+              "args": {
+                "id": "5GjOCyXMUOsLhBw6vwpo_Q"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Empire State Building",
+            "caseSensitive": false,
+            "toolName": "place_lookup",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Lookup postal code 90011 USA",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Get the centroid coordinates and boundary polygon for postal code '90011' in country 'USA'."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "postcode_lookup",
+            "args": {
+              "args": {
+                "country": "USA",
+                "postal_code": "90011"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "90011",
+            "caseSensitive": false,
+            "toolName": "postcode_lookup",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Lookup postal code 110007 India",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Look up the centroid and boundary for postal code '110007' in country 'India'."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "postcode_lookup",
+            "args": {
+              "args": {
+                "country": "India",
+                "postal_code": "110007"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "110007",
+            "caseSensitive": false,
+            "toolName": "postcode_lookup",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Directions SF to LA avoiding tolls",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Calculate driving directions from San Francisco (latitude 37.7749, longitude -122.4194) to Los Angeles (latitude 34.0522, longitude -118.2437) avoiding tolls."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "directions",
+            "args": {
+              "args": {
+                "avoid": [
+                  "toll"
+                ],
+                "destination": {
+                  "latitude": 34.0522,
+                  "longitude": -118.2437
+                },
+                "origin": {
+                  "latitude": 37.7749,
+                  "longitude": -122.4194
+                }
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "routes": {
+                  "items": {
+                    "properties": {
+                      "distance": {
+                        "exclusiveMinimum": 0,
+                        "type": "number"
+                      },
+                      "duration": {
+                        "exclusiveMinimum": 0,
+                        "type": "number"
+                      },
+                      "geometry": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "distance",
+                      "duration",
+                      "geometry"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "routes"
+              ],
+              "type": "object"
+            },
+            "toolName": "directions",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Truck directions with hazardous cargo",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Calculate truck directions from Barcelona (41.349302, 2.136480) to (41.389925, 2.136258) for an 18000 kg truck carrying flammable_liquid hazmat."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "directions",
+            "args": {
+              "args": {
+                "destination": {
+                  "latitude": 41.389925,
+                  "longitude": 2.136258
+                },
+                "hazmat_type": [
+                  "flammable_liquid"
+                ],
+                "mode": "truck",
+                "origin": {
+                  "latitude": 41.349302,
+                  "longitude": 2.13648
+                },
+                "truck_weight_kg": 18000
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Distance matrix Singapore 1x2",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Calculate the driving distance and travel duration matrix from origin (1.29, 103.85) to two destination points (1.35, 103.99) and (1.30, 103.77)."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "distance_matrix",
+            "args": {
+              "args": {
+                "destinations": [
+                  {
+                    "latitude": 1.35,
+                    "longitude": 103.99
+                  },
+                  {
+                    "latitude": 1.3,
+                    "longitude": 103.77
+                  }
+                ],
+                "origins": [
+                  {
+                    "latitude": 1.29,
+                    "longitude": 103.85
+                  }
+                ]
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "rows": {
+                  "items": {
+                    "properties": {
+                      "elements": {
+                        "items": {
+                          "properties": {
+                            "distance": {
+                              "properties": {
+                                "value": {
+                                  "minimum": 0,
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            "duration": {
+                              "properties": {
+                                "value": {
+                                  "minimum": 0,
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "value"
+                              ],
+                              "type": "object"
+                            }
+                          },
+                          "required": [
+                            "distance",
+                            "duration"
+                          ],
+                          "type": "object"
+                        },
+                        "minItems": 1,
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "elements"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                },
+                "status": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "rows",
+                "status"
+              ],
+              "type": "object"
+            },
+            "toolName": "distance_matrix",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Distance matrix Barcelona 2x1",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Compute the distance matrix from two origins (41.349302, 2.136480) and (41.389925, 2.136258) to destination (41.357961, 2.097878)."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "distance_matrix",
+            "args": {
+              "args": {
+                "destinations": [
+                  {
+                    "latitude": 41.357961,
+                    "longitude": 2.097878
+                  }
+                ],
+                "origins": [
+                  {
+                    "latitude": 41.349302,
+                    "longitude": 2.13648
+                  },
+                  {
+                    "latitude": 41.389925,
+                    "longitude": 2.136258
+                  }
+                ]
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "rows": {
+                  "items": {
+                    "properties": {
+                      "elements": {
+                        "items": {
+                          "properties": {
+                            "distance": {
+                              "properties": {
+                                "value": {
+                                  "minimum": 0,
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "value"
+                              ],
+                              "type": "object"
+                            },
+                            "duration": {
+                              "properties": {
+                                "value": {
+                                  "minimum": 0,
+                                  "type": "number"
+                                }
+                              },
+                              "required": [
+                                "value"
+                              ],
+                              "type": "object"
+                            }
+                          },
+                          "required": [
+                            "distance",
+                            "duration"
+                          ],
+                          "type": "object"
+                        },
+                        "minItems": 1,
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "elements"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                },
+                "status": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "rows",
+                "status"
+              ],
+              "type": "object"
+            },
+            "toolName": "distance_matrix",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Isochrone 10 and 20 minute driving contours",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Calculate the 10 and 20 minute driving reachability polygon contours starting from (37.7749, -122.4194)."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "isochrone",
+            "args": {
+              "args": {
+                "contours_minutes": [
+                  10,
+                  20
+                ],
+                "origin": {
+                  "latitude": 37.7749,
+                  "longitude": -122.4194
+                }
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "features": {
+                  "items": {
+                    "properties": {
+                      "geometry": {
+                        "properties": {
+                          "coordinates": {
+                            "minItems": 1,
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "coordinates"
+                        ],
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "geometry"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "features"
+              ],
+              "type": "object"
+            },
+            "toolName": "isochrone",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Isochrone 5-minute car driving polygon",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Calculate a 5-minute driving isochrone contour starting from latitude 34.047158, longitude -118.249772 returned as polygons."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "isochrone",
+            "args": {
+              "args": {
+                "contours_minutes": [
+                  5
+                ],
+                "origin": {
+                  "latitude": 34.047158,
+                  "longitude": -118.249772
+                },
+                "polygons": true
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "features": {
+                  "items": {
+                    "properties": {
+                      "geometry": {
+                        "properties": {
+                          "coordinates": {
+                            "minItems": 1,
+                            "type": "array"
+                          }
+                        },
+                        "required": [
+                          "coordinates"
+                        ],
+                        "type": "object"
+                      }
+                    },
+                    "required": [
+                      "geometry"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "features"
+              ],
+              "type": "object"
+            },
+            "toolName": "isochrone",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Search gas stations along 2-point route",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Find gas stations along my route from (34.0493, -118.2557) to (34.0415, -118.2310) with maximum detour time of 600 seconds."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_along_route",
+            "args": {
+              "args": {
+                "max_detour_seconds": 600,
+                "query": "gas station",
+                "route_points": [
+                  {
+                    "latitude": 34.0493,
+                    "longitude": -118.2557
+                  },
+                  {
+                    "latitude": 34.0415,
+                    "longitude": -118.231
+                  }
+                ]
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "items": {
+                  "items": {
+                    "properties": {
+                      "categories": {
+                        "contains": {
+                          "properties": {
+                            "name": {
+                              "pattern": "Gas Station",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "categories"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "type": "object"
+            },
+            "toolName": "search_along_route",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Search gas stations along 4-waypoint route",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Search for gas stations along the driving route [(34.04932, -118.25574), (34.04711, -118.24977), (34.04154, -118.23108), (34.03882, -118.20757)] with maximum detour of 600 seconds."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_along_route",
+            "args": {
+              "args": {
+                "max_detour_seconds": 600,
+                "query": "gas station",
+                "route_points": [
+                  {
+                    "latitude": 34.04932,
+                    "longitude": -118.25574
+                  },
+                  {
+                    "latitude": 34.04711,
+                    "longitude": -118.24977
+                  },
+                  {
+                    "latitude": 34.04154,
+                    "longitude": -118.23108
+                  },
+                  {
+                    "latitude": 34.03882,
+                    "longitude": -118.20757
+                  }
+                ]
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "items": {
+                  "items": {
+                    "properties": {
+                      "categories": {
+                        "contains": {
+                          "properties": {
+                            "name": {
+                              "pattern": "Gas Station",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "name"
+                          ],
+                          "type": "object"
+                        },
+                        "type": "array"
+                      }
+                    },
+                    "required": [
+                      "categories"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "items"
+              ],
+              "type": "object"
+            },
+            "toolName": "search_along_route",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Static map of Paris with red marker",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Render a static map image centered at latitude 48.8566, longitude 2.3522 at zoom level 14 with a red marker at (48.8584, 2.2945)."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "static_map_image",
+            "args": {
+              "args": {
+                "center": {
+                  "latitude": 48.8566,
+                  "longitude": 2.3522
+                },
+                "markers": [
+                  {
+                    "color": "red",
+                    "latitude": 48.8584,
+                    "longitude": 2.2945
+                  }
+                ],
+                "zoom": 14
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "items": {
+                "properties": {
+                  "data": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "mediaType": {
+                    "const": "image/png"
+                  }
+                },
+                "required": [
+                  "data",
+                  "mediaType"
+                ],
+                "type": "object"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            "toolName": "static_map_image",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Hybrid static map centered in LA",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Render a 512x512 hybrid static map image centered at latitude 33.93, longitude -118.12 at zoom 9."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "static_map_image",
+            "args": {
+              "args": {
+                "center": {
+                  "latitude": 33.93,
+                  "longitude": -118.12
+                },
+                "height": 512,
+                "style": "hybrid",
+                "width": 512,
+                "zoom": 9
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "items": {
+                "properties": {
+                  "data": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "mediaType": {
+                    "const": "image/png"
+                  }
+                },
+                "required": [
+                  "data",
+                  "mediaType"
+                ],
+                "type": "object"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            "toolName": "static_map_image",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Static route map from SF route points",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Render a static route map auto-fitted to route points [(37.77, -122.42), (37.78, -122.40), (37.79, -122.41)] with a blue line."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "static_route_map",
+            "args": {
+              "args": {
+                "route_points": [
+                  {
+                    "latitude": 37.77,
+                    "longitude": -122.42
+                  },
+                  {
+                    "latitude": 37.78,
+                    "longitude": -122.4
+                  },
+                  {
+                    "latitude": 37.79,
+                    "longitude": -122.41
+                  }
+                ],
+                "stroke_color": "blue"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "items": {
+                "properties": {
+                  "data": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "mediaType": {
+                    "const": "image/png"
+                  }
+                },
+                "required": [
+                  "data",
+                  "mediaType"
+                ],
+                "type": "object"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            "toolName": "static_route_map",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Auto-fitted static map with polygon overlay",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Render an auto-fitted static map outlining this path polygon [(45.8, 5.9), (47.8, 5.9), (47.8, 10.5), (45.8, 10.5), (45.8, 5.9)] with a green stroke."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "static_route_map",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "items": {
+                "properties": {
+                  "data": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "mediaType": {
+                    "const": "image/png"
+                  }
+                },
+                "required": [
+                  "data",
+                  "mediaType"
+                ],
+                "type": "object"
+              },
+              "minItems": 1,
+              "type": "array"
+            },
+            "toolName": "static_route_map",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Search docs for truck weight restrictions in Directions API",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Search the NextBillion.ai documentation for 'truck weight restrictions' in the Directions API."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_documentation",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "truck weight",
+            "caseSensitive": false,
+            "toolName": "search_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "results": {
+                  "items": {
+                    "required": [
+                      "doc_id",
+                      "title",
+                      "source_url",
+                      "snippet"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "results"
+              ],
+              "type": "object"
+            },
+            "toolName": "search_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-3",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Search Android SDK docs for turn-by-turn navigation",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Search the docs for 'turn by turn navigation', only in Android SDK pages, and give me at most 3 results."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_documentation",
+            "args": {
+              "args": {
+                "limit": 3,
+                "query": "turn by turn navigation",
+                "sdk": "Android"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "android",
+            "caseSensitive": false,
+            "toolName": "search_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "results": {
+                  "items": {
+                    "required": [
+                      "doc_id",
+                      "title",
+                      "source_url",
+                      "snippet"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "results"
+              ],
+              "type": "object"
+            },
+            "toolName": "search_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-3",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Fetch the Avoid Tolls & Highways example page",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Open the documentation page with doc_id 'routing/directions-api/examples/avoid-tolls-and-highways'."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_documentation",
+            "args": {
+              "args": {
+                "doc_id": "routing/directions-api/examples/avoid-tolls-and-highways"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Avoid Tolls",
+            "caseSensitive": false,
+            "toolName": "get_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "content": {
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "doc_id",
+                "title",
+                "source_url",
+                "content"
+              ],
+              "type": "object"
+            },
+            "toolName": "get_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-3",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Fetch one section of a docs page including code samples",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "From the documentation page 'routing/directions-api/examples/legal-routes-for-a-given-truck-weight', show me only the 'Request' section and include the code examples."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_documentation",
+            "args": {
+              "args": {
+                "doc_id": "routing/directions-api/examples/legal-routes-for-a-given-truck-weight",
+                "include_examples": true,
+                "section": "Request"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "truck_weight",
+            "caseSensitive": false,
+            "toolName": "get_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "content": {
+                  "minLength": 1,
+                  "type": "string"
+                },
+                "include_examples": {
+                  "const": true
+                },
+                "section": {
+                  "const": "Request"
+                }
+              },
+              "required": [
+                "doc_id",
+                "section",
+                "include_examples",
+                "content"
+              ],
+              "type": "object"
+            },
+            "toolName": "get_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-3",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Look up the Directions truck_weight parameter",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "What are the type, default, and allowed range of the 'truck_weight' parameter in the Directions API?"
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_api_parameters",
+            "args": {
+              "args": {
+                "endpoint": "directions",
+                "name": "truck_weight"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "truck_weight",
+            "caseSensitive": false,
+            "toolName": "get_api_parameters",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "parameters": {
+                  "items": {
+                    "required": [
+                      "name",
+                      "endpoint",
+                      "description"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "parameters"
+              ],
+              "type": "object"
+            },
+            "toolName": "get_api_parameters",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-3",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Look up the Isochrone mode parameter",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Using the API parameter reference, what are the allowed values of the 'mode' parameter of the Isochrone API?"
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_api_parameters",
+            "args": {
+              "args": {
+                "endpoint": "isochrone",
+                "name": "mode"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "truck",
+            "caseSensitive": false,
+            "toolName": "get_api_parameters",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "parameters": {
+                  "items": {
+                    "required": [
+                      "name",
+                      "allowed_values"
+                    ],
+                    "type": "object"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "parameters"
+              ],
+              "type": "object"
+            },
+            "toolName": "get_api_parameters",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-3",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "List Routing documentation topics",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "List the documentation topics available in the Routing category."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "list_documentation_topics",
+            "args": {
+              "args": {
+                "category": "Routing"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Directions API",
+            "caseSensitive": false,
+            "toolName": "list_documentation_topics",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "categories": {
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "total_pages",
+                "categories"
+              ],
+              "type": "object"
+            },
+            "toolName": "list_documentation_topics",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-3",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "List Android SDK documentation topics",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Which documentation pages exist for the Android SDKs?"
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "list_documentation_topics",
+            "args": {
+              "args": {
+                "sdk": "Android"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Android Maps SDK",
+            "caseSensitive": false,
+            "toolName": "list_documentation_topics",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultMatchesSchema",
+            "schema": {
+              "properties": {
+                "categories": {
+                  "minItems": 1,
+                  "type": "array"
+                }
+              },
+              "required": [
+                "total_pages",
+                "categories"
+              ],
+              "type": "object"
+            },
+            "toolName": "list_documentation_topics",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-3",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Search docs: avoid toll roads in Flutter SDK",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Search the NextBillion documentation for how to avoid toll roads in the Flutter SDK."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_documentation",
+            "args": {
+              "args": {}
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "Search docs: truck_weight parameter",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Search the NextBillion documentation for truck weight restrictions in the Directions API."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_documentation",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "Search docs: batch geocoding body and limit",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Search the NextBillion documentation: what is the request body format and the batch size limit for batch geocoding?"
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_documentation",
+            "args": {
+              "args": {}
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "Search docs: geofence alerts",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Search the NextBillion documentation for how to set up geofence alerts."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_documentation",
+            "args": {
+              "args": {}
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "Get doc page: Flutter route line style",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Get the full documentation page with doc_id 'routing/mobile-sdks/flutter/examples/customize-route-line-style'."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_documentation",
+            "args": {
+              "args": {}
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "Get doc page: Directions API reference",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Fetch the full Directions API reference page from the NextBillion docs (doc_id 'routing/directions-api/directions-api')."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_documentation",
+            "args": {
+              "args": {}
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "Get doc page: Batch Geocode API",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Get the full NextBillion documentation page with doc_id 'places/geocoding/batch-geocode/batch-geocode'."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_documentation",
+            "args": {
+              "args": {
+                "doc_id": "places/geocoding/batch-geocode/batch-geocode"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "batch",
+            "caseSensitive": false,
+            "toolName": "get_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "List topics: Routing category",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "List all available NextBillion documentation topics under the Routing category."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "list_documentation_topics",
+            "args": {
+              "args": {}
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "List topics: Flutter SDK",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "List all NextBillion documentation topics for the Flutter SDK."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "list_documentation_topics",
+            "args": {
+              "args": {}
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "Get API parameters: Directions truck_weight",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "For the NextBillion Directions API, give me the type, whether it is required, and allowed values of the truck_weight parameter."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_api_parameters",
+            "args": {
+              "args": {}
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "Geometry: bounding box of Singapore points",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Give me the bounding box that contains these points: (1.29, 103.85), (1.35, 103.99) and (1.43, 103.77)."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "bbox",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "max_latitude",
+            "caseSensitive": false,
+            "toolName": "bbox",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Geometry: 500 m buffer around a point",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Draw a 500 meter buffer polygon around latitude 1.3521, longitude 103.8198."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "buffer",
+            "args": {
+              "args": {
+                "distance": 500
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Polygon",
+            "caseSensitive": false,
+            "toolName": "buffer",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Geometry: centroid of a square polygon",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "What is the centroid of the polygon with corners (0,0), (4,0), (4,4), (0,4) given as GeoJSON lon/lat?"
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "centroid",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "centroid",
+            "caseSensitive": false,
+            "toolName": "centroid",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Geometry: straight-line distance between two points",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "How far apart are (1.3000, 103.8000) and (1.4000, 103.9000) in a straight line, in kilometers?"
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "measure",
+            "args": {
+              "args": {
+                "mode": "distance"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "distance",
+            "caseSensitive": false,
+            "toolName": "measure",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Geometry: area of a polygon",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Compute the area in square kilometers of this GeoJSON polygon: {\"type\":\"Polygon\",\"coordinates\":[[[0,0],[4,0],[4,4],[0,4],[0,0]]]}"
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "measure",
+            "args": {
+              "args": {
+                "mode": "area"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "area",
+            "caseSensitive": false,
+            "toolName": "measure",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Geometry: nearest candidate to a target",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Which of these points is closest to (1.3000, 103.8000): A (1.3100, 103.8000), B (1.5000, 103.9000), C (1.2000, 103.7000)?"
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "nearest",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "distance",
+            "caseSensitive": false,
+            "toolName": "nearest",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Geometry: points inside a polygon",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Which of these points fall inside the polygon {\"type\":\"Polygon\",\"coordinates\":[[[0,0],[4,0],[4,4],[0,4],[0,0]]]}: (2,2), (9,9), (1,3)? Points are latitude/longitude."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "points_in_polygon",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "inside",
+            "caseSensitive": false,
+            "toolName": "points_in_polygon",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Geometry: union of two overlapping polygons",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Merge these two polygons into one: {\"type\":\"Polygon\",\"coordinates\":[[[0,0],[2,0],[2,2],[0,2],[0,0]]]} and {\"type\":\"Polygon\",\"coordinates\":[[[1,1],[3,1],[3,3],[1,3],[1,1]]]}."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "polygon_ops",
+            "args": {
+              "args": {
+                "operation": "union"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "result",
+            "caseSensitive": false,
+            "toolName": "polygon_ops",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Geometry: intersection of two overlapping polygons",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Compute the intersection of these two polygons (their overlapping region). {\"type\":\"Polygon\",\"coordinates\":[[[0,0],[2,0],[2,2],[0,2],[0,0]]]} and {\"type\":\"Polygon\",\"coordinates\":[[[1,1],[3,1],[3,3],[1,3],[1,1]]]}."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "polygon_ops",
+            "args": {
+              "args": {
+                "operation": "intersect"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "result",
+            "caseSensitive": false,
+            "toolName": "polygon_ops",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Places: place_search for a named business",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Find Starbucks locations near latitude 1.3521, longitude 103.8198 within 2 km."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "place_search",
+            "args": {
+              "args": {
+                "query": "Starbucks"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Places: place_browse by category",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Browse hospitals near latitude 28.6139, longitude 77.2090."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "place_browse",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Geocoding: forward geocode a landmark",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Geocode the Eiffel Tower and give me its coordinates."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_forward",
+            "args": {
+              "args": {
+                "query": "Eiffel Tower"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "latitude",
+            "caseSensitive": false,
+            "toolName": "geocode_forward",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Routing: truck route with dimensions and weight",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Plan a truck route from (37.7749, -122.4194) to (37.3382, -121.8863). The truck is 12 m long, 2.5 m wide, 4 m high, weighs 18000 kg, and the route must honor truck restrictions."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "directions",
+            "args": {
+              "args": {
+                "mode": "truck",
+                "origin": {
+                  "latitude": 37.7749,
+                  "longitude": -122.4194
+                },
+                "destination": {
+                  "latitude": 37.3382,
+                  "longitude": -121.8863
+                }
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "routes",
+            "caseSensitive": false,
+            "toolName": "directions",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Routing: directions with alternatives",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Give me up to 2 alternative driving routes from (37.7749, -122.4194) to (37.8044, -122.2712)."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "directions",
+            "args": {
+              "args": {
+                "alternatives": true
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "routes",
+            "caseSensitive": false,
+            "toolName": "directions",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Routing: directions via a waypoint",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Drive from (37.7749, -122.4194) to (34.0522, -118.2437) via Fresno at (36.7378, -119.7871)."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "directions",
+            "args": {
+              "args": {
+                "origin": {
+                  "latitude": 37.7749,
+                  "longitude": -122.4194
+                },
+                "destination": {
+                  "latitude": 34.0522,
+                  "longitude": -118.2437
+                }
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "routes",
+            "caseSensitive": false,
+            "toolName": "directions",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Routing: 3x3 distance matrix",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Build a travel-time matrix between origins (1.30,103.80), (1.32,103.82), (1.34,103.84) and the same three as destinations."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "distance_matrix",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "durations",
+            "caseSensitive": false,
+            "toolName": "distance_matrix",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Routing: isochrone by distance",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Show everywhere reachable within 5 kilometers of driving from (1.3521, 103.8198)."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "isochrone",
+            "args": {
+              "args": {
+                "origin": {
+                  "latitude": 1.3521,
+                  "longitude": 103.8198
+                }
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "Polygon",
+            "caseSensitive": false,
+            "toolName": "isochrone",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Routing: pedestrian isochrone",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "What area can I walk to in 15 minutes from (51.5074, -0.1278)?"
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "isochrone",
+            "args": {
+              "args": {
+                "contours_minutes": [
+                  15
+                ]
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Maps: static route map from an encoded polyline",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Render a static map image of a route from (37.7749, -122.4194) to (37.8044, -122.2712), 800x600."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "static_route_map",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Docs: search for geofence alerts",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Search the NextBillion documentation for how geofence alerts work."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_documentation",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "geofence",
+            "caseSensitive": false,
+            "toolName": "search_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Docs: list SDK topics for iOS",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "List the iOS SDK documentation topics."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "list_documentation_topics",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "categories",
+            "caseSensitive": false,
+            "toolName": "list_documentation_topics",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "Multi-turn: geocode two cities then route between them",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Geocode Mumbai, India and Pune, India."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "geocode_forward",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-2",
+          "kind": "prompt",
+          "prompt": "Now give me driving directions from Mumbai to Pune using those coordinates."
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "directions",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-end",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    }
+  ]
+}

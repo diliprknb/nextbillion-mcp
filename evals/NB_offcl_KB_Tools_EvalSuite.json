@@ -1,0 +1,410 @@
+{
+  "name": "NB_offcl_KB_Tools_EvalSuite",
+  "description": "Documentation/knowledge-base tools of nextbillion-mcp: search_documentation, get_documentation, list_documentation_topics, get_api_parameters. Same prompts as NB_Drk_KB_Tools_EvalSuite for the 3 shared tools. Model: Claude Sonnet 4.5.",
+  "servers": [
+    "nextbillion-mcp"
+  ],
+  "model": "anthropic/claude-sonnet-4.5",
+  "cases": [
+    {
+      "title": "01 Search docs: avoid toll roads in Flutter SDK",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Search the NextBillion documentation for how to avoid toll roads in the Flutter SDK."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_documentation",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "toll",
+            "caseSensitive": false,
+            "toolName": "search_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "02 Search docs: truck_weight parameter",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Using the NextBillion documentation, find out what the truck_weight parameter does in the Directions API."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_documentation",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "truck",
+            "caseSensitive": false,
+            "toolName": "search_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "03 Search docs: batch geocoding body and limit",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Search the NextBillion documentation: what is the request body format and the batch size limit for batch geocoding?"
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_documentation",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "batch",
+            "caseSensitive": false,
+            "toolName": "search_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "04 Search docs: geofence alerts",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Search the NextBillion documentation for how to set up geofence alerts."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "search_documentation",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "geofence",
+            "caseSensitive": false,
+            "toolName": "search_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "05 Get doc page: Flutter route line style",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Get the full documentation page with doc_id 'routing/mobile-sdks/flutter/examples/customize-route-line-style'."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_documentation",
+            "args": {
+              "args": {
+                "doc_id": "routing/mobile-sdks/flutter/examples/customize-route-line-style"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "route line",
+            "caseSensitive": false,
+            "toolName": "get_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "06 Get doc page: Directions API reference",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Fetch the full Directions API reference page from the NextBillion docs (doc_id 'routing/directions-api/directions-api')."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_documentation",
+            "args": {
+              "args": {
+                "doc_id": "routing/directions-api/directions-api"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "directions",
+            "caseSensitive": false,
+            "toolName": "get_documentation",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "07 Get doc page: invalid doc_id",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "Get the NextBillion documentation page with doc_id 'does/not/exist'."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_documentation",
+            "args": {
+              "args": {
+                "doc_id": "does/not/exist"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "title": "08 List topics: Routing category",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "List all available NextBillion documentation topics under the Routing category."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "list_documentation_topics",
+            "args": {
+              "args": {
+                "category": "Routing"
+              },
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "directions",
+            "caseSensitive": false,
+            "toolName": "list_documentation_topics",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "09 List topics: Flutter SDK",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "List all NextBillion documentation topics for the Flutter SDK."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "list_documentation_topics",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "flutter",
+            "caseSensitive": false,
+            "toolName": "list_documentation_topics",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    },
+    {
+      "title": "10 Get API parameters: Directions truck_weight",
+      "runs": 1,
+      "steps": [
+        {
+          "id": "step-1",
+          "kind": "prompt",
+          "prompt": "For the NextBillion Directions API, give me the type, whether it is required, and allowed values of the truck_weight parameter."
+        },
+        {
+          "id": "step-expect-0",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolCalledWith",
+            "toolName": "get_api_parameters",
+            "args": {
+              "args": {},
+              "argumentMatching": "partial"
+            }
+          }
+        },
+        {
+          "id": "step-expect-1",
+          "kind": "assert",
+          "assertion": {
+            "type": "toolResultContains",
+            "needle": "truck_weight",
+            "caseSensitive": false,
+            "toolName": "get_api_parameters",
+            "role": "advisory"
+          }
+        },
+        {
+          "id": "step-expect-2",
+          "kind": "assert",
+          "assertion": {
+            "type": "noToolErrors"
+          }
+        }
+      ]
+    }
+  ]
+}

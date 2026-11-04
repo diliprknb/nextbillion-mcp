@@ -1,0 +1,161 @@
+{
+  "suiteName": "NB_offcl_KB_Tools_EvalSuite",
+  "description": "Documentation/knowledge-base tools of nextbillion-mcp: search_documentation, get_documentation, list_documentation_topics, get_api_parameters. Same prompts as NB_Drk_KB_Tools_EvalSuite for the 3 shared tools. Model: Claude Sonnet 4.5.",
+  "version": "1.0.0",
+  "cases": [
+    {
+      "id": "kb_01_search_documentation",
+      "title": "Search docs: avoid toll roads in Flutter SDK",
+      "name": "search_documentation",
+      "category": "documentation",
+      "description": "01 Search docs: avoid toll roads in Flutter SDK",
+      "prompt": "Search the NextBillion documentation for how to avoid toll roads in the Flutter SDK.",
+      "expectedTool": "search_documentation",
+      "expectedArgs": {},
+      "passCriteria": "Calls search_documentation",
+      "expectedResponseContains": {
+        "needle": "toll",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "kb_02_search_documentation",
+      "title": "Search docs: truck_weight parameter",
+      "name": "search_documentation",
+      "category": "documentation",
+      "description": "02 Search docs: truck_weight parameter",
+      "prompt": "Using the NextBillion documentation, find out what the truck_weight parameter does in the Directions API.",
+      "expectedTool": "search_documentation",
+      "expectedArgs": {},
+      "passCriteria": "Calls search_documentation",
+      "expectedResponseContains": {
+        "needle": "truck",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "kb_03_search_documentation",
+      "title": "Search docs: batch geocoding body and limit",
+      "name": "search_documentation",
+      "category": "documentation",
+      "description": "03 Search docs: batch geocoding body and limit",
+      "prompt": "Search the NextBillion documentation: what is the request body format and the batch size limit for batch geocoding?",
+      "expectedTool": "search_documentation",
+      "expectedArgs": {},
+      "passCriteria": "Calls search_documentation",
+      "expectedResponseContains": {
+        "needle": "batch",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "kb_04_search_documentation",
+      "title": "Search docs: geofence alerts",
+      "name": "search_documentation",
+      "category": "documentation",
+      "description": "04 Search docs: geofence alerts",
+      "prompt": "Search the NextBillion documentation for how to set up geofence alerts.",
+      "expectedTool": "search_documentation",
+      "expectedArgs": {},
+      "passCriteria": "Calls search_documentation",
+      "expectedResponseContains": {
+        "needle": "geofence",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "kb_05_get_documentation",
+      "title": "Get doc page: Flutter route line style",
+      "name": "get_documentation",
+      "category": "documentation",
+      "description": "05 Get doc page: Flutter route line style",
+      "prompt": "Get the full documentation page with doc_id 'routing/mobile-sdks/flutter/examples/customize-route-line-style'.",
+      "expectedTool": "get_documentation",
+      "expectedArgs": {
+        "doc_id": "routing/mobile-sdks/flutter/examples/customize-route-line-style"
+      },
+      "passCriteria": "Calls get_documentation",
+      "expectedResponseContains": {
+        "needle": "route line",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "kb_06_get_documentation",
+      "title": "Get doc page: Directions API reference",
+      "name": "get_documentation",
+      "category": "documentation",
+      "description": "06 Get doc page: Directions API reference",
+      "prompt": "Fetch the full Directions API reference page from the NextBillion docs (doc_id 'routing/directions-api/directions-api').",
+      "expectedTool": "get_documentation",
+      "expectedArgs": {
+        "doc_id": "routing/directions-api/directions-api"
+      },
+      "passCriteria": "Calls get_documentation",
+      "expectedResponseContains": {
+        "needle": "directions",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "kb_07_get_documentation",
+      "title": "Get doc page: invalid doc_id",
+      "name": "get_documentation",
+      "category": "documentation",
+      "description": "07 Get doc page: invalid doc_id",
+      "prompt": "Get the NextBillion documentation page with doc_id 'does/not/exist'.",
+      "expectedTool": "get_documentation",
+      "expectedArgs": {
+        "doc_id": "does/not/exist"
+      },
+      "passCriteria": "Calls get_documentation"
+    },
+    {
+      "id": "kb_08_list_documentation_topics",
+      "title": "List topics: Routing category",
+      "name": "list_documentation_topics",
+      "category": "documentation",
+      "description": "08 List topics: Routing category",
+      "prompt": "List all available NextBillion documentation topics under the Routing category.",
+      "expectedTool": "list_documentation_topics",
+      "expectedArgs": {
+        "category": "Routing"
+      },
+      "passCriteria": "Calls list_documentation_topics",
+      "expectedResponseContains": {
+        "needle": "directions",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "kb_09_list_documentation_topics",
+      "title": "List topics: Flutter SDK",
+      "name": "list_documentation_topics",
+      "category": "documentation",
+      "description": "09 List topics: Flutter SDK",
+      "prompt": "List all NextBillion documentation topics for the Flutter SDK.",
+      "expectedTool": "list_documentation_topics",
+      "expectedArgs": {},
+      "passCriteria": "Calls list_documentation_topics",
+      "expectedResponseContains": {
+        "needle": "flutter",
+        "caseSensitive": false
+      }
+    },
+    {
+      "id": "kb_10_get_api_parameters",
+      "title": "Get API parameters: Directions truck_weight",
+      "name": "get_api_parameters",
+      "category": "documentation",
+      "description": "10 Get API parameters: Directions truck_weight",
+      "prompt": "For the NextBillion Directions API, give me the type, whether it is required, and allowed values of the truck_weight parameter.",
+      "expectedTool": "get_api_parameters",
+      "expectedArgs": {},
+      "passCriteria": "Calls get_api_parameters",
+      "expectedResponseContains": {
+        "needle": "truck_weight",
+        "caseSensitive": false
+      }
+    }
+  ]
+}

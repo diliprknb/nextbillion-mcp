@@ -1,0 +1,33 @@
+1 04-1 off 8319ms calls=static_map_image 
+2 04-1 drk 12973ms calls=get_static_map 
+3 04-2 off 6956ms calls=static_map_image 
+4 04-2 drk 12078ms calls=get_static_map 
+5 03-6 drk 33739ms calls=search_documentation,get_documentation,get_documentation,get_documentation,search_documentation,search_documentation,get_documentation,search_documentation no final answer after 8 turns
+6 04-3 off 20320ms calls=static_route_map 
+7 04-3 drk 17914ms calls=get_static_map 
+8 04-4 drk 25517ms calls=search_documentation,search_documentation,get_documentation 
+9 04-5 off 36720ms calls=search_documentation,get_documentation,search_documentation 
+10 04-4 off 51374ms calls=search_documentation,get_documentation,search_documentation,get_api_parameters,search_documentation 
+11 04-5 drk 29651ms calls=search_documentation,search_documentation,get_documentation 
+12 05-1 off 13732ms calls=search_documentation,get_documentation 
+13 05-1 drk 8238ms calls=create_asset 
+14 04-6 drk 39159ms calls=search_documentation,search_documentation,get_documentation 
+15 04-6 off 53525ms calls=search_documentation,get_documentation,search_documentation,get_documentation,search_documentation 
+16 05-2 off 57390ms calls=get_api_parameters,search_documentation,get_documentation,buffer,static_map_image 
+17 05-2 drk 49472ms calls=create_geofence!,search_documentation,get_documentation,batch_create_geofences,get_geofence 
+18 05-3 off 52385ms calls=search_documentation,get_documentation 
+19 05-3 drk 22070ms calls=check_geofence_containment,get_geofence!,list_geofences 
+20 05-4 off 36247ms calls=search_documentation,get_documentation,get_documentation,list_documentation_topics,get_documentation,get_documentation,get_documentation,get_documentation no final answer after 8 turns
+21 05-4 drk 45765ms calls=search_documentation,get_documentation,get_documentation 
+22 05-5 off 50851ms calls=search_documentation,search_documentation,get_documentation,get_documentation,get_documentation 
+23 05-5 drk 42864ms calls=search_documentation,get_documentation,get_documentation,get_documentation 
+24 05-6 off 56826ms calls=search_documentation,get_documentation,get_documentation,search_documentation,get_documentation,search_documentation 
+25 06-1 off 53278ms calls=search_documentation,search_documentation,get_documentation,directions,measure,get_documentation 
+26 05-6 drk 70005ms calls=search_documentation,search_documentation,get_documentation,get_documentation,get_documentation 
+27 06-1 drk 44032ms calls=search_documentation,get_documentation,driver_assignment_sync!,driver_assignment_sync!,driver_assignment_sync 
+28 06-2 off 33552ms calls=search_documentation,get_documentation,distance_matrix 
+29 06-2 drk 31584ms calls=search_documentation,get_documentation,driver_assignment_async_submit,get_driver_assignment_result 
+SKIP 06-4 off: gemini DAILY QUOTA
+SKIP 06-3 drk: gemini DAILY QUOTA
+SKIP 06-3 off: gemini DAILY QUOTA
+finished: 64/96 runs saved (stopped on daily quota)

@@ -1,0 +1,338 @@
+[
+ {
+  "id": "01-1",
+  "category": "1. Geocoding",
+  "type": "MCP Tool Call",
+  "title": "Forward Geocoding & Location Pin",
+  "prompt": "Geocode the Eiffel Tower in Paris using the nextbillion geocode forward tool and display a static map image of the location pin"
+ },
+ {
+  "id": "01-2",
+  "category": "1. Geocoding",
+  "type": "MCP Tool Call",
+  "title": "Reverse Geocoding",
+  "prompt": "What address is at 48.8566, 2.3522? Use the nextbillion server reverse geocoding tool"
+ },
+ {
+  "id": "01-3",
+  "category": "1. Geocoding",
+  "type": "MCP Tool Call",
+  "title": "Structured Geocoding",
+  "prompt": "Search for street=Baker Street, city=London, country=GBR using the nextbillion structured geocode tool"
+ },
+ {
+  "id": "01-4",
+  "category": "1. Geocoding",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Batch Geocoding Protocol",
+  "prompt": "What is the request body format and batch size limit for batch geocoding multiple places simultaneously in the NextBillion Geocoding API?"
+ },
+ {
+  "id": "01-5",
+  "category": "1. Geocoding",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Geocoding Mode Comparison",
+  "prompt": "What is the difference between forward geocoding, reverse geocoding, and structured geocoding in NextBillion API, and when should each be used?"
+ },
+ {
+  "id": "01-6",
+  "category": "1. Geocoding",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Bounding Box & Country Filtering",
+  "prompt": "How do I filter forward geocoding results by specific country ISO codes or bounding box (bbox) coordinates in NextBillion API?"
+ },
+ {
+  "id": "02-1",
+  "category": "2. Places & Search",
+  "type": "MCP Tool Call",
+  "title": "POI Search with Map Markers",
+  "prompt": "Find coffee shops near 37.7749,-122.4194 using nextbillion search places and render a static map image showing the result pin markers"
+ },
+ {
+  "id": "02-2",
+  "category": "2. Places & Search",
+  "type": "MCP Tool Call",
+  "title": "Autosuggestion",
+  "prompt": "Suggest places matching 'Centr' near New York (40.7128,-74.0060) using the nextbillion autosuggest tool"
+ },
+ {
+  "id": "02-3",
+  "category": "2. Places & Search",
+  "type": "MCP Tool Call",
+  "title": "Search Along Route",
+  "prompt": "Find gas stations along route 34.0493,-118.2557|34.0471,-118.2497|34.0415,-118.2310 within a 10 minute (600s) detour using the nextbillion search along route tool"
+ },
+ {
+  "id": "02-4",
+  "category": "2. Places & Search",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Autocomplete vs. Autosuggest",
+  "prompt": "What is the difference between Autocomplete and Autosuggest APIs in NextBillion Places, and which is better suited for real-time keystroke search bars?"
+ },
+ {
+  "id": "02-5",
+  "category": "2. Places & Search",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Search Along Route Detour Mechanics",
+  "prompt": "How does the Search Along Route API calculate detour times and routing deviations when discovering POIs along a polyline trajectory?"
+ },
+ {
+  "id": "02-6",
+  "category": "2. Places & Search",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Place Details & Metadata Retrieval",
+  "prompt": "What place metadata fields (such as opening hours, phone number, categories, address components) can be fetched via the Place Lookup API using a Place ID?"
+ },
+ {
+  "id": "03-1",
+  "category": "3. Routing & Directions",
+  "type": "MCP Tool Call",
+  "title": "Turn-by-Turn Driving Directions",
+  "prompt": "How do I drive from San Francisco (37.7749,-122.4194) to Los Angeles (34.0522,-118.2437)? Calculate it using nextbillion directions tool and render a static route map image"
+ },
+ {
+  "id": "03-2",
+  "category": "3. Routing & Directions",
+  "type": "MCP Tool Call",
+  "title": "Truck Navigation with Constraints",
+  "prompt": "Get turn-by-turn navigation instructions for a truck driving from 34.0560,-118.2449 to 34.0503,-118.2408 avoiding sharp turns using the nextbillion navigation tool"
+ },
+ {
+  "id": "03-3",
+  "category": "3. Routing & Directions",
+  "type": "MCP Tool Call",
+  "title": "Isochrone Reachable Contours",
+  "prompt": "What area can a car cover within a 5 and 10 minute drive from 37.7749,-122.4194? Show me the reachable area contours and rendered map image using the nextbillion isochrone tool"
+ },
+ {
+  "id": "03-4",
+  "category": "3. Routing & Directions",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Directions Fast vs. Flexible Version",
+  "prompt": "What is the difference between the Directions API Fast version and Flexible version, and which one should I choose for commercial truck routing with weight and height limits?"
+ },
+ {
+  "id": "03-5",
+  "category": "3. Routing & Directions",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Mobile Navigation SDK Customization",
+  "prompt": "How do I customize the navigation route line color, styling, and dark/light theme mode in the NextBillion Flutter / iOS Navigation SDK?"
+ },
+ {
+  "id": "03-6",
+  "category": "3. Routing & Directions",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Truck Dimensions & Hazmat Routing",
+  "prompt": "What parameters are required in the NextBillion Directions API to specify custom truck weight, axle count, height, length, and hazardous materials (hazmat) classifications?"
+ },
+ {
+  "id": "04-1",
+  "category": "4. Maps & Static Images",
+  "type": "MCP Tool Call",
+  "title": "Center-Based Static Map",
+  "prompt": "Generate a static map image centered at San Francisco (37.7749,-122.4194) at zoom level 12 with a red pin marker using the nextbillion static map tool"
+ },
+ {
+  "id": "04-2",
+  "category": "4. Maps & Static Images",
+  "type": "MCP Tool Call",
+  "title": "Dark Theme / Retina Static Map",
+  "prompt": "Show me a static map of Paris (48.8566, 2.3522) at zoom 14 in dark style using nextbillion static map"
+ },
+ {
+  "id": "04-3",
+  "category": "4. Maps & Static Images",
+  "type": "MCP Tool Call",
+  "title": "Polyline & Path Overlay",
+  "prompt": "Draw a blue route line path stroke:blue|width:4|37.7749,-122.4194|37.8044,-122.2712 and show it on a static map using nextbillion static map"
+ },
+ {
+  "id": "04-4",
+  "category": "4. Maps & Static Images",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Static Map Custom Styling & Map Themes",
+  "prompt": "What map visual styles (e.g., standard, dark, hybrid, satellite) and resolution scale factors (@2x retina) are supported by NextBillion Static Images API?"
+ },
+ {
+  "id": "04-5",
+  "category": "4. Maps & Static Images",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Bounding Box Auto-Fitting",
+  "prompt": "How do you construct a bounding box static map request to automatically fit multiple geographic coordinates without specifying a center and zoom level?"
+ },
+ {
+  "id": "04-6",
+  "category": "4. Maps & Static Images",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "GeoJSON Polygon & Marker Encoding",
+  "prompt": "How do you format custom marker pins (colors, labels, custom icons) and polygon fills (with hex colors and opacity) in NextBillion Static Map API URLs?"
+ },
+ {
+  "id": "05-1",
+  "category": "5. Tracking & Geofence",
+  "type": "MCP Tool Call",
+  "title": "Asset Creation",
+  "prompt": "Create a tracked van asset named 'Van 42' with type 'van' and attributes status=active using nextbillion create_asset"
+ },
+ {
+  "id": "05-2",
+  "category": "5. Tracking & Geofence",
+  "type": "MCP Tool Call",
+  "title": "Geofence Creation",
+  "prompt": "Create a circular geofence named 'Downtown Depot' centered at 34.0493,-118.2557 with radius 500 meters and tag 'Depots' using nextbillion create_geofence"
+ },
+ {
+  "id": "05-3",
+  "category": "5. Tracking & Geofence",
+  "type": "MCP Tool Call",
+  "title": "Geofence Containment Check",
+  "prompt": "Check if locations 13.2580,77.9108 and 17.4465,78.3949 fall inside geofence 07fe7b57-1255-42ae-99af-44e4e3d2468a using nextbillion check_geofence_containment"
+ },
+ {
+  "id": "05-4",
+  "category": "5. Tracking & Geofence",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Mobile Tracking SDK Setup & Callbacks",
+  "prompt": "Show me code examples for initializing the location tracking manager and listening to asset location update callbacks in the Android/iOS Tracking SDK."
+ },
+ {
+  "id": "05-5",
+  "category": "5. Tracking & Geofence",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Geofence Event Alerts",
+  "prompt": "What are the steps to configure automated geofence event alerts like speeding, idling, and enter/exit boundaries in NextBillion Tracking?"
+ },
+ {
+  "id": "05-6",
+  "category": "5. Tracking & Geofence",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Snap to Road vs. Route Reconstruction",
+  "prompt": "We have noisy GPS points recorded from mobile driver apps. When should we use the Snap to Road API versus the Route Reconstruction API for map matching?"
+ },
+ {
+  "id": "06-1",
+  "category": "6. Optimization (Driver Assignment & Clustering)",
+  "type": "MCP Tool Call",
+  "title": "Synchronous Driver Assignment",
+  "prompt": "Assign driver '1' at location 34.0407,-118.2468 to order '1' with pickup location 34.0522,-118.2437 with filter radius 10000 meters using nextbillion driver_assignment_sync"
+ },
+ {
+  "id": "06-2",
+  "category": "6. Optimization (Driver Assignment & Clustering)",
+  "type": "MCP Tool Call",
+  "title": "Async Driver Assignment Batch",
+  "prompt": "Assign 2 available delivery drivers (Driver 1 at 34.0407,-118.2468, Driver 2 at 34.0522,-118.2437) to 2 open delivery orders (Order 1 pickup 34.0493,-118.2557, Order 2 pickup 34.0587,-118.2604) with max search radius 50000 meters using nextbillion driver_assignment_async_submit"
+ },
+ {
+  "id": "06-3",
+  "category": "6. Optimization (Driver Assignment & Clustering)",
+  "type": "MCP Tool Call",
+  "title": "Job Clustering Submission",
+  "prompt": "Cluster 4 delivery jobs (Job 1 at 34.0522,-118.2437 with quantity 1, Job 2 at 34.0407,-118.2468 with quantity 1, Job 3 at 34.0493,-118.2557 with quantity 1, Job 4 at 34.0587,-118.2604 with quantity 1) into 2 target clusters (Cluster 1 capacity 2, Cluster 2 capacity 2) using nextbillion cluster_jobs"
+ },
+ {
+  "id": "06-4",
+  "category": "6. Optimization (Driver Assignment & Clustering)",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Fleet Dispatch API Selection",
+  "prompt": "We have 50 delivery trucks and 300 orders distributed across a metropolitan area. Which NextBillion API should we use to optimize multi-vehicle routes and driver assignments?"
+ },
+ {
+  "id": "06-5",
+  "category": "6. Optimization (Driver Assignment & Clustering)",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Synchronous vs. Asynchronous Driver Assignment",
+  "prompt": "What are the limits and latency trade-offs between synchronous Driver Assignment API and asynchronous batch submission?"
+ },
+ {
+  "id": "06-6",
+  "category": "6. Optimization (Driver Assignment & Clustering)",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Capacity Constraints in Clustering API",
+  "prompt": "How does the NextBillion Clustering API partition delivery orders into clusters considering vehicle capacity limits, time windows, and distance matrices?"
+ },
+ {
+  "id": "07-1",
+  "category": "7. Map Data & Road Restrictions",
+  "type": "MCP Tool Call",
+  "title": "Road Segments & Speed Limits Query",
+  "prompt": "Get all road segments with their speed limits within a 500 meter radius circle centered at 1.3132,103.8227 using nextbillion get_road_segments"
+ },
+ {
+  "id": "07-2",
+  "category": "7. Map Data & Road Restrictions",
+  "type": "MCP Tool Call",
+  "title": "Traffic Incidents Query",
+  "prompt": "Get current traffic incidents within the bounding box -83.16,39.90,-82.90,40.09 (Columbus, Ohio area) using nextbillion get_traffic_incidents"
+ },
+ {
+  "id": "07-3",
+  "category": "7. Map Data & Road Restrictions",
+  "type": "MCP Tool Call",
+  "title": "Road Closure Restriction Creation",
+  "prompt": "Create a road closure restriction named \"Construction Closure\" for road segments 101 and 102 in the singapore area using nextbillion create_road_restriction"
+ },
+ {
+  "id": "07-4",
+  "category": "7. Map Data & Road Restrictions",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Road Editor API for Restrictions",
+  "prompt": "What NextBillion API lets me create temporary speed limit reductions, turn bans, or road closures for a private fleet's road network?"
+ },
+ {
+  "id": "07-5",
+  "category": "7. Map Data & Road Restrictions",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Weather Radar Along Delivery Corridors",
+  "prompt": "Does NextBillion provide a weather API that can return precipitation radar polygons along a delivery route corridor?"
+ },
+ {
+  "id": "07-6",
+  "category": "7. Map Data & Road Restrictions",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Traffic Incidents API Filtering Options",
+  "prompt": "What filtering options does the Traffic Incidents API support, and what does the \"criticality\" field in the response mean?"
+ },
+ {
+  "id": "08-1",
+  "category": "8. Documentation Retrieval & Reasoning Router",
+  "type": "MCP Tool Call",
+  "title": "Documentation Search",
+  "prompt": "Search documentation for how to avoid toll roads in the Flutter SDK using the nextbillion search_documentation tool"
+ },
+ {
+  "id": "08-2",
+  "category": "8. Documentation Retrieval & Reasoning Router",
+  "type": "MCP Tool Call",
+  "title": "Fetch Documentation Guide",
+  "prompt": "Get documentation for doc_id 'routing/mobile-sdks/flutter/examples/customize-route-line-style' using nextbillion get_documentation tool"
+ },
+ {
+  "id": "08-3",
+  "category": "8. Documentation Retrieval & Reasoning Router",
+  "type": "MCP Tool Call",
+  "title": "List Category Topics",
+  "prompt": "List all available NextBillion documentation topics under the 'Routing' category using nextbillion list_documentation_topics tool"
+ },
+ {
+  "id": "08-4",
+  "category": "8. Documentation Retrieval & Reasoning Router",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Reasoning Router Intent Classification",
+  "prompt": "How does the NextBillion reasoning router (`reason_and_route`) evaluate user queries to classify them into `TOOL_EXECUTION`, `API_DOC_INQUIRY`, and `API_SELECTION_ADVICE`?"
+ },
+ {
+  "id": "08-5",
+  "category": "8. Documentation Retrieval & Reasoning Router",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Documentation Knowledge Base Coverage",
+  "prompt": "What API categories, SDK languages (Flutter, Android, iOS), and guides are indexed in the NextBillion documentation knowledge base?"
+ },
+ {
+  "id": "08-6",
+  "category": "8. Documentation Retrieval & Reasoning Router",
+  "type": "API/SDK Knowledge Q&A",
+  "title": "Agent Integration Best Practices",
+  "prompt": "How can an LLM agent leverage NextBillion documentation retrieval tools to generate customized SDK code snippets and architectural recommendations for developers?"
+ }
+]

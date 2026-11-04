@@ -1,0 +1,38 @@
+1 01-2 off 9073ms calls=geocode_reverse 
+2 01-2 drk 6780ms calls=geocode_reverse 
+3 01-3 off 9471ms calls=geocode_structured 
+4 01-3 drk 7589ms calls=geocode_structured 
+5 01-1 off 36515ms calls=geocode_forward,geocode_forward,geocode_forward,geocode_forward,place_search,static_map_image 
+6 01-1 drk 46611ms calls=geocode_forward,geocode_forward,get_static_map 
+7 01-4 drk 21147ms calls=search_documentation,get_documentation 
+8 01-4 off 26355ms calls=search_documentation,get_documentation,get_documentation 
+9 01-5 drk 23331ms calls=search_documentation,get_documentation,get_documentation,get_documentation 
+10 01-5 off 38829ms calls=search_documentation,get_documentation,get_documentation,get_documentation 
+11 01-6 drk 15065ms calls=search_documentation,get_documentation 
+12 01-6 off 43324ms calls=get_api_parameters,get_api_parameters,search_documentation,get_documentation 
+13 02-1 off 18341ms calls=place_search,static_map_image 
+14 02-2 off 11053ms calls=autosuggest 
+15 02-2 drk 12411ms calls=autosuggest 
+16 02-1 drk 26971ms calls=search_places,get_static_map 
+17 02-3 off 10912ms calls=search_along_route 
+18 02-3 drk 20068ms calls=search_along_route 
+19 02-4 drk 19685ms calls=search_documentation,get_documentation,get_documentation 
+20 02-5 off 25198ms calls=search_documentation,get_documentation,search_documentation 
+21 02-4 off 40867ms calls=search_documentation,get_documentation,get_documentation,search_documentation 
+22 02-5 drk 23883ms calls=search_documentation,search_documentation,get_documentation 
+23 02-6 off 19282ms calls=search_documentation,get_documentation 
+24 02-6 drk 19220ms calls=search_documentation,get_documentation 
+25 03-1 drk 28538ms calls=get_directions,get_directions 
+26 03-1 off 81338ms calls=directions,get_api_parameters,directions,directions,static_route_map,static_route_map 
+27 03-2 off 69272ms calls=get_api_parameters,get_api_parameters,directions,directions,directions!,search_documentation,get_api_parameters,geocode_reverse,geocode_reverse,geocode_reverse,geocode_reverse,geocode_reverse no final answer after 8 turns
+28 03-2 drk 72506ms calls=navigation,get_directions!,navigation!,geocode_reverse,geocode_reverse,route_report!,navigation,get_static_map no final answer after 8 turns
+29 03-3 drk 40132ms calls=isochrone 
+30 03-4 drk 19664ms calls=search_documentation,get_documentation! 
+31 03-4 off 44056ms calls=search_documentation,get_documentation,get_documentation,get_api_parameters,get_api_parameters 
+32 03-5 off 28671ms calls=search_documentation,search_documentation,get_documentation,get_documentation,get_documentation,search_documentation,get_documentation,search_documentation no final answer after 8 turns
+33 03-3 off 102664ms calls=isochrone,isochrone,measure,measure,static_route_map 
+34 03-6 off 17079ms calls=get_api_parameters 
+SKIP 04-1 off: gemini DAILY QUOTA
+SKIP 03-6 drk: gemini DAILY QUOTA
+35 03-5 drk 39340ms calls=search_documentation,search_documentation,get_documentation,get_documentation,get_documentation,get_documentation,search_documentation,get_documentation 
+finished: 35/96 runs saved (stopped on daily quota)
