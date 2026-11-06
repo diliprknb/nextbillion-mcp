@@ -1,0 +1,386 @@
+{
+ "01-1|drk": {
+  "status": "Pass",
+  "verdict": "The assistant successfully geocoded the Eiffel Tower using the forward geocoding tool and displayed a static map image with a location pin."
+ },
+ "01-2|off": {
+  "status": "Pass",
+  "verdict": "The reverse geocoding tool was successfully invoked with the specified coordinates, and the final answer accurately reported the retrieved address."
+ },
+ "01-3|off": {
+  "status": "Pass",
+  "verdict": "The assistant correctly called the `geocode_structured` tool with the specified parameters and returned accurate results."
+ },
+ "01-1|off": {
+  "status": "Pass",
+  "verdict": "The assistant used the geocode_forward tool to locate the Eiffel Tower and successfully generated and displayed a static map image with a location pin."
+ },
+ "01-2|drk": {
+  "status": "Pass",
+  "verdict": "The reverse geocoding tool was called with the correct coordinates, and the assistant accurately provided the resolved address."
+ },
+ "01-3|drk": {
+  "status": "Pass",
+  "verdict": "The assistant correctly called `geocode_structured` with the specified parameters and provided a comprehensive summary of the geocoding results."
+ },
+ "01-4|drk": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the official documentation tools and accurately provided both the request body format and the batch size limit (up to 100 queries) along with complete examples."
+ },
+ "01-4|off": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the official batch geocoding documentation tools and provided an accurate, comprehensive answer covering the 100-query batch limit and the request body format."
+ },
+ "01-6|off": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the forward geocoding documentation tools and correctly explained how to use the `in` parameter for country ISO codes and bbox coordinates with accurate syntax and examples."
+ },
+ "01-5|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant used the documentation tools and accurately explained the differences and use cases in an initial comparison table, but the final response was cut off before completing the individual detailed breakdowns."
+ },
+ "01-5|off": {
+  "status": "Partial Pass",
+  "verdict": "The assistant gathered the relevant documentation and accurately summarized the differences and use cases in a comparison table, but the response was truncated mid-sentence before completing the detailed sections."
+ },
+ "01-6|drk": {
+  "status": "Pass",
+  "verdict": "The assistant correctly retrieved the forward geocoding documentation and accurately explained how to filter by country ISO codes and bounding box coordinates using the `in` parameter."
+ },
+ "02-1|off": {
+  "status": "Pass",
+  "verdict": "The assistant successfully searched for nearby coffee shops and rendered a static map image showing the result markers."
+ },
+ "02-1|drk": {
+  "status": "Pass",
+  "verdict": "The assistant correctly searched for coffee shops near the specified coordinates and rendered a static map with pin markers for the results."
+ },
+ "02-2|off": {
+  "status": "Pass",
+  "verdict": "The autosuggest tool was called with the correct parameters, and the assistant accurately presented the suggested places."
+ },
+ "02-2|drk": {
+  "status": "Pass",
+  "verdict": "The autosuggest tool was called correctly with the specified query and coordinates, and the results were accurately summarized in the response."
+ },
+ "02-3|drk": {
+  "status": "Pass",
+  "verdict": "The `search_along_route` tool was executed with the requested parameters and accurately identified the gas station within the detour limit."
+ },
+ "02-3|off": {
+  "status": "Pass",
+  "verdict": "The search_along_route tool was called with the correct route points and detour threshold, and the assistant properly presented the results."
+ },
+ "02-4|off": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the official documentation for both the Autocomplete and Autosuggest APIs and provided an accurate, well-grounded comparison explaining their differences and use cases for real-time search bars."
+ },
+ "02-5|off": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the official Search Along Route documentation and provided an accurate, well-grounded explanation of detour times, offsets, thresholds, and routing deviations."
+ },
+ "02-4|drk": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the official documentation for both the Autocomplete and Autosuggest APIs, accurately contrasting their capabilities and explaining which is better suited for interactive search bars."
+ },
+ "02-6|off": {
+  "status": "Pass",
+  "verdict": "The assistant used the documentation tools to look up the Place Lookup API response schema and accurately detailed all available metadata fields, including addressing the specific examples mentioned in the prompt."
+ },
+ "02-6|drk": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the official documentation for the Place Lookup API and provided an accurate, well-structured breakdown of all supported metadata fields, noting that opening hours are not supported."
+ },
+ "02-5|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant correctly retrieved the official documentation and accurately explained detour metrics, but the final response was truncated before providing the required Source URL section."
+ },
+ "03-1|off": {
+  "status": "Pass",
+  "verdict": "The directions tool and static route map tool were called successfully, calculating the route and rendering the static map image as requested."
+ },
+ "03-2|off": {
+  "status": "Fail",
+  "verdict": "The assistant exhausted its turn limit while attempting to manually reconstruct turn-by-turn instructions and produced no final answer."
+ },
+ "03-2|drk": {
+  "status": "Fail",
+  "verdict": "The assistant successfully retrieved navigation steps on its first tool call, but continued making unnecessary tool calls until it ran out of turns, failing to provide any final answer."
+ },
+ "03-3|off": {
+  "status": "Pass",
+  "verdict": "The assistant successfully generated the 5- and 10-minute isochrones, measured their coverage areas, and rendered the static map image displaying the contours."
+ },
+ "03-1|drk": {
+  "status": "Partial Pass",
+  "verdict": "The directions were successfully retrieved using get_directions, but the assistant did not call the available get_static_map tool to render the static route map, instead fabricating a static map URL with a placeholder API key."
+ },
+ "03-3|drk": {
+  "status": "Pass",
+  "verdict": "The isochrone tool was called successfully with the requested coordinates and drive time intervals, returning both contour descriptions and the rendered map image."
+ },
+ "03-4|off": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the documentation and API parameters tools to thoroughly contrast the Fast and Flexible versions of the Directions API, correctly concluding that the Flexible version must be used for custom truck dimensions and weights."
+ },
+ "03-5|off": {
+  "status": "Fail",
+  "verdict": "The assistant hit the turn limit while researching documentation and failed to provide a final answer."
+ },
+ "03-6|off": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the API documentation via `get_api_parameters` and accurately explained all the required and optional parameters for truck weight, axle count, dimensions (height/length via truck_size), and hazmat classifications."
+ },
+ "03-5|drk": {
+  "status": "Partial Fail",
+  "verdict": "The assistant retrieved the relevant documentation for both Flutter and iOS, but its response was truncated mid-code block, leaving the Flutter section incomplete and omitting the iOS customization entirely."
+ },
+ "04-1|off": {
+  "status": "Pass",
+  "verdict": "The assistant correctly called `static_map_image` with the requested center coordinates, zoom level, and red marker, and successfully generated the static map."
+ },
+ "03-6|drk": {
+  "status": "Fail",
+  "verdict": "The assistant repeatedly queried the documentation tools without formulating a response, exceeding the turn limit and providing no final answer."
+ },
+ "03-4|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant answered the question accurately using results from search_documentation, despite get_documentation failing with a session error and the final response cutting off slightly at the source URL."
+ },
+ "04-1|drk": {
+  "status": "Pass",
+  "verdict": "The static map tool was called successfully with the correct coordinates, zoom level, and red pin marker, and the resulting map image was properly provided."
+ },
+ "04-2|drk": {
+  "status": "Pass",
+  "verdict": "The assistant successfully called the get_static_map tool with the requested coordinates, zoom level, and dark style, and rendered the static map."
+ },
+ "04-2|off": {
+  "status": "Pass",
+  "verdict": "The static_map_image tool was called with the correct parameters (coordinates, zoom 14, dark style) and successfully returned the requested map image."
+ },
+ "04-3|off": {
+  "status": "Pass",
+  "verdict": "The assistant correctly called `static_route_map` with the requested path coordinates and styling, successfully rendering the static map image."
+ },
+ "04-3|drk": {
+  "status": "Pass",
+  "verdict": "The `get_static_map` tool was called with the requested path parameters, and the assistant properly rendered the resulting static map image."
+ },
+ "04-4|off": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the Static Images API documentation and accurately detailed the supported map visual styles and resolution scale factors."
+ },
+ "04-4|drk": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the Static Images API documentation and accurately identified the supported map styles and resolution scale factors."
+ },
+ "04-5|drk": {
+  "status": "Pass",
+  "verdict": "The assistant retrieved the official documentation for the Static Images API and provided an accurate, well-structured explanation with examples of both auto-fit and bounds-based modes."
+ },
+ "04-5|off": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the Static Images API documentation and accurately explained how to construct an auto-fitted static map request using the `/static/auto/...` endpoint and coordinate query parameters."
+ },
+ "05-1|off": {
+  "status": "Capability Gap",
+  "verdict": "The server does not expose a `create_asset` tool, and the assistant accurately identified this limitation and provided the API documentation instead."
+ },
+ "05-1|drk": {
+  "status": "Pass",
+  "verdict": "The asset was successfully created via create_asset with the requested name, type, and attributes."
+ },
+ "04-6|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant consulted the official Static Images API documentation and accurately explained how to format marker pins and polygon fills, but the response was cut off mid-URL in the final example."
+ },
+ "04-6|off": {
+  "status": "Partial Pass",
+  "verdict": "The assistant consulted the Static Images API documentation and accurately explained how to format marker pins (colors, custom icons, labels) and polygon fills with opacity, but the response was truncated mid-sentence at the final example URL."
+ },
+ "05-2|off": {
+  "status": "Capability Gap",
+  "verdict": "The server does not expose a `create_geofence` tool to create geofences via the API. The assistant correctly identified that the tool was missing, provided the documented REST API request payload, and rendered a map preview."
+ },
+ "05-2|drk": {
+  "status": "Partial Pass",
+  "verdict": "The initial create_geofence call failed due to parameter structure, but the assistant recovered by referencing the documentation and successfully created the requested geofence via batch_create_geofences."
+ },
+ "05-3|drk": {
+  "status": "Pass",
+  "verdict": "The assistant correctly called `check_geofence_containment` with the requested locations and geofence ID, accurately reporting that neither location was contained."
+ },
+ "05-3|off": {
+  "status": "Capability Gap",
+  "verdict": "The requested tool `check_geofence_containment` is not provided by the MCP server, and the assistant correctly identified that the tool was not exposed."
+ },
+ "05-4|off": {
+  "status": "Fail",
+  "verdict": "The assistant fetched relevant documentation for both Android and iOS Tracking SDKs but exceeded the turn limit without generating a final answer."
+ },
+ "05-4|drk": {
+  "status": "Partial Fail",
+  "verdict": "Documentation tools were called successfully, but the final answer cut off mid-response, leaving the Android code incomplete and completely omitting the requested iOS code example."
+ },
+ "05-5|off": {
+  "status": "Partial Fail",
+  "verdict": "The assistant gathered all the necessary documentation via tools, but its response was truncated mid-sentence before covering speeding, idling, and webhook subscriptions, leaving a significant portion of the prompt unanswered."
+ },
+ "05-5|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant gathered the relevant documentation for speeding, idling, and enter/exit events, but its final response was truncated mid-sentence, omitting the idling configuration and examples."
+ },
+ "05-6|drk": {
+  "status": "Pass",
+  "verdict": "The assistant appropriately searched and retrieved documentation for both APIs, providing an accurate, detailed, and well-grounded comparison tailored to the user's scenario."
+ },
+ "05-6|off": {
+  "status": "Pass",
+  "verdict": "The assistant effectively searched and retrieved documentation for both the Snap to Roads and Route Reconstruction APIs, providing a thorough and accurate comparison grounded in the documentation."
+ },
+ "06-1|off": {
+  "status": "Capability Gap",
+  "verdict": "The requested tool `driver_assignment_sync` is not provided by the MCP server, and the assistant correctly noted this while using available documentation tools to provide the API specification."
+ },
+ "06-2|drk": {
+  "status": "Pass",
+  "verdict": "The assistant correctly submitted the driver assignment request via driver_assignment_async_submit, polled the result, and provided the assignment details accurately."
+ },
+ "06-1|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant successfully assigned the driver using driver_assignment_sync and reported the full details after recovering from initial parameter formatting errors."
+ },
+ "06-2|off": {
+  "status": "Capability Gap",
+  "verdict": "The requested tool 'driver_assignment_async_submit' is not exposed by the MCP server. The assistant correctly identified this capability gap and provided an alternative solution along with the raw API payload."
+ },
+ "06-4|off": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the documentation tools to evaluate both the Route Optimization API and Driver Assignment API, providing an accurate, fully grounded recommendation."
+ },
+ "06-3|off": {
+  "status": "Capability Gap",
+  "verdict": "The server does not expose a cluster_jobs tool. The assistant correctly noted that the tool was unavailable and used documentation and distance matrix calculations as an alternative."
+ },
+ "06-3|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant recovered from an initial missing description parameter error, successfully submitted and retrieved the clustering results, and fully answered the prompt."
+ },
+ "06-5|off": {
+  "status": "Pass",
+  "verdict": "The assistant used the documentation tools effectively to retrieve the exact limits and workflow details for both synchronous and asynchronous Driver Assignment methods, providing an accurate, detailed, and well-grounded comparison."
+ },
+ "06-4|drk": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the official documentation tools and accurately identified NextBillion's Route Optimization API as the appropriate solution for multi-vehicle routing and scheduling."
+ },
+ "06-5|drk": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the official documentation tools and accurately detailed the limits, filter constraints, and latency trade-offs between synchronous and asynchronous Driver Assignment."
+ },
+ "06-6|off": {
+  "status": "Fail",
+  "verdict": "The assistant exhausted its turn limit retrieving documentation and failed to return a final answer."
+ },
+ "06-6|drk": {
+  "status": "Fail",
+  "verdict": "The assistant queried documentation multiple times but timed out or reached the maximum turn limit without returning a final answer."
+ },
+ "07-1|off": {
+  "status": "Capability Gap",
+  "verdict": "The MCP server does not expose a `get_road_segments` tool, and the assistant correctly identified this capability gap and explained how to query the Road Segments API directly."
+ },
+ "07-1|drk": {
+  "status": "Pass",
+  "verdict": "The assistant correctly called get_road_segments with the specified center and radius, then accurately summarized the road segments and their speed limits."
+ },
+ "07-2|off": {
+  "status": "Capability Gap",
+  "verdict": "The server does not expose a `get_traffic_incidents` tool, and the assistant correctly identified this capability gap and provided the corresponding REST API details from the documentation."
+ },
+ "07-2|drk": {
+  "status": "Pass",
+  "verdict": "The `get_traffic_incidents` tool was executed successfully with the requested bounding box, and the assistant provided a clear summary of the retrieved incidents."
+ },
+ "07-3|off": {
+  "status": "Capability Gap",
+  "verdict": "The requested tool `create_road_restriction` does not exist on the MCP server, and the assistant correctly searched the documentation and explained that no tool or endpoint is available to perform this action."
+ },
+ "07-4|off": {
+  "status": "Fail",
+  "verdict": "The assistant exceeded the turn limit while querying the documentation and failed to produce a final answer."
+ },
+ "07-3|drk": {
+  "status": "Fail (Bug)",
+  "verdict": "The assistant called create_road_restriction with valid arguments, but the tool failed with a 404 'Invalid URL path provided' error, indicating a defect in the tool's endpoint configuration."
+ },
+ "07-4|drk": {
+  "status": "Pass",
+  "verdict": "The assistant correctly identified NextBillion's Road Editor API (and corresponding restriction tools) using documentation searches and provided an accurate, detailed response."
+ },
+ "07-5|off": {
+  "status": "Pass",
+  "verdict": "The assistant appropriately searched and retrieved NextBillion's Weather API documentation, accurately explaining that precipitation radar polygons are supported by region and clarifying how corridor analysis along a route would be achieved."
+ },
+ "07-6|off": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the Traffic Incidents API documentation and accurately detailed all filtering parameters and the criticality field values."
+ },
+ "07-5|drk": {
+  "status": "Pass",
+  "verdict": "The assistant properly checked the documentation tools and accurately explained that NextBillion provides regional precipitation radar polygons via the Weather API rather than accepting a route corridor directly."
+ },
+ "07-6|drk": {
+  "status": "Pass",
+  "verdict": "The assistant consulted the official documentation tools and provided an accurate, complete answer detailing the filtering options and the meaning of the criticality field values."
+ },
+ "08-1|off": {
+  "status": "Pass",
+  "verdict": "The assistant correctly called `search_documentation` and `get_documentation` to retrieve accurate, grounded documentation on avoiding toll roads in the Flutter SDK, and provided a comprehensive answer."
+ },
+ "08-1|drk": {
+  "status": "Pass",
+  "verdict": "The assistant successfully used `search_documentation` and `get_documentation` to find how to avoid toll roads in the Flutter SDK and provided an accurate, well-grounded response."
+ },
+ "08-2|off": {
+  "status": "Pass",
+  "verdict": "The assistant correctly called `get_documentation` with the requested doc_id and provided a clear, accurate summary of the retrieved documentation."
+ },
+ "08-2|drk": {
+  "status": "Pass",
+  "verdict": "The get_documentation tool was called with the requested doc_id, and the assistant accurately provided the retrieved documentation."
+ },
+ "08-3|off": {
+  "status": "Partial Fail",
+  "verdict": "The assistant called list_documentation_topics as requested, but attempted to list all individual subpages and cut off abruptly after only three topics, omitting the majority of documentation topics under the Routing category."
+ },
+ "08-3|drk": {
+  "status": "Partial Fail",
+  "verdict": "The list_documentation_topics tool was called successfully with the correct category, but the assistant's final response cut off mid-generation due to output token limits, omitting the vast majority of the 94 topics requested."
+ },
+ "08-4|off": {
+  "status": "Fail",
+  "verdict": "The assistant searched the documentation for `reason_and_route` and the specified intent categories, found no matching documentation, but fabricated a detailed breakdown instead of noting that NextBillion.ai has no such feature."
+ },
+ "08-4|drk": {
+  "status": "Pass",
+  "verdict": "The assistant explored the router's behavior and documentation directly via tool calls, extracting the exact rationales and evaluation criteria for each classification intent."
+ },
+ "08-5|off": {
+  "status": "Fail",
+  "verdict": "The assistant hit the turn limit while querying documentation topics and failed to provide any final answer."
+ },
+ "08-6|off": {
+  "status": "Pass",
+  "verdict": "The assistant appropriately queried the documentation retrieval tools to verify their capabilities and structure, then provided a well-structured, grounded answer explaining how an LLM agent can leverage them for SDK code generation and architecture recommendations."
+ },
+ "08-5|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant successfully queried the documentation tools and provided accurate, well-grounded details on categories, SDKs, and guides, but the response was cut off before finishing the tracking guides."
+ },
+ "08-6|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant appropriately queried the documentation discovery tool and detailed an accurate architecture and workflow, but the final response was cut off mid-sentence."
+ }
+}

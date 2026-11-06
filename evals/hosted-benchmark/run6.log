@@ -1,0 +1,32 @@
+1 06-4 off 27380ms calls=search_documentation,list_documentation_topics,get_documentation,get_documentation 
+2 06-3 drk 30514ms calls=cluster_jobs!,cluster_jobs,get_clustering_result 
+3 06-4 drk 21610ms calls=search_documentation,get_documentation 
+4 06-3 off 60627ms calls=search_documentation,get_documentation,distance_matrix,get_documentation,get_documentation,get_documentation,static_map_image 
+5 06-5 off 43747ms calls=search_documentation,get_documentation,get_documentation,get_documentation,get_documentation,get_documentation 
+6 06-5 drk 49065ms calls=search_documentation,get_documentation,search_documentation,search_documentation,search_documentation 
+7 06-6 off 40062ms calls=search_documentation,list_documentation_topics,get_documentation,get_documentation,get_documentation,get_documentation,search_documentation,search_documentation no final answer after 8 turns
+8 06-6 drk 37797ms calls=search_documentation,get_documentation,get_documentation,search_documentation,search_documentation,search_documentation,search_documentation,get_documentation no final answer after 8 turns
+9 07-1 drk 12265ms calls=get_road_segments 
+10 07-1 off 22634ms calls=search_documentation,get_api_parameters,get_api_parameters,get_documentation 
+11 07-2 drk 13433ms calls=get_traffic_incidents 
+12 07-2 off 14486ms calls=search_documentation,get_documentation 
+13 07-3 off 28800ms calls=search_documentation,search_documentation,list_documentation_topics,search_documentation,search_documentation,get_api_parameters 
+14 07-3 drk 28936ms calls=create_road_restriction!,get_road_editor_areas!,search_documentation,list_documentation_topics,search_documentation,create_road_restriction! 
+15 07-4 off 31732ms calls=search_documentation,list_documentation_topics,search_documentation,list_documentation_topics,search_documentation,list_documentation_topics,list_documentation_topics,list_documentation_topics no final answer after 8 turns
+16 07-4 drk 26005ms calls=search_documentation,search_documentation,list_documentation_topics,get_documentation 
+17 07-5 drk 24971ms calls=search_documentation,get_documentation 
+18 07-5 off 31392ms calls=search_documentation,get_documentation,search_documentation 
+19 08-1 off 13418ms calls=search_documentation,get_documentation 
+20 07-6 off 26370ms calls=search_documentation,get_documentation 
+21 07-6 drk 19803ms calls=search_documentation,get_documentation 
+22 08-2 off 9795ms calls=get_documentation 
+23 08-1 drk 13226ms calls=search_documentation,get_documentation 
+24 08-2 drk 13766ms calls=get_documentation 
+25 08-3 drk 18435ms calls=list_documentation_topics 
+26 08-4 drk 26969ms calls=search_documentation,reason_and_route,reason_and_route,reason_and_route 
+27 08-3 off 52288ms calls=list_documentation_topics,search_documentation,search_documentation,search_documentation,list_documentation_topics,search_documentation 
+28 08-4 off 49916ms calls=search_documentation,search_documentation,search_documentation,list_documentation_topics,search_documentation,search_documentation 
+SKIP 08-5 off: gemini DAILY QUOTA
+29 08-5 drk 24780ms calls=list_documentation_topics,list_documentation_topics,list_documentation_topics 
+30 08-6 off 27310ms calls=list_documentation_topics,search_documentation 
+finished: 94/96 runs saved (stopped on daily quota)

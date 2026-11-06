@@ -1,0 +1,578 @@
+{
+ "01-2|off": {
+  "status": "Pass",
+  "verdict": "The geocode_reverse tool was called successfully with the correct coordinates and returned 6 Place de l'Hôtel de Ville-Esplanade de la Libération, 75004 Paris, which the final answer reports accurately. The prompt requested only the address, and no map was required, so the request was fully satisfied.",
+  "cost_usd": 0.044334900000000003,
+  "model": "claude-haiku-5-5"
+ },
+ "01-1|off": {
+  "status": "Partial Pass",
+  "verdict": "geocode_forward and static_map_image both succeeded and a pin map was rendered, but the plain Eiffel Tower queries returned wrong places (the top match was in 75006, about 3.7 km away per the answer). The assistant recovered only by biasing the search with coordinates it already knew, then pinned the adjacent Esplanade street match rather than the monument, and it disclosed this clearly.",
+  "cost_usd": 0.059872699999999994,
+  "model": "claude-haiku-5-5"
+ },
+ "01-1|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant delivered plausible Eiffel Tower coordinates and a static map image with a pin, but only after recovering from defects. The obvious geocode query returned the wrong place, `include_map` returned no map, and markers needed undocumented `lon,lat` order, so the result was a workaround using a 0.75-score street-address match rather than a clean tool flow.",
+  "cost_usd": 0.0576565,
+  "model": "claude-haiku-5-5"
+ },
+ "01-2|drk": {
+  "status": "Pass",
+  "verdict": "geocode_reverse succeeded on the first call and returned 6 Place de l'Hôtel de Ville-Esplanade de la Libération, 75004 Paris, which the final answer reports correctly. The stated 35 m distance and matched point fall outside the visible excerpt, but they are mutually consistent with the input coordinates.",
+  "cost_usd": 0.039881599999999996,
+  "model": "claude-haiku-5-5"
+ },
+ "01-3|off": {
+  "status": "Pass",
+  "verdict": "The geocode_structured tool was called once with the requested street, city and country and returned results without error. The final answer reports Baker Street, London as the top match with coordinates that match the visible tool output, and nothing in the excerpt contradicts the other details, though the excerpt is truncated so results 2 and 3 can't be fully checked.",
+  "cost_usd": 0.036240800000000004,
+  "model": "claude-opus-5-5"
+ },
+ "01-3|drk": {
+  "status": "Pass",
+  "verdict": "geocode_structured was called once with the requested street, city and country and returned successfully. The final answer reports the top match for Baker Street, London, plus two lesser matches; the visible excerpt supports the top result, and nothing in the trace contradicts the answer, though coordinates sit beyond the excerpt.",
+  "cost_usd": 0.038278,
+  "model": "claude-haiku-5-5"
+ },
+ "01-4|off": {
+  "status": "Pass",
+  "verdict": "The assistant called search_documentation, get_api_parameters and get_documentation without errors, then gave a grounded answer covering the JSON-array body format, per-query fields and the 100-query batch limit. The excerpts visible in the trace are truncated, but nothing contradicts the answer, and it clearly flags its assembled example and the gaps and inconsistencies in the docs.",
+  "cost_usd": 0.0470126,
+  "model": "claude-haiku-5-5"
+ },
+ "01-4|drk": {
+  "status": "Pass",
+  "verdict": "The assistant used search_documentation and get_documentation to retrieve the Batch Geocode API doc, then gave the request body format (JSON array of query objects with q, at, in, limit, lang) and the limit of 100 queries per request, with a source URL. The answer is grounded in documentation results, and it flags that the example was self-built and notes doc discrepancies.",
+  "cost_usd": 0.050387999999999995,
+  "model": "claude-haiku-5-5"
+ },
+ "01-5|off": {
+  "status": "Pass",
+  "verdict": "The assistant called search_documentation and get_api_parameters for all three geocoding endpoints, all successfully, and gave a grounded comparison of inputs, endpoints and use cases. It labelled its when-to-use guidance as its own recommendation and flagged a docs inconsistency; the trace excerpts show nothing contradicting the answer, though the final answer as provided is cut off.",
+  "cost_usd": 0.0488736,
+  "model": "claude-haiku-5-5"
+ },
+ "01-5|drk": {
+  "status": "Pass",
+  "verdict": "The assistant searched the documentation and fetched the Forward, Reverse and Structured Geocode docs, then gave a grounded comparison of inputs, endpoints, MCP tools and when to use each, with examples. The answer excerpt cuts off in the final REST/MCP differences section, but the question is already fully answered before that point.",
+  "cost_usd": 0.054808300000000004,
+  "model": "claude-haiku-5-5"
+ },
+ "01-6|off": {
+  "status": "Pass",
+  "verdict": "The assistant called get_api_parameters, search_documentation and get_documentation without errors, then explained the `in` parameter's `countryCode` and `bbox` filters with examples. The answer appears grounded in the Forward Geocode docs, though the visible result excerpts confirm only part of its detail, and it fully answers the question.",
+  "cost_usd": 0.044948800000000004,
+  "model": "claude-opus-5-5"
+ },
+ "01-6|drk": {
+  "status": "Pass",
+  "verdict": "The assistant used search_documentation and get_documentation successfully, then gave a grounded answer on the Forward Geocode `in` parameter, covering countryCode (alpha-3) and bbox formats with examples and the source URL. It also noted the geocode_forward tool's lack of a bbox parameter, and the excerpts show nothing contradicting these details.",
+  "cost_usd": 0.0484175,
+  "model": "claude-haiku-5-5"
+ },
+ "02-1|off": {
+  "status": "Pass",
+  "verdict": "place_search returned coffee shops near the given coordinates and static_map_image rendered an image with 11 markers (10 results plus the search point). The final answer lists the results and reports the map inline, satisfying both parts of the prompt without errors.",
+  "cost_usd": 0.0399288,
+  "model": "claude-opus-5-5"
+ },
+ "02-2|off": {
+  "status": "Pass",
+  "verdict": "The autosuggest tool was called successfully with the 'Centr' query and New York coordinates, and the assistant presented the ranked suggestions with types and distances. The visible result excerpt matches the answer's entries (e.g. Centreville, VA at 358.6 km), and the prompt is fully satisfied, though the excerpt is truncated so not every row could be verified.",
+  "cost_usd": 0.0379168,
+  "model": "claude-opus-5-5"
+ },
+ "02-2|drk": {
+  "status": "Pass",
+  "verdict": "The autosuggest tool was called once with the requested query and coordinates and returned results without error. The final answer lists 8 suggestions consistent with the visible result, though the excerpt only confirms the first item, and no map was requested.",
+  "cost_usd": 0.038884800000000004,
+  "model": "claude-opus-5-5"
+ },
+ "02-1|drk": {
+  "status": "Pass",
+  "verdict": "search_places returned 10 coffee shops near the coordinates and get_static_map returned a map image URL with pins for all of them, which the final answer embedded with a results list. The pins reportedly lost their requested colors and labels, and include_map returned no map, but the prompt asked for neither styling nor that option, and the assistant disclosed both issues.",
+  "cost_usd": 0.0572971,
+  "model": "claude-haiku-5-5"
+ },
+ "02-3|off": {
+  "status": "Pass",
+  "verdict": "search_along_route was called successfully with the route points, a \"gas station\" query and a 600s detour limit, and it returned results. The answer identified the one real gas station (Sinclair) with detour details and flagged the four name-only matches; the visible excerpt shows only the first result, so the other details can't be fully checked, but nothing in it contradicts them.",
+  "cost_usd": 0.0377928,
+  "model": "claude-opus-5-5"
+ },
+ "02-4|off": {
+  "status": "Pass",
+  "verdict": "The assistant searched the docs, fetched both API references and their parameters without errors, then explained the differences and recommended Autocomplete for address keystroke bars and Autosuggest for free-form search. The answer is grounded in those results, flags that the docs offer no direct comparison, and labels the debounce figure as its own suggestion; the excerpts are truncated, so not every detail could be fully checked.",
+  "cost_usd": 0.05086160000000001,
+  "model": "claude-haiku-5-5"
+ },
+ "02-3|drk": {
+  "status": "Partial Pass",
+  "verdict": "search_along_route ran without error using the requested route and 600s detour, and the assistant reported one real station (Sinclair) after filtering out four name-matched non-fuel results. Coverage is doubtful: the search matched on the word \"Gas\", and the rerun with categories=7311 and limit=20 returned an identically sized result, so the list may be incomplete, as the assistant disclosed.",
+  "cost_usd": 0.0481026,
+  "model": "claude-haiku-5-5"
+ },
+ "02-4|drk": {
+  "status": "Pass",
+  "verdict": "The assistant searched the docs and fetched both the Autocomplete and Autosuggest pages without errors, then gave a grounded comparison and a clear recommendation of Autocomplete for keystroke address search bars, with Autosuggest for broader or typo-tolerant search. It flagged undocumented points such as latency and labelled its own tips as non-doc suggestions, and it included source URLs; the excerpts shown do not contradict its claims.",
+  "cost_usd": 0.053014900000000004,
+  "model": "claude-haiku-5-5"
+ },
+ "02-6|off": {
+  "status": "Pass",
+  "verdict": "The assistant called get_api_parameters, search_documentation and get_documentation successfully, and its answer is grounded in the fetched Place Lookup API reference. It lists the identity, address, position, access, mapView, category and contact fields, and correctly notes that opening hours are not in the documented schema.",
+  "cost_usd": 0.0443848,
+  "model": "claude-haiku-5-5"
+ },
+ "02-5|off": {
+  "status": "Pass",
+  "verdict": "The assistant called search_documentation, get_api_parameters and get_documentation successfully, then answered from the Search Along Route docs: max_detour_time filtering, detour_time and detour_offset semantics, negative values and sorting. It correctly said the internal algorithm is not published and labeled its own inferences and the gaps in the docs; the answer's cut-off last sentence is only a minor suggested follow-up.",
+  "cost_usd": 0.05011340000000001,
+  "model": "claude-haiku-5-5"
+ },
+ "02-6|drk": {
+  "status": "Pass",
+  "verdict": "The assistant grounded its answer in search_documentation and get_documentation for the Place Lookup API, listing address, category, contact and other fields, and correctly noted that opening hours are not documented. The final answer appears truncated at the source URL, but the content fully addresses the question and matches the documentation retrieved, as far as the excerpted tool results show.",
+  "cost_usd": 0.0488612,
+  "model": "claude-haiku-5-5"
+ },
+ "02-5|drk": {
+  "status": "Pass",
+  "verdict": "The assistant searched the docs and fetched the full Search Along Route page, then explained max_detour_time, detour_time, detour_offset, distance and negative values, stating that the algorithm itself is unpublished and labelling its one inference. The answer text provided cuts off mid-sentence in a closing caveats section, so any source link after that point could not be checked, and the tool excerpts were too short to verify every field detail, but the core question was answered.",
+  "cost_usd": 0.0613208,
+  "model": "claude-haiku-5-5"
+ },
+ "03-1|off": {
+  "status": "Partial Pass",
+  "verdict": "Directions returned a route and static_route_map rendered the requested image, so the answer gives distance, duration and a map. However, the steps=true response was too large to read, so the assistant reran without steps and gave only a coarse route description read from the map, with no turn-by-turn directions, a minor omission for a \"how do I drive\" prompt that it disclosed.",
+  "cost_usd": 0.050378900000000004,
+  "model": "claude-haiku-5-5"
+ },
+ "03-1|drk": {
+  "status": "Partial Pass",
+  "verdict": "get_directions succeeded, and the answer gave the correct distance and duration (636.7 km, about 5h43m) plus a static route map image. However, the tool's turn-by-turn steps were not delivered because the output was too large, so the 'how do I drive' outline is the assistant's own inference from the coordinates, as it disclosed.",
+  "cost_usd": 0.054799,
+  "model": "claude-haiku-5-5"
+ },
+ "03-2|drk": {
+  "status": "Pass",
+  "verdict": "The navigation tool succeeded on the first call with truck mode, avoid=sharp_turn and steps enabled, and the assistant returned a clear turn-by-turn table with distances and times. The excerpt is truncated, so the individual steps can't be fully verified, but nothing contradicts them and no map was requested.",
+  "cost_usd": 0.0408208,
+  "model": "claude-opus-5-5"
+ },
+ "03-2|off": {
+  "status": "Partial Pass",
+  "verdict": "Both directions calls succeeded, and the assistant delivered a truck route avoiding sharp turns with step-by-step instructions, but it had to stitch them together: distances and times came from the flexible route with avoid=sharp_turn, while maneuvers and bearings came from a separate fast route without avoidance. It disclosed this and the routes appear to match closely, but no single result gave turn-by-turn navigation with the avoidance applied, and it never tried steps on the flexible service, relying on the parameter docs instead.",
+  "cost_usd": 0.0578835,
+  "model": "claude-haiku-5-5"
+ },
+ "03-3|off": {
+  "status": "Pass",
+  "verdict": "The isochrone tool returned 5 and 10 minute car contours; the first result was too large for the client, so a generalized rerun fixed it. The contours were then rendered on a map image and measured at 3.78 and 39.92 km², and the answer reports them accurately, disclosing the simplification, though its neighborhood and freeway descriptions are inferred from the geometry.",
+  "cost_usd": 0.056597999999999996,
+  "model": "claude-haiku-5-5"
+ },
+ "03-3|drk": {
+  "status": "Pass",
+  "verdict": "The isochrone tool succeeded on the first call, returning 5- and 10-minute car polygons and a rendered static map URL, which the assistant embedded in its answer with a description of the reachable area. The visible answer is cut off, so its later content could not be checked, but what is shown fits the tool results and satisfies the prompt.",
+  "cost_usd": 0.0533008,
+  "model": "claude-haiku-5-5"
+ },
+ "03-4|drk": {
+  "status": "Pass",
+  "verdict": "The assistant called search_documentation and get_documentation successfully, then gave a documentation-grounded comparison of Fast and Flexible and recommended Flexible for custom truck weight and height limits, with truck_size/truck_weight usage and an example. The answer excerpt is truncated at the docs-inconsistencies section, but the question is fully answered before that point.",
+  "cost_usd": 0.0550714,
+  "model": "claude-haiku-5-5"
+ },
+ "03-4|off": {
+  "status": "Pass",
+  "verdict": "The assistant used the documentation search, section and parameter tools without errors, then gave a grounded Fast vs Flexible comparison and correctly recommended Flexible, since `truck_size` and `truck_weight` are documented only for that version. The answer's last sentence, a side note on regional availability, is cut off, but this loses nothing the prompt asked for.",
+  "cost_usd": 0.0626162,
+  "model": "claude-haiku-5-5"
+ },
+ "03-5|off": {
+  "verdict": "The assistant made successful documentation calls covering the Flutter and iOS route line, theme and style pages, and the visible Flutter and Android guidance matches those topics. However, the final answer as provided cuts off mid-line in the iOS snippet, so the promised iOS style classes and route line customization can't be confirmed; result excerpts were also too short to check every API detail.",
+  "status": "Partial Pass",
+  "cost_usd": 0.0743912,
+  "model": "claude-haiku-5-5"
+ },
+ "03-5|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant grounded its answer in successful search_documentation and get_documentation calls, and the Flutter route line, theme mode and native styling guidance is detailed and consistent with the doc pages retrieved. However, the final answer as provided cuts off mid-code in the native iOS section, so iOS route color and day/night styling is incomplete and no source links are visible.",
+  "cost_usd": 0.064508,
+  "model": "claude-haiku-5-5"
+ },
+ "03-6|off": {
+  "status": "Pass",
+  "verdict": "The assistant used get_api_parameters and search_documentation without errors and gave a documentation-grounded answer covering truck_weight, truck_axle_count, truck_size (height and length), and hazmat_type, including option=flexible and mode=truck. The excerpts shown support most details; truck_axle_count came from the truncated search result, and nothing in the trace contradicts the answer.",
+  "cost_usd": 0.0545456,
+  "model": "claude-haiku-5-5"
+ },
+ "03-6|drk": {
+  "status": "Pass",
+  "verdict": "The assistant called search_documentation and get_documentation successfully and gave a grounded answer covering truck_size, truck_weight, truck_axle_load and hazmat_type, including the option=flexible and mode=truck requirements. It also correctly noted there is no REST axle-count parameter and flagged discrepancies with the get_directions tool; the trace excerpts are truncated, but nothing in them contradicts the answer.",
+  "cost_usd": 0.04707599999999999,
+  "model": "claude-haiku-5-5"
+ },
+ "04-1|off": {
+  "status": "Pass",
+  "verdict": "static_map_image was called once with the correct center, zoom 12 and a red marker, and it returned an image confirming those parameters with 1 marker. The final answer accurately reports the rendered map, so the request was fully satisfied.",
+  "cost_usd": 0.033048799999999996,
+  "model": "claude-opus-5-5"
+ },
+ "04-2|off": {
+  "status": "Pass",
+  "verdict": "The assistant called static_map_image with the correct center, zoom 14 and dark style, and the tool returned an image that the final answer presented. The listed landmarks can't be confirmed from the trace's text excerpt, but they fit central Paris and don't detract from fulfilling the request.",
+  "cost_usd": 0.0332568,
+  "model": "claude-opus-5-5"
+ },
+ "04-1|drk": {
+  "status": "Partial Fail",
+  "verdict": "get_static_map returned a centered San Francisco map at zoom 12, but the assistant reports the requested red pin did not appear in either attempt, even though status was Ok and the marker was in the URL. A key part of the request went unmet, and since the assistant never checked the docs, the cause (bad marker syntax or a server defect) is unconfirmed.",
+  "cost_usd": 0.047454300000000005,
+  "model": "claude-haiku-5-5"
+ },
+ "04-3|off": {
+  "status": "Pass",
+  "verdict": "The assistant called static_route_map with the two requested points, blue stroke and width 4; the tool succeeded and returned an inline map image with the route. The final answer accurately reports this, noting the line is straight rather than road-following and that no URL was returned.",
+  "cost_usd": 0.0333968,
+  "model": "claude-opus-5-5"
+ },
+ "04-3|drk": {
+  "status": "Pass",
+  "verdict": "get_static_map was called once with the exact requested path spec and returned Ok with a map URL and image, which the final answer displayed. The answer accurately describes the line as a straight blue 4px connection between the two points, fully satisfying the prompt.",
+  "cost_usd": 0.0381408,
+  "model": "claude-opus-5-5"
+ },
+ "04-4|off": {
+  "status": "Pass",
+  "verdict": "The assistant called get_api_parameters and search_documentation successfully and gave a grounded answer: mapId styles are light, dark and hybrid (no standard or satellite), and @2x is the only documented scale. It flagged documentation gaps honestly, and the excerpts visible in the trace are consistent with the answer, though they do not show every listed value.",
+  "cost_usd": 0.04099610000000001,
+  "model": "claude-haiku-5-5"
+ },
+ "04-2|drk": {
+  "status": "Pass",
+  "verdict": "get_static_map succeeded on the first call with center 48.8566,2.3522, zoom 14 and the dark style, returning an image that the final answer rendered with the requested parameters. The description of the landmarks can't be checked from the text excerpt, but image content was returned and the request was fully satisfied.",
+  "cost_usd": 0.0472508,
+  "model": "claude-haiku-5-5"
+ },
+ "04-4|drk": {
+  "status": "Pass",
+  "verdict": "The assistant searched the documentation and fetched the full Static Images API doc, then answered with the documented styles (hybrid, light, dark), the @2x scale option, and the source URL, while flagging the streets and required-scale inconsistencies. The excerpts are truncated, but the answer is grounded in documentation tool results and fully addresses the question.",
+  "cost_usd": 0.0473441,
+  "model": "claude-haiku-5-5"
+ },
+ "04-5|off": {
+  "status": "Pass",
+  "verdict": "The assistant grounded its answer in search_documentation, get_api_parameters and get_documentation, which returned the static-images auto-fitted and bounds-based endpoints without error. It explained both the `auto` and explicit bounding-box URL forms with parameters and examples, fully answering the question; the trace excerpts are truncated, but nothing in them contradicts the answer.",
+  "cost_usd": 0.04784410000000001,
+  "model": "claude-haiku-5-5"
+ },
+ "04-5|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant used search_documentation and get_documentation, and correctly explained the grounded `auto` mode with markers/path overlays and padding, plus a successful get_static_map call. However, it claims visual findings (pin colors, clipping, lat,lon order overriding the docs) that the URL-only tool result does not support, and the final answer cuts off mid-bullet.",
+  "cost_usd": 0.0578732,
+  "model": "claude-haiku-5-5"
+ },
+ "04-6|off": {
+  "status": "Pass",
+  "verdict": "The assistant used search_documentation, get_api_parameters and get_documentation, then gave a grounded explanation of marker colors, custom icon options and path fill with hex and rgba opacity, and it said plainly that marker labels and hex marker colors aren't documented. The final full-example URL is cut off in the supplied text, but this doesn't affect the core answer, and the trace excerpts show nothing that contradicts it.",
+  "cost_usd": 0.05669419999999999,
+  "model": "claude-haiku-5-5"
+ },
+ "05-1|off": {
+  "status": "Capability Gap",
+  "verdict": "The server exposes no create_asset or other Live Tracking write tool, so the asset could not be created. The assistant said so plainly after checking the docs, and gave a documentation-based curl request as a workaround.",
+  "cost_usd": 0.042446099999999994,
+  "model": "claude-haiku-5-5"
+ },
+ "04-6|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant grounded its answer in search_documentation and get_documentation, and correctly covered marker colours, custom icons, anchors and polygon fill/opacity, noting that the docs list no label property. However, labels remain unresolved because the tool description's `color|label` format is contradicted by its reported test, the \"Worked\" and \"default blue\" render claims go beyond the excerpted results (which show only URLs), and the answer is cut off in the final example.",
+  "cost_usd": 0.06525120000000001,
+  "model": "claude-haiku-5-5"
+ },
+ "05-1|drk": {
+  "status": "Pass",
+  "verdict": "create_asset was called once with the requested name, type and status=active attribute and returned Ok with an asset ID. The final answer accurately reports the created asset and its ID.",
+  "cost_usd": 0.0346168,
+  "model": "claude-opus-5-5"
+ },
+ "05-2|off": {
+  "status": "Capability Gap",
+  "verdict": "The server exposes no create_geofence or other geofence-write tool, so the geofence could not be created, and the assistant said so plainly. It consulted the documentation tools and offered an unexecuted curl request as a workaround, flagging the endpoint as from memory.",
+  "cost_usd": 0.0410804,
+  "model": "claude-haiku-5-5"
+ },
+ "05-3|off": {
+  "status": "Capability Gap",
+  "verdict": "The server exposes no check_geofence_containment or other stored-geofence tool, and points_in_polygon cannot resolve a geofence ID to its coordinates, so the check could not be run. The assistant said so plainly, did not invent a result, and used the docs tools to give a curl for the Geofence Contains endpoint and offer a polygon-based alternative.",
+  "cost_usd": 0.040720799999999995,
+  "model": "claude-opus-5-5"
+ },
+ "05-2|drk": {
+  "status": "Partial Fail",
+  "verdict": "The requested create_geofence call failed with a 400 (\"circle is required for circle type\"), though the geofence was then created with the correct parameters through batch_create_geofences (id b0cf1cb6-6df7-453b-800b-b40c861907e4). The run hit the max-turns limit before verifying it, so the user received no final answer or confirmation, and create_geofence itself never succeeded.",
+  "cost_usd": 0.0499281,
+  "model": "claude-haiku-5-5"
+ },
+ "05-3|drk": {
+  "status": "Fail",
+  "verdict": "check_geofence_containment ran without error but returned an empty result_list twice, and get_geofence returned a 404 showing the geofence does not exist, so containment was never determined. The assistant reported this accurately, but the request was not accomplished; the cause appears to be an invalid or missing geofence ID rather than a clear server defect.",
+  "cost_usd": 0.045712600000000006,
+  "model": "claude-haiku-5-5"
+ },
+ "05-4|off": {
+  "status": "Partial Pass",
+  "verdict": "The documentation tools ran without errors and fetched the Android and iOS Tracking SDK pages, and the visible Android init and callback code appears grounded in them, with an honest note that no \"location tracking manager\" class exists. However, the supplied answer cuts off mid-word in the Android section, so the promised iOS code could not be seen or verified, and this grade reflects only the visible part.",
+  "cost_usd": 0.08267569999999999,
+  "model": "claude-haiku-5-5"
+ },
+ "05-4|drk": {
+  "status": "Partial Pass",
+  "verdict": "All documentation searches and fetches succeeded for both platforms, and the visible Android initialization and callback example appears grounded in those docs. However, the supplied final answer cuts off mid-Android code, so the iOS example and any source links cannot be confirmed, and tool excerpts are too short to verify the code or the claim that no location tracking manager exists despite the fetched 'Location Manager' docs.",
+  "cost_usd": 0.0697369,
+  "model": "claude-haiku-5-5"
+ },
+ "05-5|drk": {
+  "status": "Pass",
+  "verdict": "The assistant searched the Tracking docs and fetched the enter/exit, speeding and idle example pages, all without errors, then gave a grounded step-by-step setup (asset, device bind, geofence, monitor configs, webhook) that covers all three alert types. It omitted a source URL and the suggested section format, but the content appears consistent with the fetched documentation and fully answers the question.",
+  "cost_usd": 0.0552386,
+  "model": "claude-haiku-5-5"
+ },
+ "05-5|off": {
+  "status": "Partial Pass",
+  "verdict": "All documentation calls succeeded and retrieved the speeding, idle, enter/exit and webhook docs, and the visible asset, device, geofence and monitor steps appear grounded in them, though the trace shows only result excerpts. The final answer as provided cuts off mid-sentence in the speeding section, so the idle monitor and webhook steps are missing; this may be a transcript truncation, but the answer can't be confirmed complete.",
+  "cost_usd": 0.07354609999999999,
+  "model": "claude-haiku-5-5"
+ },
+ "05-6|off": {
+  "status": "Pass",
+  "verdict": "The assistant searched the docs and retrieved the full Snap To Roads and Route Reconstruction references, then gave a clear, doc-grounded recommendation on when to use each and disclosed that the docs offer no direct comparison. The answer text ends mid-sentence in the last caveat, but the core comparison and guidance are complete.",
+  "cost_usd": 0.0572182,
+  "model": "claude-haiku-5-5"
+ },
+ "06-1|off": {
+  "status": "Capability Gap",
+  "verdict": "The server exposes no driver_assignment_sync or other driver assignment tool, so the assignment could not be executed. The assistant said so after checking the documentation tools and offered an unexecuted request body and curl example instead.",
+  "cost_usd": 0.0436747,
+  "model": "claude-haiku-5-5"
+ },
+ "05-6|drk": {
+  "status": "Pass",
+  "verdict": "The assistant searched the docs and fetched the Snap To Roads, Route Reconstruction and diagnostics guide pages, then gave a clear when-to-use-which recommendation, stating that the comparison is its own reading because the docs don't compare the two directly. The answer is grounded in documentation tool results, though the supplied text cuts off mid-sentence in a closing section, after the core question has been answered.",
+  "cost_usd": 0.05856209999999999,
+  "model": "claude-haiku-5-5"
+ },
+ "06-1|drk": {
+  "status": "Pass",
+  "verdict": "driver_assignment_sync was called once with the requested order, driver location, pickup and 10000 m filter radius, and it returned status 200 with driver '1' assigned to order '1'. The final answer reports the trip ID, distance and ETA, which match the visible result; the unassigned claim lies beyond the excerpt but is consistent with a successful assignment.",
+  "cost_usd": 0.0385129,
+  "model": "claude-haiku-5-5"
+ },
+ "06-2|off": {
+  "status": "Capability Gap",
+  "verdict": "The server exposes no driver assignment tool, so the requested async submit could not be made, and the assistant said so clearly. It offered a workaround instead: a manual pairing from distance_matrix results, labelled as its own calculation, plus a request body built from the documented parameters.",
+  "cost_usd": 0.0478608,
+  "model": "claude-opus-5-5"
+ },
+ "06-2|drk": {
+  "status": "Pass",
+  "verdict": "driver_assignment_async_submit was called with both drivers, both orders and the 50000 m radius, and the job completed when polled with get_driver_assignment_result. The final answer reports the assignments, distances, ETAs and IDs consistent with the visible tool results; the result excerpt is truncated after Driver 1, so Driver 2's figures could not be directly checked but nothing contradicts them.",
+  "cost_usd": 0.042064800000000006,
+  "model": "claude-opus-5-5"
+ },
+ "06-3|off": {
+  "status": "Capability Gap",
+  "verdict": "The server exposes no cluster_jobs or other clustering tool, and the assistant said so, confirming the Clustering API exists via documentation search. It then gave a clearly labeled manual grouping based on distance_matrix results, which is a workaround rather than actual Clustering API output.",
+  "cost_usd": 0.044716799999999994,
+  "model": "claude-opus-5-5"
+ },
+ "06-3|drk": {
+  "status": "Pass",
+  "verdict": "cluster_jobs was called with all 4 jobs and 2 capacity-2 clusters, and get_clustering_result returned a completed result with clusters of jobs [3,4] and a second cluster reported as 2 quantity. The final answer reports these assignments, quantities and costs consistently with the visible tool output, though the result excerpt is truncated before Cluster 2's job IDs and center.",
+  "cost_usd": 0.042422800000000004,
+  "model": "claude-haiku-5-5"
+ },
+ "06-4|off": {
+  "status": "Pass",
+  "verdict": "The assistant used search_documentation, list_documentation_topics and get_documentation to ground its recommendation of the Route Optimization API, including limits, async workflow and why the Driver Assignment API is the wrong fit. The one get_api_parameters miss (found:false for \"optimization\") was harmless, and the answer fully addresses the prompt with documentation support.",
+  "cost_usd": 0.0591968,
+  "model": "claude-opus-5-5"
+ },
+ "06-5|off": {
+  "status": "Pass",
+  "verdict": "The assistant used search_documentation, get_documentation and get_api_parameters successfully (the only hiccups were an oversized result and a wrong section name, both recovered) and gave a grounded comparison of sync vs async limits, flow and rate limits. It correctly flagged that latency figures are undocumented and labelled its inference; the excerpts shown are truncated so specific limit values can't be fully confirmed, and the answer's last line is cut off only trivially.",
+  "cost_usd": 0.0650488,
+  "model": "claude-haiku-5-5"
+ },
+ "06-4|drk": {
+  "status": "Pass",
+  "verdict": "The assistant searched and fetched the NextBillion docs, then correctly recommended the Route Optimization API (`/optimization/v2`), with Driver Assignment only for real-time on-demand orders, and gave the async call flow and an example adapted from the tutorial. The answer is grounded in documentation results; the oversized doc outputs were a client size limit rather than a server failure, and they did not stop it from answering.",
+  "cost_usd": 0.05856940000000001,
+  "model": "claude-haiku-5-5"
+ },
+ "06-5|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant searched the docs and called get_documentation, but the 57KB page was too large to read, so its sync/async limits came from the MCP tool definitions rather than documentation, which it disclosed. The comparison is useful, but the limits are not verified against the docs and the latency trade-offs are only qualitative, with no published figures found.",
+  "cost_usd": 0.06016919999999999,
+  "model": "claude-haiku-5-5"
+ },
+ "06-6|drk": {
+  "status": "Pass",
+  "verdict": "The assistant searched the docs and fetched the full Clustering API page, then gave a grounded answer explaining objectives, quantity limits, explicit and automatic clusters, and hard versus soft capacity. It also correctly noted that time windows and custom distance matrices are not supported; the answer excerpt is cut off in the trace, but nothing shown contradicts the documentation results.",
+  "cost_usd": 0.05048130000000001,
+  "model": "claude-haiku-5-5"
+ },
+ "06-6|off": {
+  "status": "Partial Pass",
+  "verdict": "The assistant used the documentation tools successfully and gave a grounded answer: capacity is handled through cluster quantity limits, there is no time-window or custom matrix input, and the algorithm is unpublished. However, the final answer cuts off mid-list at the \"Travel cost options\" section, so that part is missing.",
+  "cost_usd": 0.0536236,
+  "model": "claude-haiku-5-5"
+ },
+ "07-1|off": {
+  "status": "Capability Gap",
+  "verdict": "The server exposes no get_road_segments or equivalent tool, so the assistant could not fetch the segments. It confirmed this through the documentation tools, said so plainly, and gave an unexecuted curl request built from the documented parameters.",
+  "cost_usd": 0.0441208,
+  "model": "claude-opus-5-5"
+ },
+ "07-1|drk": {
+  "status": "Partial Fail",
+  "verdict": "get_road_segments ran with the correct circle arguments, but the ~194k-character result exceeded the client token limit and the assistant could not read the saved file. Its bounding-box fallback returned only the southwest quadrant, so the answer honestly reports a partial list that omits three quadrants and does not match the 500 m circle.",
+  "cost_usd": 0.05614380000000001,
+  "model": "claude-haiku-5-5"
+ },
+ "07-2|off": {
+  "status": "Capability Gap",
+  "verdict": "The server exposes no get_traffic_incidents or equivalent tool, so no live incident data could be retrieved. The assistant confirmed this via tool discovery and documentation search, said so clearly, and offered a documented curl request for the REST endpoint as a workaround.",
+  "cost_usd": 0.0407312,
+  "model": "claude-haiku-5-5"
+ },
+ "07-3|off": {
+  "status": "Capability Gap",
+  "verdict": "The server exposes no create_road_restriction tool or any other restriction-writing tool, so the closure could not be created. The assistant checked the docs and API reference, confirmed the gap, and honestly reported that nothing was created.",
+  "cost_usd": 0.040427000000000005,
+  "model": "claude-haiku-5-5"
+ },
+ "07-2|drk": {
+  "status": "Pass",
+  "verdict": "get_traffic_incidents succeeded for the requested bbox, and when the 105K-character result exceeded the client's size limit, the assistant split the box into seven sub-areas that all returned Ok. It reported 65 incidents by type and location and disclosed the split and the present-only filter; the count can't be fully verified from the excerpts, and the answer shown is cut off mid-list, possibly by the excerpt.",
+  "cost_usd": 0.06938920000000001,
+  "model": "claude-haiku-5-5"
+ },
+ "07-3|drk": {
+  "status": "Fail (Bug)",
+  "verdict": "create_road_restriction returned a 404 \"Invalid URL path\" on valid arguments, and get_road_editor_areas and list_road_restrictions failed the same way, which points to a server endpoint defect rather than bad input. The restriction was not created, and the assistant reported this accurately.",
+  "cost_usd": 0.043841700000000004,
+  "model": "claude-haiku-5-5"
+ },
+ "07-5|off": {
+  "status": "Pass",
+  "verdict": "The assistant searched the docs and retrieved the full Weather API page, then gave a grounded answer: radar-based precipitation polygons are available by region only, with no route or corridor parameter, so corridor filtering must be done client-side. The excerpts shown support this, the one list_documentation_topics overflow did not affect the outcome, and the answer also offered a practical workaround.",
+  "cost_usd": 0.0474383,
+  "model": "claude-haiku-5-5"
+ },
+ "07-4|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant correctly named the Road Editor API and mapped the three use cases to restriction types, but three documentation searches found no dedicated page, so the details came from the server's tool definitions rather than documentation. It disclosed this openly, but the answer has no docs source URL and is only partly grounded in documentation results.",
+  "cost_usd": 0.0495603,
+  "model": "claude-haiku-5-5"
+ },
+ "07-4|off": {
+  "status": "Partial Fail",
+  "verdict": "The assistant ran many documentation searches and topic listings, but none returned a page on creating restrictions, so its \"Restrictions API\" answer and details came from memory, as it openly said. The likely-correct name is not grounded in tool results, and the full catalog was never inspected, so the question was only tentatively answered.",
+  "cost_usd": 0.069063,
+  "model": "claude-haiku-5-5"
+ },
+ "07-6|off": {
+  "status": "Pass",
+  "verdict": "The assistant called search_documentation, get_api_parameters and get_documentation successfully, with no errors, and answered from those results. It covered the bbox, id, incident_type and incident_validity filters and the criticality values; the excerpts are truncated, but the 5-parameter count (key plus four filters) and the grounded, specific answer are consistent with the docs.",
+  "cost_usd": 0.044625700000000004,
+  "model": "claude-haiku-5-5"
+ },
+ "07-5|drk": {
+  "status": "Pass",
+  "verdict": "The assistant searched the docs and fetched the Weather API and Weather Forecast API pages, then correctly answered that radar precipitation polygons are available by region only, with no route-corridor parameter, and gave a client-side workaround. The answer text ends mid-sentence in its closing caveats, which looks like excerpt truncation, but the core answer is complete and appears grounded in the fetched docs, though the trace shows only the start of those results.",
+  "cost_usd": 0.057535300000000004,
+  "model": "claude-haiku-5-5"
+ },
+ "07-6|drk": {
+  "status": "Pass",
+  "verdict": "The assistant searched the docs and fetched the full Traffic Incidents API page with no errors, then answered both parts: the filters (bbox, id, incident_type, incident_validity) and the criticality values and meaning, with a source URL. The answer appears grounded in the retrieved documentation, though the result excerpts shown are truncated, so specifics such as the parameter limits and criticality values could not be checked line by line.",
+  "cost_usd": 0.0479914,
+  "model": "claude-haiku-5-5"
+ },
+ "08-1|off": {
+  "status": "Pass",
+  "verdict": "search_documentation was called successfully with a Flutter filter and returned relevant Flutter Navigation SDK docs. The final answer gives the `avoid: [SupportedAvoid.toll]` usage in `RouteRequestParams` with cited sources and openly notes that it enabled a commented-out line and did not compile the code; the visible result excerpt is truncated, but nothing contradicts the answer.",
+  "cost_usd": 0.0402155,
+  "model": "claude-haiku-5-5"
+ },
+ "08-2|off": {
+  "status": "Pass",
+  "verdict": "get_documentation was called with the requested doc_id and succeeded (found: true), and the final answer accurately summarizes the returned page, including how it works, the RouteLineProperties attributes, and links. The answer appears cut off in the trace excerpt at the last link, but no substantive content is missing.",
+  "cost_usd": 0.0421052,
+  "model": "claude-haiku-5-5"
+ },
+ "08-1|drk": {
+  "status": "Pass",
+  "verdict": "search_documentation was called successfully with a Flutter-scoped query, and the answer gives the `avoid: [SupportedAvoid.toll]` option with relevant docs links from the results. It openly notes it saw only search snippets, and although the result excerpt is truncated, nothing in the trace contradicts the answer.",
+  "cost_usd": 0.0404125,
+  "model": "claude-haiku-5-5"
+ },
+ "08-2|drk": {
+  "status": "Pass",
+  "verdict": "get_documentation was called successfully with the exact doc_id and returned the matching Flutter 'Customize Route Line Style' document. The final answer presents that content (RouteLineProperties attributes plus styling and route-drawing code); the excerpt available is cut off at the end, but nothing shows a failure or unsupported claim.",
+  "cost_usd": 0.0445888,
+  "model": "claude-opus-5-5"
+ },
+ "08-3|off": {
+  "status": "Pass",
+  "verdict": "list_documentation_topics was called with category \"Routing\" and succeeded, returning 115 matched pages. The answer organizes those topics by API and SDK, and its visible counts and titles are consistent with the result; the answer is cut off mid-list in the supplied text, which looks like excerpt truncation, so the later sections could not be checked.",
+  "cost_usd": 0.0465492,
+  "model": "claude-haiku-5-5"
+ },
+ "08-3|drk": {
+  "status": "Partial Pass",
+  "verdict": "list_documentation_topics succeeded with category \"Routing\" and returned 94 topics, and the assistant correctly reported that count and organized the topics into groups. However, the final answer as provided cuts off mid-list in the iOS examples, after about 79 of the 94 topics are accounted for, so the listing is not shown to be complete.",
+  "cost_usd": 0.049347800000000004,
+  "model": "claude-haiku-5-5"
+ },
+ "08-4|drk": {
+  "status": "Partial Pass",
+  "verdict": "The documentation search did not explain the router's logic, so the assistant probed `reason_and_route` with nine queries and accurately reported the intents, confidences and rationales, including three apparent misclassifications. The answer is useful and openly labelled as inference, but the trigger words and rule order are unconfirmed by documentation or source, so it is not fully grounded.",
+  "cost_usd": 0.0687565,
+  "model": "claude-haiku-5-5"
+ },
+ "08-5|off": {
+  "status": "Partial Pass",
+  "verdict": "The unfiltered list_documentation_topics result was too large to read, so the assistant rebuilt the index from filtered calls, and its category and SDK counts are consistent with those results (344 of 367 pages). However, it left 23 pages unidentified after guessing at category names, and the guides section of the final answer is cut off mid-list.",
+  "cost_usd": 0.0918658,
+  "model": "claude-haiku-5-5"
+ },
+ "08-4|off": {
+  "status": "Fail",
+  "verdict": "The assistant ran six documentation searches, covering the exact terms and broader ones, and every result was unrelated, so it gave no explanation of how `reason_and_route` classifies queries. It honestly reported this rather than inventing logic, but documentation tools exist and were called, so the question went unanswered rather than being a Capability Gap.",
+  "cost_usd": 0.0648358,
+  "model": "claude-haiku-5-5"
+ },
+ "08-6|off": {
+  "status": "Partial Pass",
+  "verdict": "The assistant grounded its answer in successful documentation calls and gave a clear retrieval workflow and a snippet adapted from the docs, recovering from the oversized unfiltered topic list by filtering. However, the supplied answer cuts off mid-code, so the architectural recommendations half of the prompt cannot be confirmed.",
+  "cost_usd": 0.059609499999999996,
+  "model": "claude-haiku-5-5"
+ },
+ "08-5|drk": {
+  "status": "Pass",
+  "verdict": "The unfiltered list_documentation_topics result was too large to return, so the assistant queried each category and gave a grounded inventory of the 7 categories (counts sum to 300), the SDKs including Flutter, Android and iOS, and the guides. It correctly reported that no 'Guides' or 'SDK' category filter exists; the final answer excerpt is cut off mid-sentence, but nothing shown conflicts with the tool results.",
+  "cost_usd": 0.0685998,
+  "model": "claude-haiku-5-5"
+ },
+ "08-6|drk": {
+  "status": "Partial Pass",
+  "verdict": "The assistant grounded its answer in successful list, search and get documentation calls, and gave a credible workflow with a Flutter truck example. However, the final answer as provided cuts off mid-sentence at the requirements list, so any citations and architectural recommendations are missing or unverifiable, and the unfiltered topic list overflowed inline limits.",
+  "cost_usd": 0.0592623,
+  "model": "claude-haiku-5-5"
+ }
+}

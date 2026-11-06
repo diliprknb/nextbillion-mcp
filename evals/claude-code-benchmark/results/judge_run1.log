@@ -1,0 +1,97 @@
+1 01-2 off Pass
+2 01-1 off Partial Pass
+3 01-1 drk Partial Pass
+4 01-2 drk Pass
+5 01-3 off Pass
+6 01-3 drk Pass
+7 01-4 off Pass
+8 01-4 drk Pass
+9 01-5 off Pass
+10 01-5 drk Pass
+11 01-6 off Pass
+12 01-6 drk Pass
+13 02-1 off Pass
+14 02-2 off Pass
+15 02-2 drk Pass
+16 02-1 drk Pass
+17 02-3 off Pass
+18 02-4 off Pass
+19 02-3 drk Partial Pass
+20 02-4 drk Pass
+21 02-6 off Pass
+22 02-5 off Pass
+23 02-6 drk Pass
+24 02-5 drk Pass
+25 03-1 off Partial Pass
+26 03-1 drk Partial Pass
+27 03-2 drk Pass
+28 03-2 off Partial Pass
+29 03-3 off Pass
+30 03-3 drk Pass
+31 03-4 drk Pass
+32 03-4 off Pass
+33 03-5 off Partial Pass
+34 03-5 drk Partial Pass
+35 03-6 off Pass
+36 03-6 drk Pass
+37 04-1 off Pass
+38 04-2 off Pass
+39 04-1 drk Partial Fail
+40 04-3 off Pass
+41 04-3 drk Pass
+42 04-4 off Pass
+43 04-2 drk Pass
+44 04-4 drk Pass
+45 04-5 off Pass
+46 04-5 drk Partial Pass
+47 04-6 off Pass
+48 05-1 off Capability Gap
+49 04-6 drk Partial Pass
+50 05-1 drk Pass
+51 05-2 off Capability Gap
+52 05-3 off Capability Gap
+53 05-2 drk Partial Fail
+54 05-3 drk Fail
+55 05-4 off Partial Pass
+56 05-4 drk Partial Pass
+57 05-5 drk Pass
+58 05-5 off Partial Pass
+59 05-6 off Pass
+60 06-1 off Capability Gap
+61 05-6 drk Pass
+62 06-1 drk Pass
+63 06-2 off Capability Gap
+64 06-2 drk Pass
+65 06-3 off Capability Gap
+66 06-3 drk Pass
+67 06-4 off Pass
+68 06-5 off Pass
+69 06-4 drk Pass
+70 06-5 drk Partial Pass
+71 06-6 drk Pass
+72 06-6 off Partial Pass
+73 07-1 off Capability Gap
+74 07-1 drk Partial Fail
+75 07-2 off Capability Gap
+76 07-3 off Capability Gap
+77 07-2 drk Pass
+78 07-3 drk Fail (Bug)
+79 07-5 off Pass
+80 07-4 drk Partial Pass
+81 07-4 off Partial Fail
+82 07-6 off Pass
+83 07-5 drk Pass
+84 07-6 drk Pass
+85 08-1 off Pass
+86 08-2 off Pass
+87 08-1 drk Pass
+88 08-2 drk Pass
+89 08-3 off Pass
+90 08-3 drk Partial Pass
+91 08-4 drk Partial Pass
+92 08-5 off Partial Pass
+93 08-4 off Fail
+94 08-6 off Partial Pass
+95 08-5 drk Pass
+96 08-6 drk Partial Pass
+judged 96/96
